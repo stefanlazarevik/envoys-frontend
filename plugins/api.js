@@ -37,6 +37,10 @@ export default ({ app }, inject) => {
       getTransfers: '/exchange/get-transfers',
       getAnalysis: '/exchange/get-analysis'
     },
+    market: {
+      getInstruments: "/market/get-instruments",
+      getRequests: '/market/settlement/get-requests'
+    },
     admin: {
       exchange: {
         setCurrency: '/admin/exchange/set-currency',

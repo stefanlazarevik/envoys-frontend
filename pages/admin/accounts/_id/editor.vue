@@ -26,7 +26,7 @@
           { value: false, name: "OFF"},
           { value: true, name: "ON"},
         ],
-        rules: ["currencies", "chains", "pairs", "accounts", "contracts", "listing", "news", "support", "advertising", "deny-record"],
+        rules: ["currencies", "chains", "pairs", "accounts", "contracts", "listing", "news", "support", "advertising", "manager", "deny-record"],
         account: {
           name: "",
           email: "",
