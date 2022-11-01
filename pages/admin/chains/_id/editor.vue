@@ -16,6 +16,7 @@
         <v-text-field v-model="chain.time_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_225')" outlined></v-text-field>
         <v-text-field v-model="chain.rpc_user" color="orange" :label="$vuetify.lang.t('$vuetify.lang_227')" outlined></v-text-field>
         <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.address" :label="$vuetify.lang.t('$vuetify.lang_230')" outlined></v-text-field>
+        <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.block" :label="$vuetify.lang.t('$vuetify.lang_220')" outlined></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field v-model="chain.fees_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>

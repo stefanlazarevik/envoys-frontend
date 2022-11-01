@@ -289,5 +289,6 @@ export default {
   lang_289: "New deposit processed successfully",
   lang_290: "Reserve",
   lang_291: "In processing",
-  lang_292: "Fee costs (Reverse)"
+  lang_292: "Fee costs (Reverse)",
+  lang_293: "Decimals"
 }
