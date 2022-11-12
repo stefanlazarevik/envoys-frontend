@@ -217,7 +217,7 @@ export default {
   lang_217: "cancel",
   lang_218: "Add new chain/network",
   lang_219: "Address RPC/API",
-  lang_220: "Blocks",
+  lang_220: "Current block",
   lang_221: "Chain/Network Fee",
   lang_222: "Delete",
   lang_223: "ID network",
@@ -290,5 +290,6 @@ export default {
   lang_290: "Reserve",
   lang_291: "In processing",
   lang_292: "Fee costs (Reverse)",
-  lang_293: "Decimals"
+  lang_293: "Decimals",
+  lang_294: "Broker market"
 }

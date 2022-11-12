@@ -555,7 +555,7 @@
           // Записываем список ордеров в ожидании в массив.
           this.orders = response.fields ?? [];
           this.orders.map(item => {
-            item.id = Number(item.id); return item;
+            item.id = Number(item.id);
           });
 
         });

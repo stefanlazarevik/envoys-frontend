@@ -39,7 +39,10 @@ export default ({ app }, inject) => {
     },
     market: {
       getInstruments: "/market/get-instruments",
-      getRequests: '/market/settlement/get-requests'
+      getRequests: '/market/settlement/get-requests',
+      getBook: '/market/get-book',
+      setOrder: '/market/set-order',
+      getOrders: '/market/get-orders',
     },
     admin: {
       exchange: {

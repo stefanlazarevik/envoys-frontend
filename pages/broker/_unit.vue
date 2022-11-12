@@ -1,12 +1,41 @@
 <template>
+  <v-card class="ma-1" height="500" elevation="0">
+    <v-app-bar class="toolbar-px-zero" color="transparent" flat height="50">
+      <div class="ml-4">
+        {{ unit.toUpperCase() }}
+      </div>
+      <v-divider class="mx-3" vertical />
+      <small v-if="orders.ask.length && orders.bid.length">
+        {{ $decimal.format(orders.bid[0].price - orders.ask[0].price) }}
+      </small>
+      <v-spacer />
 
-  <v-card class="ma-2 pa-0" height="748" elevation="0" rounded="lg">
-    <v-card-title>
-      Market Depth
-    </v-card-title>
+      <template v-if="orders.ask.length && orders.bid.length">
+
+        <v-sheet class="py-1 px-2 mx-1" color="teal lighten-5" rounded elevation="0">
+          <ul class="header-line">
+            <li><small class="teal--text">BUY</small></li>
+            <li>
+              <small>{{ $decimal.format(orders.bid[0].price) }}</small>
+            </li>
+          </ul>
+        </v-sheet>
+
+        <v-sheet class="py-1 px-2 mx-1" color="red lighten-5" rounded elevation="0">
+          <ul class="header-line">
+            <li><small class="red--text">SELL</small></li>
+            <li>
+              <small>{{ $decimal.format(orders.ask[0].price) }}</small>
+            </li>
+          </ul>
+        </v-sheet>
+
+      </template>
+
+    </v-app-bar>
     <v-divider />
-    <v-card-text>
-      <template v-if="Object.keys(orders).length">
+    <v-card-text style="height: 90%">
+      <template v-if="orders.ask.length || orders.bid.length">
         <div class="depth__content">
           <div class="depth__table left__table">
             <div class="depth__table-item">
@@ -14,9 +43,9 @@
               <span class="depth__table-top-text">Price</span>
             </div>
             <ul class="depth__table-list right-line">
-              <li v-for="(item, index) in orders.ask" @click="addPriceToForm(item.price)" :key="index" class="depth__table-item graphic__bg--green">
+              <li v-for="(item, index) in orders.ask" @click="addPriceToForm(item.price ? item.price : 0)" :key="index" class="depth__table-item graphic__bg--green">
                 <span class="depth__table-text depth__table-num">{{item.size}}</span>
-                <span class="depth__table-text depth__table-green-num">{{item.price}}</span>
+                <span class="depth__table-text depth__table-green-num">{{item.price ? item.price : 0}}</span>
               </li>
             </ul>
           </div>
@@ -26,8 +55,8 @@
               <span class="depth__table-top-text">Size</span>
             </div>
             <ul class="depth__table-list">
-              <li v-for="(item, index) in orders.bid" @click="addPriceToForm(item.price)" :key="index" class="depth__table-item graphic__bg--red">
-                <span class="depth__table-text depth__table-red-num">{{item.price}}</span>
+              <li v-for="(item, index) in orders.bid" @click="addPriceToForm(item.price ? item.price : 0)" :key="index" class="depth__table-item graphic__bg--red">
+                <span class="depth__table-text depth__table-red-num">{{item.price ? item.price : 0}}</span>
                 <span class="depth__table-text depth__table-num">{{item.size}}</span>
               </li>
             </ul>
@@ -35,37 +64,166 @@
         </div>
       </template>
       <template v-else>
-        <h2 class="text-center">Not depth.</h2>
+        <v-layout fill-height wrap>
+          <v-flex/>
+          <v-flex align-self-center class="text-center grey--text" md4 mx5 sm6 xl3>
+            <div>
+              <v-icon color="grey">
+                mdi-alert-circle-outline
+              </v-icon>
+            </div>
+            <div>
+              It seems no one is quoting right now.
+            </div>
+          </v-flex>
+          <v-flex/>
+        </v-layout>
       </template>
     </v-card-text>
-  </v-card>
 
+    <v-overlay :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" absolute :value="overlay">
+      <v-progress-circular color="yellow darken-3" indeterminate size="50" />
+    </v-overlay>
+
+  </v-card>
 </template>
 
 <script>
   export default {
     data(){
       return{
-        orders: {}
+        overlay: true,
+        unit: undefined,
+        orders: {
+          ask: [],
+          bid: []
+        }
       }
     },
+    async asyncData({params}) {
+      const unit = params.unit
+      return { unit }
+    },
     watch: {
-      $route(route) {
-        if (route.params.symbol) {
-          this.getBook();
+      $route(e) {
+        if (e.params.unit) {
+          this.getBook(e.params.unit, true);
         }
       }
     },
     mounted() {
-      if (this.$route.params.symbol) {
-        this.getBook();
-      }
+      this.unit = this.unit ?? this.$route.params.unit;
+
+      this.$publish.bind('broker/depth', (data) => {
+        if (data.symbol === this.unit.toUpperCase()) {
+
+          if (data.fields.length) {
+
+            for (let i = 0; i < data.fields.length; i++) {
+
+              switch (data.fields[i].assigning) {
+
+                case "BID":
+
+                  switch (data.fields[i].action) {
+                    case "-":
+
+                      this.orders.bid.map((item, index) => {
+                        if (item.price === data.fields[i].price) {
+                          this.orders.bid.splice(index, 1);
+                        }
+                      });
+
+                      break
+                    case "+":
+
+                      let item = this.orders.bid.find((item) => item.price === data.fields[i].price)
+                      if (item) {
+                        this.orders.bid.map((item, index) => {
+                          if (item.price === data.fields[i].price) {
+                            this.orders.bid[index].size += data.fields[i].size;
+                          }
+                        });
+                      } else {
+                        this.orders.bid.unshift(data.fields[i])
+                      }
+
+                      break
+                    case "~":
+                      this.orders.bid.unshift(data.fields[i])
+                      break
+                    default:
+                      this.orders.bid.unshift(data.fields[i])
+                  }
+
+                  if (this.orders.bid.length >= 10) {
+                    this.orders.bid.shift();
+                  }
+
+                  break
+                case "ASK":
+
+                  switch (data.fields[i].action) {
+                    case "-":
+
+                      this.orders.ask.map((item, index) => {
+                        if (item.price === data.fields[i].price) {
+                          this.orders.ask.splice(index, 1);
+                        }
+                      });
+
+                      break
+                    case "+":
+
+                      let item = this.orders.ask.find((item) => item.price === data.fields[i].price)
+                      if (item) {
+                        this.orders.ask.map((item, index) => {
+                          if (item.price === data.fields[i].price) {
+                            this.orders.ask[index].size += data.fields[i].size;
+                          }
+                        });
+                      } else {
+                        this.orders.ask.unshift(data.fields[i])
+                      }
+
+                      break
+                    case "~":
+                      this.orders.bid.unshift(data.fields[i])
+                      break
+                    default:
+                      this.orders.ask.unshift(data.fields[i])
+                  }
+
+                  if (this.orders.ask.length >= 10) {
+                    this.orders.ask.shift();
+                  }
+
+                  break
+              }
+
+            }
+
+          }
+        }
+      });
+
+      this.overlay = false;
+      this.getBook(this.unit, true);
     },
     methods: {
-      getBook() {
-        this.$axios.$post(this.$api.market.getBook, {instrument: this.$route.params.symbol.toUpperCase(), tradable: true}).then((response) => {
-          if (response.fields !== undefined) {
-            this.orders = Object.assign({}, response.fields)
+      getBook(unit, loading) {
+        this.unit = unit;
+
+        if (loading) {
+          this.overlay = true;
+        }
+
+        this.$axios.$post(this.$api.market.getBook, {instrument: unit.toUpperCase(), tradable: true}).then(() => {
+          this.orders.ask = [];
+          this.orders.bid = [];
+
+          if (loading) {
+            this.overlay = false;
           }
         });
       },
@@ -85,6 +243,8 @@
     display: flex;
     align-items: flex-start;
     gap: 3px;
+    height: 425px;
+    overflow: hidden;
   }
   &__table{
     width: 50%;
@@ -646,9 +806,9 @@
 .left__table{
   @media (max-width: 600px) {
     width: 100%;
-   &_none{
-     display: none;
-   }
+    &_none{
+      display: none;
+    }
   }
 }
 </style>

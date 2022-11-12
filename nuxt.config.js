@@ -62,6 +62,7 @@ export default {
     { src: '~/plugins/platform.js' },
     { src: '~/plugins/datafeed.js' },
     { src: '~/plugins/scale.js' },
+    { src: '~/plugins/broker.js' },
     { src: '~/plugins/error.js' },
     { src: '~/plugins/rule.js' },
     { src: '~/plugins/api.js' },

@@ -2,7 +2,7 @@
   <v-sheet v-if="pairs.length" class="mt-3 mx-3" rounded>
     <v-slide-group class="pa-0" center-active :show-arrows="true">
       <v-slide-item v-for="(item, index) in pairs" :key="index">
-        <v-card :to="`/market/${$route.params.name}/${item.symbol.toLowerCase()}`" width="350" class="card-outline my-3 mx-2" outlined :elevation="0" height="238" rounded>
+        <v-card :to="`/market/${$route.params.name}/${item.symbol.toLowerCase()}`" width="350" class="card-outline my-3 mx-2" outlined :elevation="0" rounded>
           <v-card-actions class="mx-2">
             <v-avatar size="25">
               <v-img lazy-src="https://picsum.photos/id/11/10/6" :src="`https://test.finerymarkets.com/icons/${$route.params.name}.svg`" :alt="$route.params.name" />
@@ -14,8 +14,8 @@
           </v-card-actions>
           <v-divider />
           <v-card-text>
-            <v-select v-model="market_type" class="input-reset" :items="options" item-text="name" item-value="name" label="Market" flat filled outlined dense hide-details />
-            <v-text-field v-model="market_value" class="mt-3 input-reset" placeholder="0.00000000" outlined flat filled dense :label="item.active ? 'Volume' : 'Size'" hide-details>
+            <v-select v-model="type" class="input-reset" :items="options" item-text="name" item-value="value" label="Market" flat filled outlined dense hide-details />
+            <v-text-field v-model="size" class="mt-3 input-reset" placeholder="0.00000000" outlined flat filled dense :label="item.active ? 'Volume' : 'Size'" hide-details>
               <template v-slot:append>
                 <div @click="setModel(item.id, item.active)" class="input-model">
                   <span class="my-1 ml-3 mr-1 float-left" style="display: block;">{{ item.active ? item.quote_name : item.base_name }}</span>
@@ -25,15 +25,16 @@
                 </div>
               </template>
             </v-text-field>
+            <v-text-field v-if="price" v-model="price" class="mt-3 input-reset" placeholder="0.00000000" outlined flat filled dense hide-details></v-text-field>
           </v-card-text>
           <v-divider />
           <v-card-actions class="ma-2">
             <v-row>
               <v-col cols="12" sm="6">
-                <v-btn block color="green darken-1 white--text" elevation="0">BUY</v-btn>
+                <v-btn block color="green darken-1 white--text" @click="setOrder('bid')" elevation="0">BUY</v-btn>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-btn block color="red darken-1 white--text" elevation="0">SELL</v-btn>
+                <v-btn block color="red darken-1 white--text" @click="setOrder('ask')" elevation="0">SELL</v-btn>
               </v-col>
             </v-row>
           </v-card-actions>
@@ -60,11 +61,17 @@
           { value: "limitIOC", name: "Limit IOC"},
           { value: "limitFOK", name: "Limit FOK"},
         ],
-        market_type: 0,
-        market_value: ""
+        size: 0,
+        type: "marketIOC",
+        price: 0
       }
     },
     mounted() {
+
+      this.$nuxt.$on('price:update', (price) => {
+        this.price = price;
+      });
+
       this.getInstruments();
     },
     methods: {
@@ -85,18 +92,27 @@
           }
         });
         this.$forceUpdate();
+      },
+      setOrder(side) {
+
+        this.$axios.$post(this.$api.market.setOrder, {symbol: this.$route.params.symbol.toUpperCase(), price: Number(this.price), size: Number(this.size), side: side, type: this.type}).then((response) => {
+
+          if (response.fields.length) {
+            this.$nuxt.$emit("orders:update", response.fields[0])
+
+            // Озвучиваем действие звуковым сопровождением.
+            this.$single.play('create');
+          }
+
+        }).catch((error) => {
+          this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
+        });
       }
     }
   }
 </script>
 
 <style lang="scss">
-
-  .input-model {
-    display: flex;
-    cursor: pointer;
-    border-left: 1px solid #a5a5a5;
-  }
 
   .card-outline {
     border-bottom: 0 !important;
