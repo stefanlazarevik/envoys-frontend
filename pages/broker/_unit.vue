@@ -12,7 +12,7 @@
 
       <template v-if="orders.ask.length && orders.bid.length">
 
-        <v-sheet class="py-1 px-2 mx-1" color="teal lighten-5" rounded elevation="0">
+        <v-sheet min-width="100" class="py-1 px-2 mx-1" color="teal lighten-5" rounded elevation="0">
           <ul class="header-line">
             <li><small class="teal--text">BUY</small></li>
             <li>
@@ -21,7 +21,7 @@
           </ul>
         </v-sheet>
 
-        <v-sheet class="py-1 px-2 mx-1" color="red lighten-5" rounded elevation="0">
+        <v-sheet min-width="100" class="py-1 px-2 mx-1" color="red lighten-5" rounded elevation="0">
           <ul class="header-line">
             <li><small class="red--text">SELL</small></li>
             <li>
@@ -117,7 +117,7 @@
       this.$publish.bind('broker/depth', (data) => {
         if (data.symbol === this.unit.toUpperCase()) {
 
-          if (data.fields.length) {
+          if (data.fields && data.fields.length) {
 
             for (let i = 0; i < data.fields.length; i++) {
 

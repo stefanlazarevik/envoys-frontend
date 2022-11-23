@@ -4,7 +4,7 @@
     <!-- Start: marker market tab element -->
     <template v-if="markers.length">
       <v-app-bar color="transparent" height="50" flat>
-        <v-tabs color="primary" v-model="eyelet" show-arrows>
+        <v-tabs color="primary" v-model="eyelet" fixed-tabs show-arrows>
           <v-tab @click="getPairs(item)" v-for="item in markers" :key="item">{{ item }}</v-tab>
         </v-tabs>
       </v-app-bar>

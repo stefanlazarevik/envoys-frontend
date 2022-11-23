@@ -4,7 +4,7 @@
     <!-- Start: marker market tab element -->
     <template v-if="markers.length">
       <v-app-bar color="transparent" height="50" flat>
-        <v-tabs color="primary" v-model="eyelet" show-arrows>
+        <v-tabs color="primary" v-model="eyelet" fixed-tabs show-arrows>
           <v-tab @click="getPairs(item)" v-for="item in markers" :key="item">{{ item }}</v-tab>
         </v-tabs>
       </v-app-bar>
@@ -97,17 +97,34 @@
         search: null,
         overlay: true,
         eyelet: 0,
-        markers: ['BTC','ETH','USDC','USDT','USD','EUR'],
+        markers: [],
         marker: 'BTC',
         pairs: []
       }
     },
     mounted() {
+      this.getInstruments();
+
       setTimeout(() => {
         this.getPairs(this.unit.split('-')[0]);
       }, 1000);
     },
     methods: {
+
+      /**
+       *
+       */
+      getInstruments() {
+        this.$axios.$post(this.$api.market.getInstruments).then((response) => {
+          if (response.fields !== undefined) {
+            for (let i = 0; i < response.fields.currencies.length; i++) {
+              if (i !== 5) {
+                this.markers.push(response.fields.currencies[i].name)
+              }
+            }
+          }
+        });
+      },
 
       /**
        * @param symbol
