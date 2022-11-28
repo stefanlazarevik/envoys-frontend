@@ -48,7 +48,7 @@
       <v-divider class="mx-4" inset vertical />
       <v-component-theme />
     </v-app-bar>
-    <v-main id="scrolling-techniques" style="height: 100px;padding: 65px 0 0;" class="overflow-y-auto">
+    <v-main id="scrolling-techniques" style="height: 100px;padding: 65px 0 0;" :class="'overflow-y-auto ' + ($vuetify.theme.dark ? '' : 'white')">
       <Nuxt />
       <v-component-footer />
     </v-main>
