@@ -5,14 +5,14 @@
         <div class="d-flex flex-column px-3 px-sm-15 px-md-0">
           <div class="d-flex white--text mb-15">
             <div class="text-h4 mb-10 mb-md-0 text-uppercase font-weight-bold"><span
-                style="color: #F48020;">Contact</span> information</div>
+                style="color: #F48020;">{{$vuetify.lang.t('$vuetify.lang_contacts_1.title_1')}}</span> {{$vuetify.lang.t('$vuetify.lang_contacts_1.title_2')}}</div>
           </div>
     
           <div class="d-flex justify-lg-space-between flex-wrap align-start flex-md-row flex-column h-100">
             <div class="d-flex flex-column align-start justify-space-between px-5 py-5 mb-md-15 mb-lg-0" style="min-height: 210px;">
               <div>
-                <div class="text-subtitle-1 white--text mb-3">Envoys Vision head office</div>
-                <div class="text-caption font-weight-light" style="color: #CBCBCB;">Gogol.st 300/3</div>
+                <div class="text-subtitle-1 white--text mb-3">{{$vuetify.lang.t('$vuetify.lang_contacts_2')}}</div>
+                <div class="text-caption font-weight-light" style="color: #CBCBCB;">{{$vuetify.lang.t('$vuetify.lang_contacts_3')}}</div>
               </div>
               <div class="d-flex align-start align-sm-center flex-column flex-sm-row w-100">
                 <div class="text-caption font-weight-light mr-sm-15 mb-4 mb-sm-0" style="color: #CBCBCB;">+996 (312) 884 448</div>
@@ -23,8 +23,8 @@
             <v-divider class="d-block d-md-none my-7" style="border-color: #E8E8E8; width: 100%;"></v-divider>
             <div class="d-flex flex-column align-start justify-space-between px-5 py-5" style="min-height: 210px;">
               <div>
-                <div class="text-subtitle-1 white--text mb-3">Depository</div>
-                <div class="text-caption font-weight-light" style="color: #CBCBCB;">Storage and accounting of securities.</div>
+                <div class="text-subtitle-1 white--text mb-3">{{$vuetify.lang.t('$vuetify.lang_contacts_4')}}</div>
+                <div class="text-caption font-weight-light" style="color: #CBCBCB;">{{$vuetify.lang.t('$vuetify.lang_contacts_5')}}</div>
               </div>
               <div class="d-flex align-start align-sm-center flex-column flex-sm-row w-100">
                 <div class="text-caption font-weight-light mr-sm-15 mb-4 mb-sm-0" style="color: #CBCBCB;">+996 (312) 884 448</div>
@@ -35,8 +35,8 @@
             <v-divider class="d-block d-md-none my-7" style="border-color: #E8E8E8; width: 100%;"></v-divider>
             <div class="d-flex flex-column align-start justify-space-between px-5 py-5" style="min-height: 210px;">
               <div>
-                <div class="text-subtitle-1 white--text mb-3">Exchange</div>
-                <div class="text-caption font-weight-light" style="color: #CBCBCB;">According to the listing and the bidding rules, and more.</div>
+                <div class="text-subtitle-1 white--text mb-3">{{$vuetify.lang.t('$vuetify.lang_contacts_6')}}</div>
+                <div class="text-caption font-weight-light" style="color: #CBCBCB;">{{$vuetify.lang.t('$vuetify.lang_contacts_7')}}</div>
               </div>
               <div class="d-flex align-start align-sm-center flex-column flex-sm-row w-100">
                 <div class="text-caption font-weight-light mr-sm-15 mb-4 mb-sm-0" style="color: #CBCBCB;">+996 (312) 884 448</div>
