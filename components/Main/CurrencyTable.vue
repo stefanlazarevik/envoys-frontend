@@ -2,7 +2,7 @@
   <div class="py-15">
     <v-container style="max-width: 1262px;">
       <div class="d-flex flex-column">
-        <div class="text-h6 text-sm-h4 font-weight-bold mb-10 text-uppercase">Most popular <span style="color: #F48020;">currency</span> assets</div>
+        <div class="text-h6 text-sm-h4 font-weight-bold mb-10 text-uppercase">{{ $vuetify.lang.t("$vuetify.lang_currency_table_1.title_1")}} <span style="color: #F48020;">{{ $vuetify.lang.t("$vuetify.lang_currency_table_1.title_2")}}</span> {{ $vuetify.lang.t("$vuetify.lang_currency_table_1.title_3")}}</div>
         <v-data-table
           :headers="headers"
           :items="items"
@@ -27,28 +27,6 @@
     name: 'v-currency-table',
     data() {
       return {
-        headers: [
-          {
-            text: 'Name',
-            value: 'name',
-            sortable: false,
-          },
-          {
-            text: 'Price',
-            value: 'price',
-            sortable: false
-          },
-          {
-            text: 'Change',
-            value: 'change',
-            sortable: false
-          },
-          {
-            text: 'Market',
-            value: 'market',
-            sortable: false
-          }
-        ],
         items: [
           {
             name: {
@@ -80,6 +58,32 @@
             change: 1,
             market: 1,
           },
+        ]
+      }
+    },
+    computed: {
+      headers() {
+        return [
+          {
+            text: this.$vuetify.lang.t('$vuetify.lang_currency_table_2'),
+            value: 'name',
+            sortable: false,
+          },
+          {
+            text: this.$vuetify.lang.t('$vuetify.lang_currency_table_3'),
+            value: 'price',
+            sortable: false
+          },
+          {
+            text: this.$vuetify.lang.t('$vuetify.lang_currency_table_4'),
+            value: 'change',
+            sortable: false
+          },
+          {
+            text: this.$vuetify.lang.t('$vuetify.lang_currency_table_5'),
+            value: 'market',
+            sortable: false
+          }
         ]
       }
     }

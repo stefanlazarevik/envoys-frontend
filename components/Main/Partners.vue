@@ -1,7 +1,7 @@
 <template>
   <div class="py-15">
     <v-container style="max-width: 1262px">
-      <div class="text-h4 dark--text font-weight-bold text-uppercase mb-10">Our partners</div>
+      <div class="text-h4 dark--text font-weight-bold text-uppercase mb-10">{{ $vuetify.lang.t("$vuetify.lang_partners_1")}}</div>
       <div class="d-flex">
         <div class="d-flex justify-space-start justify-md-space-between flex-wrap align-center flex-column flex-sm-row" style="width: 100%">
           <div class="d-flex justify-center align-center pa-5">

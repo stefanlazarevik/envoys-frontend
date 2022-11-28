@@ -2,12 +2,12 @@
   <div class="mt-16">
     <v-container style="max-width: 1262px;">
       <div>
-        <div class="text-h5 mb-5 font-weight-bold">About Us</div>
+        <div class="text-h5 mb-5 font-weight-bold">{{ $vuetify.lang.t('$vuetify.lang_aboutus_1')}}</div>
         <div
             class="text-md-h3 text-sm-h4 text-h5 mb-15 font-weight-bold blue--text text--darken-2 text-uppercase"
             style="max-width: 1140px"
         >
-          Our team has been working on the universal exchange project for more than 3 years
+          {{ $vuetify.lang.t('$vuetify.lang_aboutus_2')}}
         </div>
       </div>
       <div class="d-flex justify-space-between align-start flex-column flex-md-row white--text mb-15">
@@ -35,18 +35,7 @@
               :class="'text-body-1 mb-5 ' + ($vuetify.theme.dark ? 'white--text' : 'black--text')"
               style="max-width: 700px;"
           >
-            Our team has been working on the universal
-            exchange project for more than 3 years and consists of specialists who have worked both with blockchain
-            projects and worked in senior positions
-            in the stock exchange, legal regulators and provided consulting services to companies from various industries,
-            in particular in the mining sector. Our experience has given us an understanding of,
-            what problems are faced by business, investors and traders
-            and we know what is required for each of the parties and how to solve these issues. Our project intends to
-            change the world of finance by making all processes more efficient and transparent by working
-            in the legal field of the countries in which we operate.
-            At the same time, we strive to create a unique platform that transforms the implementation of the activities
-            of the main
-            financial markets in the blockchain.
+            {{ $vuetify.lang.t('$vuetify.lang_aboutus_3')}}
           </div>
           <div class="d-flex align-center">
             <a
@@ -54,7 +43,7 @@
                 style="text-transform: uppercase; text-decoration: none;"
                 class="font-weight-bold orange--text text--darken-1"
             >
-              read documents
+              {{ $vuetify.lang.t('$vuetify.lang_aboutus_8')}}
             </a>
             <v-icon color="orange">mdi-arrow-top-right</v-icon>
           </div>
@@ -67,13 +56,13 @@
 <script>
 export default {
   name: 'v-about-us',
-  data() {
-    return {
-      cards: [
-        {year: 2019, text: 'Obtaining licenses for depository activities'},
-        {year: 2020, text: 'September 2021 - launch and testing platform'},
-        {year: 2021, text: 'State registration'},
-        {year: 2022, text: 'Launched all services'},
+  computed: {
+    cards() {
+      return [
+        { year: 2019, text: this.$vuetify.lang.t('$vuetify.lang_aboutus_4') },
+        { year: 2020, text: this.$vuetify.lang.t('$vuetify.lang_aboutus_5') },
+        { year: 2021, text: this.$vuetify.lang.t('$vuetify.lang_aboutus_6') },
+        { year: 2022, text: this.$vuetify.lang.t('$vuetify.lang_aboutus_7') },
       ]
     }
   }

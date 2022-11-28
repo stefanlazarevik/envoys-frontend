@@ -291,5 +291,45 @@ export default {
   lang_291: "In processing",
   lang_292: "Fee costs (Reverse)",
   lang_293: "Decimals",
-  lang_294: "Broker market"
+  lang_294: "Broker market",
+
+  lang_firstsrc_1: {
+    title_1: "Digital Exchange by",
+    title_2: "Envoys Vision"
+  },
+
+  lang_firstsrc_2: "Trade now",
+
+  lang_currency_table_1: {
+    title_1: "Most popular",
+    title_2: "currency",
+    title_3: "assets",
+  },
+
+  lang_currency_table_2: "Name", 
+  lang_currency_table_3: "Price", 
+  lang_currency_table_4: "Change", 
+  lang_currency_table_5: "Market", 
+
+  lang_aboutus_1: "About Us",
+  lang_aboutus_2: "Our team has been working on the universal exchange project for more than 3 years",
+  lang_aboutus_3: `Our team has been working on the universal
+            exchange project for more than 3 years and consists of specialists who have worked both with blockchain
+            projects and worked in senior positions
+            in the stock exchange, legal regulators and provided consulting services to companies from various industries,
+            in particular in the mining sector. Our experience has given us an understanding of,
+            what problems are faced by business, investors and traders
+            and we know what is required for each of the parties and how to solve these issues. Our project intends to
+            change the world of finance by making all processes more efficient and transparent by working
+            in the legal field of the countries in which we operate.
+            At the same time, we strive to create a unique platform that transforms the implementation of the activities
+            of the main
+            financial markets in the blockchain.`,
+  lang_aboutus_4: "Obtaining licenses for depository activities",
+  lang_aboutus_5: "September 2021 - launch and testing platform",
+  lang_aboutus_6: "State registration",
+  lang_aboutus_7: "Launched all services",
+  lang_aboutus_8: "Read documents",
+
+  lang_partners_1: "Our partners"
 }
