@@ -40,7 +40,7 @@
               <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_10')}}</v-list-item-title>
             </v-list-item>
             <v-list-item href="#" class="px-0 px-md-4" dense>
-              <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_11')}}{{$vuetify.lang.t('$vuetify.lang_footer_2')}}</v-list-item-title>
+              <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_11')}}</v-list-item-title>
             </v-list-item>
             <v-list-item href="#" class="px-0 px-md-4" dense>
               <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_12')}}</v-list-item-title>
@@ -53,10 +53,10 @@
         <v-col class="col-12 col-sm-3 col-md-2">
           <v-card class="elevation-0" :color="$vuetify.theme.dark ? 'rgb(37, 37, 37)' : '#F9F9F9'">
             <v-list-item class="px-0 px-md-4" dense>
-              <v-list-item-title class="font-weight-bold text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_14')}}</v-list-item-title>
+              <v-list-item-title class="font-weight-bold text-body-2 ">{{$vuetify.lang.t('$vuetify.lang_footer_14')}}</v-list-item-title>
             </v-list-item>
             <v-list-item href="#" class="px-0 px-md-4" dense>
-              <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_15')}}</v-list-item-title>
+              <v-list-item-title class="font-weight-regular text-body-2 text-wrap">{{$vuetify.lang.t('$vuetify.lang_footer_15')}}</v-list-item-title>
             </v-list-item>
             <v-list-item href="#" class="px-0 px-md-4" dense>
               <v-list-item-title class="font-weight-regular text-body-2">{{$vuetify.lang.t('$vuetify.lang_footer_16')}}</v-list-item-title>

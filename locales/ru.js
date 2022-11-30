@@ -344,8 +344,8 @@ export default {
   lang_ex_features_13: "Рыночные сделки",
   lang_ex_features_14: "Стоп-лимитные сделки",
   lang_contacts_1: {
-    title_1: 'Контакты',
-    title_2: '',
+    title_1: 'Контактная',
+    title_2: 'информация',
   },
   lang_contacts_2: 'Головной офис Envoys Vision',
   lang_contacts_3: 'Гоголь.ул 300/3',
