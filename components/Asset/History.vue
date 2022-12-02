@@ -53,6 +53,11 @@
               {{ $vuetify.lang.t('$vuetify.lang_129') }}
             </v-chip>
           </template>
+          <template v-if="item.status === 'FAILED'">
+            <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
+              {{ $vuetify.lang.t('$vuetify.lang_295') }}
+            </v-chip>
+          </template>
           <template v-if="item.status === 'PROCESSING'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_291') }}

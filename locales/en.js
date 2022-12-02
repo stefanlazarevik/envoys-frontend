@@ -291,5 +291,6 @@ export default {
   lang_291: "In processing",
   lang_292: "Fee costs (Reverse)",
   lang_293: "Decimals",
-  lang_294: "Broker market"
+  lang_294: "Broker market",
+  lang_295: "Error"
 }
