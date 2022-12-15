@@ -5,7 +5,7 @@
     <div class="pa-2">
       <v-row>
         <v-col cols="12" md="4">
-          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/chains/create/editor'">
+          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/spot/chains/create/editor'">
             <v-icon color="green">mdi-plus-thick</v-icon> {{ $vuetify.lang.t('$vuetify.lang_218') }}
           </v-btn>
         </v-col>
@@ -79,7 +79,7 @@
           </template>
         </template>
         <template v-slot:item.edit="{ item }">
-          <v-btn :to="`/admin/chains/${item.id}/editor`" icon>
+          <v-btn :to="`/admin/spot/chains/${item.id}/editor`" icon>
             <v-icon>
               mdi-circle-edit-outline
             </v-icon>
@@ -242,7 +242,7 @@
       getChains() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.admin.exchange.getChains, {
+        this.$axios.$post(this.$api.admin.spot.getChains, {
           limit: this.limit,
           page: this.page
         }).then((response) => {
@@ -257,7 +257,7 @@
        * @param id
        */
       deleteChain(id) {
-        this.$axios.$post(this.$api.admin.exchange.deleteChain, {
+        this.$axios.$post(this.$api.admin.spot.deleteChain, {
           id: id
         }).then(() => {
           this.chains.splice(this.chains.map((o) => o.id).indexOf(id), 1);

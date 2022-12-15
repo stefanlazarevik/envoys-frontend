@@ -144,7 +144,7 @@
        *
        */
       getCurrency() {
-        this.$axios.$post(this.$api.admin.exchange.getCurrency, {
+        this.$axios.$post(this.$api.admin.spot.getCurrency, {
           symbol: (this.$route.params.symbol !== "create" ? this.$route.params.symbol : "")
         }).then((response) => {
           if (response.fields) {
@@ -164,12 +164,12 @@
         if (this.currency.chains_ids === null) {
           this.currency.chains_ids = []
         }
-        this.$axios.$post(this.$api.admin.exchange.setCurrency, {
+        this.$axios.$post(this.$api.admin.spot.setCurrency, {
           symbol: (this.$route.params.symbol !== "create" ? this.$route.params.symbol : ""),
           image: this.image.split(',')[1],
           currency: this.currency
         }).then(() => {
-          return this.$router.push('/admin/currencies');
+          return this.$router.push('/admin/spot/currencies');
         }).catch((error) => {
           this.$snackbar.open({
             content: `${error.response.data.code}: ${error.response.data.message}`,
@@ -182,7 +182,7 @@
        *
        */
       getChains() {
-        this.$axios.$post(this.$api.admin.exchange.getChains).then((response) => {
+        this.$axios.$post(this.$api.admin.spot.getChains).then((response) => {
           this.chains = response.fields ?? [];
         })
       },

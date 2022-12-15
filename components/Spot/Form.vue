@@ -102,87 +102,11 @@
 
     <v-divider />
 
-    <!-- Start: order list element -->
-    <client-only key="order-form">
-      <template v-if="$auth.loggedIn">
-        <v-overlay :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" absolute :value="overlay">
-          <v-progress-circular color="yellow darken-3" indeterminate size="50" />
-        </v-overlay>
-
-        <template v-if="orders.length">
-          <v-hover v-slot="{ hover }">
-            <v-virtual-scroll :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders" height="203" item-height="64">
-              <template v-slot:default="{ item }">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-list-item v-bind="attrs" v-on="on">
-                      <v-list-item-icon class="mr-4">
-                        <v-progress-circular size="40" :width="2" :value="$decimal.sub(100, $decimal.div($decimal.mul(item.value, 100), item.quantity)).toFixed(0)" :color="item.assigning ? 'red' : 'teal'">
-                          <small style="font-size: 9px;">{{ $decimal.sub(100, $decimal.div($decimal.mul(item.value, 100), item.quantity)).toFixed(0) }}</small>
-                        </v-progress-circular>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title>{{ $vuetify.lang.t('$vuetify.lang_52') }}: {{ $decimal.truncate(item.price) }} {{ getQuery()[1].toUpperCase() }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ $vuetify.lang.t('$vuetify.lang_53') }}: {{ $decimal.truncate(item.value) }} {{ getQuery()[0].toUpperCase() }}</v-list-item-subtitle>
-                      </v-list-item-content>
-                      <v-list-item-action>
-                        <v-list-item-action-text>
-                          <v-btn @click="cancelOrder(item.id)" elevation="0" icon>
-                            <v-icon>
-                              mdi-trash-can-outline
-                            </v-icon>
-                          </v-btn>
-                        </v-list-item-action-text>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </template>
-                  <span>{{ $moment(item.create_at).format('h:mm:ss') }}</span>
-                </v-tooltip>
-              </template>
-            </v-virtual-scroll>
-          </v-hover>
-        </template>
-
-        <template v-else>
-          <v-layout style="height: 203px" wrap>
-            <v-flex/>
-            <v-flex class="text-center mx-5" align-self-center>
-              <div>
-                <v-icon size="50">
-                  mdi-database-remove-outline
-                </v-icon>
-              </div>
-              <template v-if="overlay">
-                <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_55') }}</h4>
-              </template>
-              <template v-else>
-                <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_54') }}</h4>
-              </template>
-            </v-flex>
-            <v-flex/>
-          </v-layout>
-        </template>
-
-      </template>
-      <template v-else>
-        <v-overlay :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" absolute>
-          <v-btn color="black--text yellow darken-1 text-capitalize" to="/signin" large elevation="0">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
-        </v-overlay>
-        <v-layout wrap>
-          <v-flex/>
-          <v-flex class="text-center mx-5 my-14" align-self-center>
-            <div>
-              <v-icon size="50">
-                mdi-fingerprint
-              </v-icon>
-            </div>
-            {{ $vuetify.lang.t('$vuetify.lang_51') }}
-          </v-flex>
-          <v-flex/>
-        </v-layout>
-      </template>
-    </client-only>
-    <!-- End: order list element -->
+    <template v-if="!$auth.loggedIn">
+      <v-overlay :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" absolute>
+        <v-btn color="black--text yellow darken-1 text-capitalize" to="/signin" large elevation="0">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
+      </v-overlay>
+    </template>
 
   </v-card>
 </template>
@@ -194,7 +118,7 @@
   Decimal.set({ precision: 8, rounding: 1 })
 
   export default {
-    name: "v-component-order-form",
+    name: "v-component-spot-form",
     props: {
       unit: {
         type: String
@@ -205,7 +129,6 @@
     },
     data() {
       return {
-        orders: [],
         query: '--:--',
         symbol: null,
         price: 0,
@@ -226,7 +149,6 @@
           this.getSymbol(e.params.unit)
         );
         this.getGraph();
-        this.getOrders();
       }
     },
     mounted() {
@@ -235,8 +157,9 @@
 
       /**
        * Брать цену с ордер листа.
+       * @event 'price/update'
        */
-      this.$nuxt.$on('price:update', (price) => {
+      this.$nuxt.$on('price/update', (price) => {
 
         if (!this.$auth.loggedIn) {
           return false;
@@ -245,6 +168,15 @@
 
         // Обновляем целевую политику в форме.
         this.setPrice();
+      });
+
+      /**
+       * Обновляем данные актива.
+       * @event 'order/cancel'
+       */
+      this.$nuxt.$on('order/cancel', () => {
+        // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
+        this.getAsset(null);
       });
 
       /**
@@ -267,7 +199,7 @@
 
         ) {
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(undefined);
+          this.getAsset(null);
         }
       });
 
@@ -299,32 +231,8 @@
 
         ) {
 
-          let index = this.orders.map((o) => Number(o.id)).indexOf(data.id);
-          let matching = this.orders.some((o) => Number(o.id) === data.id);
-          if (matching) {
-
-            switch (data.status) {
-              case 1:
-
-                // Удаляем ордер с массива по идентификатору.
-                this.orders.splice(index, 1);
-
-                break;
-              case 2:
-
-                // Обновляем количество монет ордера.
-                this.orders[index].value = data.value;
-
-                break
-
-            }
-
-            // Озвучиваем действие звуковым сопровождением.
-            this.$single.play('trade');
-          }
-
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(undefined);
+          this.getAsset(null);
         }
 
       });
@@ -360,9 +268,8 @@
           }
       });
 
-      this.getAsset(undefined);
+      this.getAsset(null);
       this.getGraph();
-      this.getOrders();
     },
     methods: {
 
@@ -385,7 +292,7 @@
        * Получаем новые данные бегущей строки, данные об торгах.
        */
       getGraph() {
-        this.$axios.$get(this.$api.exchange.getGraph + '?base_unit=' + this.getQuery()[0] + '&quote_unit=' + this.getQuery()[1] + '&limit=1').then((response) => {
+        this.$axios.$get(this.$api.spot.getGraph + '?base_unit=' + this.getQuery()[0] + '&quote_unit=' + this.getQuery()[1] + '&limit=1').then((response) => {
           this.price = response.fields ? response.fields[0].close : 0;
         })
       },
@@ -397,17 +304,17 @@
        */
       getAsset(symbol) {
 
-        if (symbol !== undefined) {
+        if (symbol !== null) {
           this.overlay = true;
         }
 
-        symbol = (symbol === undefined ? this.getSymbol(this.query) : symbol);
+        symbol = (symbol === null ? this.getSymbol(this.query) : symbol);
 
         if (!this.$auth.loggedIn) {
           return false;
         }
 
-        this.$axios.$post(this.$api.exchange.getAsset, {symbol: symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getAsset, {symbol: symbol}).then((response) => {
 
           // После перехода на новый актив обнуляем все параметры.
           this.balance = 0;
@@ -426,7 +333,7 @@
             // значит налаживаем вето на эту форму в целом.
             this.status = response.fields[0].status ?? 0;
             if (this.status) {
-              this.$axios.$post(this.$api.exchange.getPair, {base_unit: query[0], quote_unit: query[1]}).then((response) => {
+              this.$axios.$post(this.$api.spot.getPair, {base_unit: query[0], quote_unit: query[1]}).then((response) => {
                 this.status = response.fields[0].status ?? 0;
               }).catch(e => {
                 console.log(e)
@@ -497,7 +404,7 @@
        * Создаём новый ордер.
        */
       setOrder() {
-        this.$axios.$post(this.$api.exchange.setOrder, {
+        this.$axios.$post(this.$api.spot.setOrder, {
           // Назначение [sell:1] - [buy:0].
           assigning: this.assigning === 'sell' ? 1 : 0,
           // Имя актива (symbol-base).
@@ -514,70 +421,11 @@
 
           response.fields[0].assigning = response.fields[0].assigning ? 1 : 0;
 
-          // Добавляем новый ордер в массив.
-          this.orders.unshift(Object.assign({}, response.fields[0]));
-
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(undefined);
+          this.getAsset(null);
 
           // Озвучиваем действие звуковым сопровождением.
           this.$single.play('create');
-
-        }).catch((error) => {
-          this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
-        });
-      },
-
-      /**
-       * @returns {boolean}
-       */
-      getOrders() {
-
-        if (!this.$auth.loggedIn) {
-          return false;
-        }
-
-        this.$axios.$post(this.$api.exchange.getOrders, {
-          // Назначение [sell:1] - [buy:0].
-          assigning: this.assigning === 'sell' ? 1 : 0,
-          // Имя актива (symbol-base).
-          base_unit: this.getQuery()[0],
-          // Имя актива (symbol-quote).
-          quote_unit: this.getQuery()[1],
-          // Показывать количество записей в массиве.
-          limit: 10,
-          // Показывать записи только если я их владелец.
-          owner: true,
-          // Показывать записи если они со статусом в ожидании.
-          status: 2
-        }).then((response) => {
-
-          // Записываем список ордеров в ожидании в массив.
-          this.orders = response.fields ?? [];
-          this.orders.map(item => {
-            item.id = Number(item.id);
-          });
-
-        });
-      },
-
-      /**
-       * @param id
-       */
-      cancelOrder(id) {
-        this.$axios.$post(this.$api.exchange.cancelOrder, {
-          // Идентификатор ордера для удаления.
-          id: id
-        }).then(() => {
-
-          // Удаляем ордер с массива по идентификатору.
-          this.orders.splice(this.orders.map((o) => o.id).indexOf(id), 1);
-
-          // При каждом удалению ордера, обновляем данные актива.
-          this.getAsset(undefined);
-
-          // Озвучиваем действие звуковым сопровождением.
-          this.$single.play('delete');
 
         }).catch((error) => {
           this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});

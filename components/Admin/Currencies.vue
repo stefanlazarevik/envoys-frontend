@@ -5,7 +5,7 @@
     <div class="pa-2">
       <v-row>
         <v-col cols="12" md="4">
-          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/currencies/create/editor'">
+          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/spot/currencies/create/editor'">
             <v-icon color="green">mdi-plus-thick</v-icon> {{ $vuetify.lang.t('$vuetify.lang_195') }}
           </v-btn>
         </v-col>
@@ -89,7 +89,7 @@
           </div>
         </template>
         <template v-slot:item.edit="{ item }">
-          <v-btn :to="`/admin/currencies/${item.symbol}/editor`" icon>
+          <v-btn :to="`/admin/spot/currencies/${item.symbol}/editor`" icon>
             <v-icon>
               mdi-circle-edit-outline
             </v-icon>
@@ -198,7 +198,7 @@
           this.page = 1
         }
 
-        this.$axios.$post(this.$api.admin.exchange.getCurrencies, {
+        this.$axios.$post(this.$api.admin.spot.getCurrencies, {
           search: this.search,
           limit: this.limit,
           page: this.page
@@ -214,7 +214,7 @@
        * @param symbol
        */
       deleteCurrency(symbol) {
-        this.$axios.$post(this.$api.admin.exchange.deleteCurrency, {
+        this.$axios.$post(this.$api.admin.spot.deleteCurrency, {
           symbol: symbol
         }).then(() => {
           this.currencies.splice(this.currencies.map((o) => o.symbol).indexOf(symbol), 1);

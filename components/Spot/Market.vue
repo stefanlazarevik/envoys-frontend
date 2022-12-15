@@ -4,7 +4,7 @@
     <!-- Start: marker market tab element -->
     <template v-if="markers.length">
       <v-app-bar color="transparent" height="50" flat>
-        <v-tabs color="primary" v-model="eyelet" fixed-tabs show-arrows>
+        <v-tabs color="primary" v-model="eyelet" show-arrows>
           <v-tab @click="getPairs(item)" v-for="item in markers" :key="item">{{ item }}</v-tab>
         </v-tabs>
       </v-app-bar>
@@ -27,7 +27,7 @@
       <template v-if="items.length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="items" height="393" item-height="49">
           <template v-slot:default="{ item }">
-            <v-list-item :color="$vuetify.theme.dark ? 'grey darken-3' : 'deep-purple lighten-5'" :to="'/trade/' + item.base_unit + '-' + item.quote_unit" :key="item.id" dense>
+            <v-list-item :color="$vuetify.theme.dark ? 'grey darken-3' : 'deep-purple lighten-5'" :to="'/trade/' + item.base_unit + '-' + item.quote_unit + '?type=spot'" :key="item.id" dense>
               <v-list-item-avatar class="mr-2" size="30">
                 <v-img :src="$storages(['icon'], item.symbol)"/>
               </v-list-item-avatar>
@@ -119,7 +119,7 @@
 <script>
 
   export default {
-    name: "v-component-market",
+    name: "v-component-spot-market",
     props: {
       unit: String
     },
@@ -197,7 +197,7 @@
         this.overlay = true;
 
         let markers = this.markers.length;
-        this.$axios.$post(this.$api.exchange.getPairs, { symbol: symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getPairs, { symbol: symbol}).then((response) => {
 
           if (!markers) {
             this.eyelet = this.markers.indexOf(symbol);
@@ -215,7 +215,7 @@
        * @param symbol
        */
       getMarkers(symbol) {
-        this.$axios.$post(this.$api.exchange.getMarkers).then((response) => {
+        this.$axios.$post(this.$api.spot.getMarkers).then((response) => {
           this.markers = response.fields ?? [];
 
           // Sort by symbol.

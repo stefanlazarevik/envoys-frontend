@@ -182,7 +182,7 @@
         this.getHeader(unit);
 
         // Проверяем есть ли такая пара.
-        this.$axios.$post(this.$api.exchange.getPair, {base_unit: unit.split('-')[0], quote_unit: unit.split('-')[1]}).then((response) => {
+        this.$axios.$post(this.$api.spot.getPair, {base_unit: unit.split('-')[0], quote_unit: unit.split('-')[1]}).then((response) => {
 
           // Если статус пары false, то мы не инициализируем график.
           this.status = response.fields[0].status ?? false;
@@ -238,7 +238,7 @@
        * @param unit
        */
       getHeader(unit) {
-        this.$axios.$get(this.$api.exchange.getGraph + '?base_unit=' + unit.split('-')[0] + '&quote_unit=' + unit.split('-')[1] + '&limit=2').then((response) => {
+        this.$axios.$get(this.$api.spot.getGraph + '?base_unit=' + unit.split('-')[0] + '&quote_unit=' + unit.split('-')[1] + '&limit=2').then((response) => {
           this.header = response.stats;
         })
       }

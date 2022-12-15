@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Currencies from "@/components/Admin/Currencies";
+  import Currencies from "@/components/Admin/Currencies.vue";
 
   export default {
     components: {

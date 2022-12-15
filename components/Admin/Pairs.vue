@@ -5,7 +5,7 @@
     <div class="pa-2">
       <v-row>
         <v-col cols="12" md="4">
-          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/pairs/create/editor'">
+          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/spot/pairs/create/editor'">
             <v-icon color="green">mdi-plus-thick</v-icon> {{ $vuetify.lang.t('$vuetify.lang_255') }}
           </v-btn>
         </v-col>
@@ -66,7 +66,7 @@
           </template>
         </template>
         <template v-slot:item.edit="{ item }">
-          <v-btn :to="`/admin/pairs/${item.id}/editor`" icon>
+          <v-btn :to="`/admin/spot/pairs/${item.id}/editor`" icon>
             <v-icon>
               mdi-circle-edit-outline
             </v-icon>
@@ -175,7 +175,7 @@
           this.page = 1
         }
 
-        this.$axios.$post(this.$api.admin.exchange.getPairs, {
+        this.$axios.$post(this.$api.admin.spot.getPairs, {
           search: this.search,
           limit: this.limit,
           page: this.page
@@ -191,7 +191,7 @@
        * @param pair_id
        */
       deletePair(pair_id) {
-        this.$axios.$post(this.$api.admin.exchange.deletePair, {
+        this.$axios.$post(this.$api.admin.spot.deletePair, {
           id: pair_id
         }).then(() => {
           this.pairs.splice(this.pairs.map((o) => o.id).indexOf(pair_id), 1);

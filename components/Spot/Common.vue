@@ -89,7 +89,7 @@
   import Soon from "../../components/Soon";
 
   export default {
-    name: "v-component-common",
+    name: "v-component-spot-common",
     components: {
       'v-component-soon': Soon
     },
@@ -220,7 +220,7 @@
        */
       getAssets() {
         this.overlay = true;
-        this.$axios.$post(this.$api.exchange.getAssets).then((response) => {
+        this.$axios.$post(this.$api.spot.getAssets).then((response) => {
 
           this.assets = response.fields ?? [];
           this.assets.map(item => {
@@ -237,7 +237,7 @@
        * @param item
        */
       getPrice(item) {
-        this.$axios.$get(this.$api.exchange.getPrice + '?base_unit=' + item.symbol + '&quote_unit=usd').then((response) => {
+        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + item.symbol + '&quote_unit=usd').then((response) => {
           item.convert = this.$decimal.truncate(response.price ? (item.balance ? this.$decimal.mul(response.price, item.balance) : 0) : (item.balance ? item.balance : 0), 0)
         });
       },

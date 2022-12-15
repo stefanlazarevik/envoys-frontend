@@ -136,7 +136,7 @@
        *
        */
       getContract() {
-        this.$axios.$post(this.$api.admin.exchange.getContract, {
+        this.$axios.$post(this.$api.admin.spot.getContract, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0)
         }).then((response) => {
           if (response.fields) {
@@ -149,11 +149,11 @@
        *
        */
       setContract() {
-        this.$axios.$post(this.$api.admin.exchange.setContract, {
+        this.$axios.$post(this.$api.admin.spot.setContract, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0),
           contract: this.contract
         }).then(() => {
-          return this.$router.push('/admin/contracts');
+          return this.$router.push('/admin/spot/contracts');
         }).catch((error) => {
           this.$snackbar.open({
             content: `${error.response.data.code}: ${error.response.data.message}`,
@@ -166,7 +166,7 @@
        *
        */
       getChains() {
-        this.$axios.$post(this.$api.admin.exchange.getChains).then((response) => {
+        this.$axios.$post(this.$api.admin.spot.getChains).then((response) => {
           this.chains = response.fields ?? [];
           this.chains = this.chains.filter((item) => item.platform !== 'VISA' && item.platform !== 'MASTERCARD');
         })
@@ -176,7 +176,7 @@
        *
        */
       getCurrencies() {
-        this.$axios.$post(this.$api.admin.exchange.getCurrencies).then((response) => {
+        this.$axios.$post(this.$api.admin.spot.getCurrencies).then((response) => {
           this.currencies = response.fields ?? [];
         })
       }

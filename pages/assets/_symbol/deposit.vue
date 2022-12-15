@@ -195,7 +195,7 @@
         this.overlay = true;
         this.empty = 0;
 
-        this.$axios.$post(this.$api.exchange.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
 
           if (!this.asset.fin_type) {
@@ -219,7 +219,7 @@
        * @param index
        */
       setAsset(platform, protocol, fin_type, index) {
-        this.$axios.$post(this.$api.exchange.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, fin_type: fin_type}).then((response) => {
+        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, fin_type: fin_type}).then((response) => {
           if (fin_type) {
             for (let i = 0; i < this.asset.chains.length; i++) {
               this.asset.chains[i].exist = true;

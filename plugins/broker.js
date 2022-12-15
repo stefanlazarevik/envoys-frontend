@@ -1,7 +1,7 @@
 export default ({ app }, inject) => {
 
   /**
-   * @type {{get(*): boolean}}
+   * @type {{market: {type: [{color: string, name: string, title: string, type: string, value: string},{color: string, name: string, title: string, type: string, value: string},{color: string, name: string, title: string, type: string, value: string},{color: string, name: string, title: string, type: string, value: string}]}, getType(*): {color: string, name: string, title: string, type: string, value: string}}}
    */
   app.$broker = {
 

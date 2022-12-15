@@ -1,13 +1,13 @@
 <template>
-  <section class="pa-0 main-role">
+  <section :class="(this.$store.state.localStorage.screen ? '' : 'main-role') + ' pa-0'">
 
     <template v-if="loader">
 
-      <v-row class="ma-1" no-gutters>
+      <v-row v-if="$route.query.type === 'spot'" class="ma-1" no-gutters>
 
         <!-- Start: order book component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-order-book :unit="unit" />
+          <v-component-spot-book :unit="unit" />
         </v-col>
         <!-- End: order book component -->
 
@@ -19,33 +19,45 @@
 
         <!-- Start: list of trading pairs market component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-market :unit="unit" />
+          <v-component-spot-market :unit="unit" />
         </v-col>
         <!-- End: list of trading pairs market component -->
 
         <!-- Start: trade book component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-trade-book :unit="unit" />
+          <v-component-spot-trade :unit="unit" />
         </v-col>
         <!-- End: trade book component -->
 
         <!-- Start: buy order form component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-order-form :unit="unit" assigning="buy" />
+          <v-component-spot-form :unit="unit" assigning="buy" />
         </v-col>
         <!-- End: order form component -->
 
         <!-- Start: sell order form component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-order-form :unit="unit" assigning="sell" />
+          <v-component-spot-form :unit="unit" assigning="sell" />
         </v-col>
         <!-- End: order form component -->
 
         <!-- Start: common component -->
         <v-col cols="12" md="3" sm="6">
-          <v-component-common />
+          <v-component-spot-common />
         </v-col>
         <!-- End: common component -->
+
+        <!-- Start: history component -->
+        <v-col cols="12" lg="12">
+          <v-component-spot-history :unit="unit" />
+        </v-col>
+        <!-- End: history component -->
+
+      </v-row>
+
+      <v-row v-if="$route.query.type === 'stock'" class="ma-1" no-gutters>
+
+        stock trade
 
       </v-row>
 
@@ -60,20 +72,22 @@
 
 <script>
 
-  import Market from '@/components/Trade/Market';
-  import OrderForm from '@/components/Trade/OrderForm';
-  import OrderBook from "@/components/Trade/OrderBook";
-  import TradeBook from "@/components/Trade/TradeBook";
-  import Common from "@/components/Trade/Common";
+  import Market from '@/components/Spot/Market';
+  import Form from '@/components/Spot/Form';
+  import Book from "@/components/Spot/Book";
+  import Trade from "@/components/Spot/Trade";
+  import Common from "@/components/Spot/Common";
+  import History from "@/components/Spot/History";
 
   export default {
     auth: false,
     components: {
-      'v-component-market': Market,
-      'v-component-order-form': OrderForm,
-      'v-component-order-book': OrderBook,
-      'v-component-trade-book': TradeBook,
-      'v-component-common': Common
+      'v-component-spot-market': Market,
+      'v-component-spot-form': Form,
+      'v-component-spot-book': Book,
+      'v-component-spot-trade': Trade,
+      'v-component-spot-common': Common,
+      'v-component-spot-history': History
     },
     data() {
       return {
@@ -82,19 +96,41 @@
       }
     },
 
+    watch: {
+      $route() {
+        this.getSymbol(false);
+      }
+    },
+
     /**
      *
      */
     mounted() {
-      this.loader = false;
-      this.$axios.$post(this.$api.exchange.getSymbol, {base_unit: this.$route.params.unit.split('-')[0], quote_unit: this.$route.params.unit.split('-')[1]}).then(() => {
-        this.unit = this.$route.params.unit
-        setTimeout(() => {
-          this.loader = true;
-        }, 1000);
-      }).catch(e => {
-        this.$error.set(e)
-      });
+      this.getSymbol(true);
+    },
+
+    methods: {
+      getSymbol(loader) {
+
+        if (this.$route.query.type !== 'spot' && this.$route.query.type !== 'stock') {
+          this.$error.set('Type trade not found!.');
+          return false
+        }
+
+        this.loader = !loader;
+
+        this.$axios.$post(this.$api[this.$route.query.type].getSymbol, {base_unit: this.$route.params.unit.split('-')[0], quote_unit: this.$route.params.unit.split('-')[1]}).then(() => {
+          this.unit = this.$route.params.unit;
+
+          if (loader) {
+            setTimeout(() => {
+              this.loader = true;
+            }, 1000);
+          }
+        }).catch(e => {
+          this.$error.set(e)
+        });
+      }
     },
 
     /**

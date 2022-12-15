@@ -5,7 +5,7 @@
     <div class="pa-2">
       <v-row>
         <v-col cols="12" md="4">
-          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/contracts/create/editor'">
+          <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large :to="'/admin/spot/contracts/create/editor'">
             <v-icon color="green">mdi-plus-thick</v-icon> {{ $vuetify.lang.t('$vuetify.lang_267') }}
           </v-btn>
         </v-col>
@@ -64,7 +64,7 @@
           </v-chip>
         </template>
         <template v-slot:item.edit="{ item }">
-          <v-btn :to="`/admin/contracts/${item.id}/editor`" icon>
+          <v-btn :to="`/admin/spot/contracts/${item.id}/editor`" icon>
             <v-icon>
               mdi-circle-edit-outline
             </v-icon>
@@ -167,7 +167,7 @@
           this.page = 1
         }
 
-        this.$axios.$post(this.$api.admin.exchange.getContracts, {
+        this.$axios.$post(this.$api.admin.spot.getContracts, {
           search: this.search,
           limit: this.limit,
           page: this.page
@@ -183,7 +183,7 @@
        * @param contract_id
        */
       deleteContract(contract_id) {
-        this.$axios.$post(this.$api.admin.exchange.deleteContract, {
+        this.$axios.$post(this.$api.admin.spot.deleteContract, {
           id: contract_id
         }).then(() => {
           this.contracts.splice(this.contracts.map((o) => o.id).indexOf(contract_id), 1);

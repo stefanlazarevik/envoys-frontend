@@ -22,11 +22,6 @@
         <v-btn class="text-capitalize" to="/signup" text>{{ $vuetify.lang.t('$vuetify.lang_30') }}</v-btn>
       </v-toolbar-items>
       <template v-if="$auth.loggedIn">
-        <client-only>
-          <v-component-menu-manager />
-        </client-only>
-      </template>
-      <template v-if="$auth.loggedIn">
         <v-btn to="/admin" v-if="admin" :color="$vuetify.theme.dark ? '' : 'deep-purple lighten-4'" elevation="0" icon>
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -47,6 +42,7 @@
       <v-component-language />
       <v-divider class="mx-4" inset vertical />
       <v-component-theme />
+      <v-component-screen />
     </v-app-bar>
     <v-main id="scrolling-techniques" style="height: 100px;padding: 65px 0 0;" class="overflow-y-auto">
       <Nuxt />
@@ -59,22 +55,22 @@
 <script>
 
   import Theme from '@/components/Theme';
+  import Screen from '@/components/Screen';
   import Language from '@/components/Language';
   import Snackbar from '@/components/Snackbar';
   import MenuDefault from '@/components/Menu/Default';
   import MenuPrivate from '@/components/Menu/Private';
-  import MenuManager from '@/components/Menu/Manager';
   import Footer from '@/components/Footer';
 
   export default {
     name: 'layouts-default',
     components: {
       'v-component-theme': Theme,
+      'v-component-screen': Screen,
       'v-component-language': Language,
       'v-component-snackbar': Snackbar,
       'v-component-menu-default': MenuDefault,
       'v-component-menu-private': MenuPrivate,
-      'v-component-menu-manager': MenuManager,
       'v-component-footer': Footer
     },
     data() {
@@ -131,8 +127,7 @@
     methods: {
       isAdmin() {
         if (this.$auth.$state.user) {
-          let roles = this.$auth.$state.user.rules ?? []
-          this.admin = roles.length > 0;
+          this.admin = Object.entries(this.$auth.$state.user.rules ?? null).length > 0;
         }
       }
     },

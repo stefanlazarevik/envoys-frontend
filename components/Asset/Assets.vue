@@ -160,11 +160,11 @@
        */
       getAssets() {
         this.overlay = true;
-        this.$axios.$post(this.$api.exchange.getAssets).then((response) => {
+        this.$axios.$post(this.$api.spot.getAssets).then((response) => {
 
           this.assets = response.fields ?? [];
           this.assets.map(item => {
-            this.$axios.$get(this.$api.exchange.getPrice + '?base_unit=' + item.symbol + '&quote_unit=usd').then((response) => {
+            this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + item.symbol + '&quote_unit=usd').then((response) => {
               item.price = response.price;
             });
           });

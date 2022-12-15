@@ -172,7 +172,7 @@
   import ShiftItem from "./ShiftItem";
 
   export default {
-    name: "v-component-order-book",
+    name: "v-component-spot-book",
     components: {
       'v-component-shift-item': ShiftItem
     },
@@ -430,7 +430,7 @@
        *
        */
       getPair() {
-        this.$axios.$post(this.$api.exchange.getPair, {base_unit: this.query.split('-')[0], quote_unit: this.query.split('-')[1]}).then((response) => {
+        this.$axios.$post(this.$api.spot.getPair, {base_unit: this.query.split('-')[0], quote_unit: this.query.split('-')[1]}).then((response) => {
           this.base_decimal = response.fields[0].base_decimal ?? 2;
           this.quote_decimal = response.fields[0].quote_decimal ?? 8;
         });
@@ -445,7 +445,7 @@
 
         this.getPair();
 
-        this.$axios.$post(this.$api.exchange.getOrders, {
+        this.$axios.$post(this.$api.spot.getOrders, {
           // Назначение [sell:1] - [buy:0].
           assigning: this.assigning,
           // Имя актива (symbol-base).
@@ -502,7 +502,7 @@
        * @param assigning
        */
       getVolume(assigning) {
-        this.$axios.$post(this.$api.exchange.getOrders, {
+        this.$axios.$post(this.$api.spot.getOrders, {
           // Назначение [sell:1] - [buy:0].
           assigning: assigning,
           // Имя актива (symbol-base).
@@ -522,7 +522,7 @@
        * @param price
        */
       addPriceToForm(price) {
-        this.$nuxt.$emit("price:update", price)
+        this.$nuxt.$emit("price/update", price)
       }
     },
     computed: {

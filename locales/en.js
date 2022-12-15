@@ -33,7 +33,7 @@ export default {
   lang_28: "Forgot your password?",
   lang_29: "Sign In",
   lang_30: "Sign Up",
-  lang_31: "Trading terminal",
+  lang_31: "Spot trade",
   lang_32: "Articles",
   lang_33: "Confirm Login",
   lang_34: "Please check the following to protect your account",
@@ -292,5 +292,7 @@ export default {
   lang_292: "Fee costs (Reverse)",
   lang_293: "Decimals",
   lang_294: "Broker market",
-  lang_295: "Error"
+  lang_295: "Error",
+  lang_296: "Canceled orders",
+  lang_297: "Stock trade",
 }

@@ -78,6 +78,11 @@
               {{ $vuetify.lang.t('$vuetify.lang_129') }}
             </v-chip>
           </template>
+          <template v-if="item.status === 'FAILED'">
+            <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
+              {{ $vuetify.lang.t('$vuetify.lang_295') }}
+            </v-chip>
+          </template>
           <template v-if="item.status === 'RESERVE'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'amber lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_290') }}
@@ -241,7 +246,7 @@
       getTransactions() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.admin.exchange.getTransactions, {
+        this.$axios.$post(this.$api.admin.spot.getTransactions, {
           id: this.$route.params.id,
           tx_type: this.type,
           search: this.search,

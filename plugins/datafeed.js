@@ -236,7 +236,7 @@ export default ({ app }, inject) => {
      * @private
      */
     send(params) {
-      let request = app.$api.exchange.getGraph;
+      let request = app.$api.spot.getGraph;
       if (params) {
         for (let i = 0; i < Object.keys(params).length; ++i) {
           let key = Object.keys(params)[i];

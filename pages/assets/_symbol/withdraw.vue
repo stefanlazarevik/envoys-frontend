@@ -271,7 +271,7 @@
       getAsset() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.exchange.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
           this.overlay = false;
           this.getPrice(this.asset.symbol);
@@ -286,7 +286,7 @@
        * @param index
        */
       setAsset(platform, protocol, index) {
-        this.$axios.$post(this.$api.exchange.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol}).then((response) => {
+        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol}).then((response) => {
           this.asset.chains[index].address = response.address;
           this.$forceUpdate();
         });
@@ -340,7 +340,7 @@
        * @param symbol
        */
       getPrice(symbol) {
-        this.$axios.$get(this.$api.exchange.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
+        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
           this.price = response.price ?? 0;
         });
       },
@@ -349,7 +349,7 @@
        * @param item
        */
       setWithdraw(item) {
-        this.$axios.$post(this.$api.exchange.setWithdraw, {
+        this.$axios.$post(this.$api.spot.setWithdraw, {
           id: item.id,
           symbol: this.$route.params.symbol,
           platform: item.platform,
@@ -391,7 +391,7 @@
        *
        */
       setRefresh() {
-        this.$axios.$post(this.$api.exchange.setWithdraw, {
+        this.$axios.$post(this.$api.spot.setWithdraw, {
           refresh: true
         }).catch((error) => {
           this.$snackbar.open({

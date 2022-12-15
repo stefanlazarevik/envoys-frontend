@@ -165,7 +165,7 @@
         if (this.pair.base_unit && this.pair.quote_unit) {
           this.loading = true;
 
-          this.$axios.$post(this.$api.admin.exchange.getMarketPrice, {
+          this.$axios.$post(this.$api.admin.spot.getMarketPrice, {
             base_unit: this.pair.base_unit,
             quote_unit: this.pair.quote_unit
           }).then((response) => {
@@ -180,7 +180,7 @@
        *
        */
       getPair() {
-        this.$axios.$post(this.$api.admin.exchange.getPair, {
+        this.$axios.$post(this.$api.admin.spot.getPair, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0)
         }).then((response) => {
           if (response.fields) {
@@ -193,11 +193,11 @@
        *
        */
       setPair() {
-        this.$axios.$post(this.$api.admin.exchange.setPair, {
+        this.$axios.$post(this.$api.admin.spot.setPair, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0),
           pair: this.pair
         }).then(() => {
-          return this.$router.push('/admin/pairs');
+          return this.$router.push('/admin/spot/pairs');
         }).catch((error) => {
           this.$snackbar.open({
             content: `${error.response.data.code}: ${error.response.data.message}`,
@@ -210,7 +210,7 @@
        *
        */
       getCurrencies() {
-        this.$axios.$post(this.$api.admin.exchange.getCurrencies).then((response) => {
+        this.$axios.$post(this.$api.admin.spot.getCurrencies).then((response) => {
           this.currencies = response.fields ?? [];
         })
       }

@@ -46,14 +46,14 @@
           <i>{{ item.email }}</i>
         </template>
         <template v-slot:item.rules="{ item }">
-          <template v-if="item.rules && item.rules.length">
+          <template v-if="item.rules && Object.entries(item.rules).length">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on">mdi-circle-slice-8</v-icon>
               </template>
               <span>
-                <div class="mx-1 text-uppercase" v-for="rule in item.rules" :key="rule">
-                  <v-icon color="white">mdi-asterisk</v-icon> {{ rule }}
+                <div class="mx-1 text-uppercase" v-for="rule in Object.entries(item.rules)" :key="rule[0]">
+                  <b>{{ rule[0] }}</b> - <i>{{ rule[1].join(', ') }}</i>
                 </div>
               </span>
             </v-tooltip>
@@ -87,7 +87,7 @@
           </v-tooltip>
         </template>
         <template v-slot:item.edit="{ item }">
-          <v-btn :to="`/admin/accounts/${item.id}/editor`" icon>
+          <v-btn :to="`/admin/default/accounts/${item.id}/editor`" icon>
             <v-icon>
               mdi-circle-edit-outline
             </v-icon>
@@ -97,17 +97,17 @@
           <td :colspan="headers.length">
             <v-row class="mt-2">
               <v-col cols="12" md="4">
-                <v-btn :to="`/admin/accounts/${item.id}/transactions`" class="mb-5 text-capitalize" block depressed large outlined color="red">
+                <v-btn :to="`/admin/default/accounts/${item.id}/transactions`" class="mb-5 text-capitalize" block depressed large outlined color="red">
                   {{ $vuetify.lang.t('$vuetify.lang_273') }} {{ item.counts.transaction }}
                 </v-btn>
               </v-col>
               <v-col cols="12" md="4">
-                <v-btn :to="`/admin/accounts/${item.id}/orders`" class="mb-5 text-capitalize" block depressed large outlined color="cyan">
+                <v-btn :to="`/admin/default/accounts/${item.id}/orders`" class="mb-5 text-capitalize" block depressed large outlined color="cyan">
                   {{ $vuetify.lang.t('$vuetify.lang_183') }} {{ item.counts.order }}
                 </v-btn>
               </v-col>
               <v-col cols="12" md="4">
-                <v-btn :to="`/admin/accounts/${item.id}/assets`" class="mb-5 text-capitalize" block depressed large outlined color="lime">
+                <v-btn :to="`/admin/default/accounts/${item.id}/assets`" class="mb-5 text-capitalize" block depressed large outlined color="lime">
                   {{ $vuetify.lang.t('$vuetify.lang_79') }} {{ item.counts.asset }}
                 </v-btn>
               </v-col>
