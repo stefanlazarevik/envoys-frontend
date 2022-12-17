@@ -61,7 +61,7 @@
           }, {
             title: this.$vuetify.lang.t('$vuetify.lang_161'),
             icon: "mdi-account-convert-outline",
-            to: 'activities'
+            to: 'actions'
           }
         ]
       }

@@ -15,7 +15,7 @@ export default ({ app }, inject) => {
     account: {
       getUser: '/account/get-user',
       setUser: '/account/set-user',
-      getActivities: '/account/get-activities'
+      getActions: '/account/get-actions'
     },
     spot: {
       getPrice: '/spot/get-price',

@@ -1,9 +1,9 @@
 <template>
   <div style="height: 100%">
-    <template v-if="activities.length">
+    <template v-if="actions.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius' : ''" :headers="headlines.top" :items="activities" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
+      <v-data-table :class="count > limit ? 'none-radius' : ''" :headers="headlines.top" :items="actions" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
         <template v-slot:item.os="{ item }">
           <v-icon>mdi-application-cog-outline</v-icon> <span class="text-capitalize">{{ item.os }}</span>
         </template>
@@ -106,10 +106,10 @@
 
 <script>
   export default {
-    name: "v-component-activities",
+    name: "v-component-actions",
     data() {
       return {
-        activities: [],
+        actions: [],
         overlay: true,
         limit: 16,
         count: 0,
@@ -119,25 +119,25 @@
     },
     watch: {
       $route() {
-        this.getActivities();
+        this.getActions();
       }
     },
     mounted() {
-      this.getActivities()
+      this.getActions()
     },
     methods: {
 
       /**
        *
        */
-      getActivities() {
+      getActions() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.account.getActivities, {
+        this.$axios.$post(this.$api.account.getActions, {
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.activities = response.activities ?? [];
+          this.actions = response.actions ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -148,7 +148,7 @@
        *
        */
       getMore() {
-        this.getActivities();
+        this.getActions();
       }
     },
     computed: {
