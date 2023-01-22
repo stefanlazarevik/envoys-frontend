@@ -55,9 +55,9 @@
         rules: {
           default: [
             "accounts",
-            "news",
-            "support",
-            "advertising",
+            //"news",
+            //"support",
+            //"advertising",
             "deny-record"
           ],
           spot: [
@@ -65,17 +65,19 @@
             "chains",
             "pairs",
             "contracts",
-            "listing"
+            //"listing"
+          ],
+          stock: [
+            "markets",
+            "sectors",
+            "depositaries",
+            "registrars"
           ]
         },
         account: {
           name: "",
           email: "",
-          rules: {
-            default: [],
-            spot: [],
-            stock: []
-          },
+          rules: {},
           status: false
         },
       }
@@ -90,11 +92,18 @@
        * @param value
        */
       setRole(name, value) {
+
+        if (!this.account.rules.hasOwnProperty(name)) {
+          this.account.rules[name] = [];
+        }
+
         if (this.getRole(name, value)) {
           this.account.rules[name].splice(this.account.rules[name].map(e => e).indexOf(value), 1);
         } else {
           this.account.rules[name].push(value);
         }
+
+        this.$forceUpdate();
       },
 
       /**
@@ -105,7 +114,7 @@
       getRole(name, value) {
         return this.account.rules[name]?.find((o) => {
           return o === value;
-        })
+        });
       },
 
       /**

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Accounts from "@/components/Admin/Accounts.vue";
+  import Accounts from "@/components/Admin/Default/Accounts";
 
   export default {
     components: {

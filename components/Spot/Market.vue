@@ -119,10 +119,7 @@
 <script>
 
   export default {
-    name: "v-component-spot-market",
-    props: {
-      unit: String
-    },
+    name: "v-component-market",
     data() {
       return {
         x: 0,
@@ -137,9 +134,7 @@
       }
     },
     mounted() {
-
-      this.getMarkers(this.unit.split('-')[0]);
-      this.getPairs(this.unit.split('-')[0]);
+      this.getPairs();
 
       /**
        * Отслеживаем события бегущей строки, данные об торгах.
@@ -196,11 +191,13 @@
       getPairs(symbol) {
         this.overlay = true;
 
+        this.getMarkers();
+
         let markers = this.markers.length;
-        this.$axios.$post(this.$api.spot.getPairs, { symbol: symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getPairs, { symbol: (symbol ?? this.parse.base())}).then((response) => {
 
           if (!markers) {
-            this.eyelet = this.markers.indexOf(symbol);
+            this.eyelet = this.markers.indexOf(symbol ?? this.parse.base());
           }
 
           this.pairs = response.fields ?? [];
@@ -212,15 +209,15 @@
       },
 
       /**
-       * @param symbol
+       *
        */
-      getMarkers(symbol) {
+      getMarkers() {
         this.$axios.$post(this.$api.spot.getMarkers).then((response) => {
           this.markers = response.fields ?? [];
 
           // Sort by symbol.
           this.markers.map((item, index) => {
-            if (item === symbol) {
+            if (item === this.parse.base()) {
               this.markers[index] = this.markers[0];
               this.markers[0] = item
             }
@@ -246,6 +243,17 @@
       }
     },
     computed: {
+
+      /**
+       * @returns {{base: (function(): string)}}
+       */
+      parse() {
+        return {
+          base: () => {
+            return this.$route.params.unit.split('-')[0]
+          }
+        }
+      },
 
       /**
        * @returns {[]|*[]}

@@ -61,9 +61,7 @@ export default {
     { src: '~/plugins/protocol.js' },
     { src: '~/plugins/platform.js' },
     { src: '~/plugins/datafeed.js' },
-    { src: '~/plugins/scale.js' },
-    { src: '~/plugins/broker.js' },
-    { src: '~/plugins/error.js' },
+    { src: '~/plugins/stock.js' },
     { src: '~/plugins/rule.js' },
     { src: '~/plugins/api.js' },
     { src: '~/plugins/tag.js' }
@@ -148,7 +146,7 @@ export default {
   },
 
   server: {
-    port: 3509,
+    port: 3559,
     host: "0.0.0.0"
   },
 

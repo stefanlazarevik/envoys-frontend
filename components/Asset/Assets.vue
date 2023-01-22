@@ -26,13 +26,13 @@
                   </v-list-item-content>
                   <v-list-item-action class="d-block text-right">
                     <template v-if="hover">
-                      <small v-if="$decimal.truncate(item.balance)" class="teal--text">
-                        ≈ ${{ item.price ? $decimal.truncate($decimal.mul(item.balance, item.price)) : $decimal.truncate(item.balance) }}
+                      <small v-if="$decimal.format(item.balance, 8)" class="teal--text text--darken-3">
+                        ≈ ${{ item.price ? $decimal.format($decimal.mul(item.balance, item.price), 8) : $decimal.format(item.balance, 8) }}
                       </small>
                     </template>
                     <template v-else>
-                      <small v-if="$decimal.truncate(item.balance)" class="teal--text">
-                        {{ $decimal.truncate(item.balance) }}
+                      <small v-if="$decimal.format(item.balance, 8)" class="teal--text text--darken-3">
+                        {{ $decimal.format(item.balance, 8) }}
                       </small>
                     </template>
                   </v-list-item-action>

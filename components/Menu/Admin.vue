@@ -1,6 +1,6 @@
 <template>
   <v-list dense>
-    <v-list-group v-if="item[1].length" v-for="(item, i) in Object.entries(navs)" :key="i" :value="i === 0">
+    <v-list-group v-if="hasOwnProperty(item[0])" v-for="(item, i) in Object.entries(navs)" :key="i" :value="i === 0">
       <template v-slot:activator>
         <v-list-item-icon class="mr-3">
           <v-icon>mdi-contain</v-icon>
@@ -29,7 +29,7 @@
               icon: "mdi-account-circle-outline",
               display: false,
               to: 'accounts'
-            }, {
+            }/**, {
               title: '$vuetify.lang_185',
               icon: "mdi-page-next-outline",
               display: false,
@@ -44,7 +44,7 @@
               icon: "mdi-robot-excited-outline",
               display: false,
               to: 'support'
-            }
+            }**/
           ],
           spot: [
             {
@@ -67,13 +67,38 @@
               icon: "mdi-ballot-recount-outline",
               display: false,
               to: 'contracts'
-            }, {
+            }/**, {
               title: '$vuetify.lang_83',
               icon: "mdi-package-variant-closed-plus",
               display: false,
               to: 'listing'
-            }],
-          stock: []
+            }**/],
+          stock: [
+            {
+              title: '$vuetify.lang_300',
+              icon: "mdi-map-outline",
+              display: false,
+              to: 'sectors'
+            },
+            {
+              title: '$vuetify.lang_298',
+              icon: "mdi-briefcase-variant-outline",
+              display: false,
+              to: 'markets'
+            },
+            {
+              title: '$vuetify.lang_302',
+              icon: "mdi-account-tie-outline",
+              display: false,
+              to: 'depositaries'
+            },
+            {
+              title: '$vuetify.lang_306',
+              icon: "mdi-account-edit-outline",
+              display: false,
+              to: 'registrars'
+            }
+          ]
         }
       }
     },
@@ -89,6 +114,9 @@
             }
           }
         });
+      },
+      hasOwnProperty(name) {
+        return this.$auth.user.rules.hasOwnProperty(name)
       }
     }
   }

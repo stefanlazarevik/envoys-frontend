@@ -40,13 +40,6 @@ export default ({ app }, inject) => {
     stock: {
       getSymbol: '/stock/get-symbol',
     },
-    market: {
-      getInstruments: "/market/get-instruments",
-      getRequests: '/market/settlement/get-requests',
-      getBook: '/market/get-book',
-      setOrder: '/market/set-order',
-      getOrders: '/market/get-orders',
-    },
     admin: {
       spot: {
         setCurrency: '/admin/spot/set-currency',
@@ -69,6 +62,16 @@ export default ({ app }, inject) => {
         getTransactions: '/admin/spot/get-transactions',
         getOrders: '/admin/spot/get-orders',
         getAssets: '/admin/spot/get-assets'
+      },
+      stock: {
+        setMarket: '/admin/stock/set-market',
+        getMarket: '/admin/stock/get-market',
+        getMarkets: '/admin/stock/get-markets',
+        deleteMarket: '/admin/stock/delete-market',
+        setSector: '/admin/stock/set-sector',
+        getSector: '/admin/stock/get-sector',
+        getSectors: '/admin/stock/get-sectors',
+        deleteSector: '/admin/stock/delete-sector',
       },
       account: {
         getAccounts: '/admin/account/get-accounts',

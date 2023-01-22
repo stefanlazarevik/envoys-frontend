@@ -10,7 +10,7 @@ section.main-role {
 
 @media (min-width: 1200px){
   section.main-role {
-    max-width: 1590px;
+    max-width: 1750px;
     margin: 0 auto;
   }
 }
@@ -89,10 +89,6 @@ section.main-role {
   border-bottom-right-radius: 0 !important;
 }
 
-/* Focused modify style */
-.theme--light.input-reset:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
-  color: rgb(0 0 0 / 8%);
-}
 
 /* Sheet modify style */
 .theme--light.v-sheet--outlined {

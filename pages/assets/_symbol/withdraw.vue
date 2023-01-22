@@ -238,7 +238,8 @@
         price: 0,
         timer: 60,
         secure: '',
-        to: ''
+        to: '',
+        free: 0.00001
       }
     },
     watch: {
@@ -377,7 +378,8 @@
        */
       setStep(step, item) {
         if (!this.$refs.form[0].validate()) return false;
-        if (this.quantity > this.getReserveBalance(item) || this.quantity < this.$decimal.add(this.asset.min_withdraw, item.fees_withdraw)) {
+        this.quantity -= this.free;
+        if (this.quantity > this.getReserveBalance(item) || this.quantity < Number(this.$decimal.add(this.asset.min_withdraw, item.fees_withdraw).valueOf())) {
           this.$snackbar.open({
             content: this.$vuetify.lang.t('$vuetify.lang_154'),
             color: 'red darken-2'

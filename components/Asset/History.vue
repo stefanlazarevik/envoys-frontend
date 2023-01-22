@@ -275,6 +275,10 @@
        * @return {callback}:
        */
       this.$publish.bind('deposit/open', (data) => {
+        if (!data) {
+          return false
+        }
+
         if (
 
             // Сверяем локальный штат пользователя

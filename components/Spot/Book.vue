@@ -1,164 +1,224 @@
 <template>
-  <v-card class="ma-1" height="500" elevation="0">
+  <v-card class="ma-1" height="1008" elevation="0">
 
     <!-- Start: filter assigning tab element -->
     <v-app-bar color="transparent" height="50" flat>
       <template v-if="hover">
         <v-row no-gutters>
           <v-col cols="4">
-            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_52') }}<b>({{ query.split('-')[1].toUpperCase() }})</b></small>
+            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_52') }}<b>({{ parse.quote().toUpperCase() }})</b></small>
           </v-col>
           <v-col class="text-right" cols="4">
-            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_53') }}<b>({{ query.split('-')[0].toUpperCase() }})</b></small>
+            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_53') }}<b>({{ parse.base().toUpperCase() }})</b></small>
           </v-col>
           <v-col class="text-right" cols="4">
-            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_56') }}<b>({{ query.split('-')[1].toUpperCase() }})</b></small>
+            <small :class="$vuetify.theme.dark ? 'grey--text' : ''">{{ $vuetify.lang.t('$vuetify.lang_56') }}<b>({{ parse.quote().toUpperCase() }})</b></small>
           </v-col>
         </v-row>
       </template>
       <template v-else>
-        <v-tabs fixed-tabs :color="replayColor" v-model="eyelet" icons-and-text>
-          <v-tab @click="getOrders(0)">
-            <small>{{ $vuetify.lang.t('$vuetify.lang_57') }}</small>
-            <v-icon>
-              mdi-alpha-b-circle-outline
-            </v-icon>
-          </v-tab>
-          <v-tab @click="getOrders(1)">
-            <small>{{ $vuetify.lang.t('$vuetify.lang_58') }}</small>
-            <v-icon>
-              mdi-alpha-s-circle-outline
-            </v-icon>
-          </v-tab>
-          <v-tab @click="getOrders(2)">
-            <small>{{ $vuetify.lang.t('$vuetify.lang_64') }}</small>
-            <v-icon>
-              mdi-alpha-a-circle-outline
-            </v-icon>
-          </v-tab>
-        </v-tabs>
+        <v-row justify="center" no-gutters>
+          <v-col cols="6">
+            <v-item-group v-model="eyelet">
+              <v-item v-slot="{ active, toggle }">
+                <v-icon :disabled="active" :input-value="active" @click="toggle">mdi-alpha-b-circle-outline</v-icon>
+              </v-item>
+              <v-item v-slot="{ active, toggle }">
+                <v-icon :disabled="active" :input-value="active" @click="toggle">mdi-alpha-s-circle-outline</v-icon>
+              </v-item>
+              <v-item v-slot="{ active, toggle }">
+                <v-icon :disabled="active" :input-value="active" @click="toggle">mdi-alpha-m-circle-outline</v-icon>
+              </v-item>
+            </v-item-group>
+          </v-col>
+          <v-col class="text-right" cols="6">
+            <div>{{ $vuetify.lang.t('$vuetify.lang_305') }}</div>
+          </v-col>
+        </v-row>
       </template>
     </v-app-bar>
     <!-- End: filter assigning tab element -->
 
     <v-divider />
 
-    <!-- Start: orders list element -->
-    <template v-if="orders.length">
-      <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders" height="393" item-height="30">
-        <template v-slot:default="{ item }">
-          <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning ? 1 : 0" :key="item.id">
-            <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, base_decimal)" no-gutters>
-              <v-col cols="4">
-                <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, quote_decimal) }}</span>
+    <template v-if="eyelet === 2">
 
-                <!-- Start: children orders list element -->
-                <v-menu v-model="item.menu" :close-on-content-click="false" :nudge-width="200" content-class="elevation-1" dense offset-x max-height="260">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-chip v-if="item.orders && item.orders.length" class="pa-1" style="height: 15px" label outlined small v-bind="attrs" v-on="on">
-                      <small>{{ item.orders.length }}x</small>
-                    </v-chip>
-                  </template>
-                  <v-card>
-                    <v-list dense disabled>
-                      <v-list-item-group eager>
-                        <v-list-item v-for="o in item.orders" :key="o.id" style="min-height: 35px">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              <span class="orange--text">{{ $decimal.sub(100, $decimal.div($decimal.mul(o.value, 100), o.quantity)).toFixed(0) }}%</span> <span>{{ $decimal.format(o.value, base_decimal) }}</span> / <span>{{ $decimal.format(o.quantity, base_decimal) }}</span>
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list-item-group>
-                    </v-list>
-                  </v-card>
-                </v-menu>
-                <!-- End: children orders list element -->
-
-              </v-col>
-              <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
-                {{ $decimal.format(item.value, base_decimal) }}
-              </v-col>
-              <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
-                {{ $decimal.truncate($decimal.mul(item.value, item.price), quote_decimal) }}
-              </v-col>
-            </v-row>
-          </v-component-shift-item>
-        </template>
-      </v-virtual-scroll>
-    </template>
-    <template v-else-if="!overlay">
-      <v-layout style="height: 393px" wrap>
-        <v-flex/>
-        <v-flex class="text-center mx-5" align-self-center>
-          <div>
-            <v-icon size="50">
-              mdi-database-remove-outline
-            </v-icon>
-          </div>
-          <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_62') }}</h4>
-        </v-flex>
-        <v-flex/>
-      </v-layout>
-    </template>
-    <!-- End: orders list element -->
-
-    <!-- Start: price and value element -->
-    <template v-if="!overlay">
-      <v-divider />
-      <v-card-actions style="height: 56px;">
-        <v-row justify="center" no-gutters>
-          <v-col cols="6">
-            <div class="mx-2">
-              <v-icon v-if="priceConcurrency === 'red'" :class="priceConcurrency + '--text'">
-                mdi-call-received
+      <!-- Start: orders bid list element -->
+      <template v-if="orders.bid().length">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" height="410" item-height="29">
+          <template v-slot:default="{ item }">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="0" :key="item.id">
+              <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
+                <v-col cols="4">
+                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format(item.value, order.base_decimal) }}
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format($decimal.mul(item.value, item.price), order.quote_decimal) }}
+                </v-col>
+              </v-row>
+            </v-component-shift-item>
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-else-if="!overlay">
+        <v-layout style="height: 410px" wrap>
+          <v-flex/>
+          <v-flex class="text-center mx-5" align-self-center>
+            <div>
+              <v-icon size="50">
+                mdi-database-remove-outline
               </v-icon>
-              <v-icon v-else-if="priceConcurrency === 'teal'" :class="priceConcurrency + '--text'">
-                mdi-call-made
-              </v-icon>
-              <v-icon v-else>
-                mdi-keyboard-tab
-              </v-icon>
-              <span :class="priceConcurrency + '--text'">{{ priceCurrent ? $decimal.format(priceCurrent) : $vuetify.lang.t('$vuetify.lang_61') }}</span>
             </div>
+            <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_62') }}</h4>
+          </v-flex>
+          <v-flex/>
+        </v-layout>
+      </template>
+      <!-- End: orders bid list element -->
+
+      <v-divider />
+      <v-card-actions style="height: 80px;">
+
+        <v-row class="text-center" no-gutters>
+          <v-col cols="4">
+            <v-chip outlined style="width: 100%;height: 60px;display: block;" :class="($vuetify.theme.dark ? 'teal darken-3' : 'teal lighten-5 teal--text')" label>
+              <ul class="chip-marker">
+                <li>{{ $vuetify.lang.t('$vuetify.lang_57') }}</li>
+                <li><small>{{ orders.bid().length ? $decimal.truncate(orders.bid()[0].price, order.quote_decimal) : '0.00000000' }} {{ parse.quote().toUpperCase() }}</small></li>
+              </ul>
+            </v-chip>
           </v-col>
-          <v-col class="text-right" cols="6">
-            <small class="mx-2">
-              {{ eyelet === 1 ? $decimal.truncate(volume, quote_decimal) : $decimal.truncate($decimal.mul(volume, priceCurrent), quote_decimal) }}<b>({{ eyelet === 1 ? query.split('-')[0].toUpperCase() : query.split('-')[1].toUpperCase() }})</b>
-            </small>
+          <v-col class="px-2" cols="4">
+            <v-chip outlined style="width: 100%;height: 60px;display: block;" :class="($vuetify.theme.dark ? 'grey darken-3' : priceConcurrency + ' lighten-5 ' + priceConcurrency + '--text')" label>
+              <ul class="chip-marker">
+                <li>
+                  <v-icon small v-if="priceConcurrency === 'red'" :class="priceConcurrency + '--text'">
+                    mdi-arrow-down
+                  </v-icon>
+                  <v-icon small v-else-if="priceConcurrency === 'teal'" :class="priceConcurrency + '--text'">
+                    mdi-arrow-up
+                  </v-icon>
+                  <v-icon small v-else>
+                    mdi-shield-star-outline
+                  </v-icon>
+                </li>
+                <li><small :class="priceConcurrency + '--text'">{{ priceCurrent ? $decimal.format(priceCurrent) : '0.0000000' }} {{ parse.quote().toUpperCase() }}</small></li>
+              </ul>
+            </v-chip>
+          </v-col>
+          <v-col cols="4">
+            <v-chip outlined style="width: 100%;height: 60px;display: block;" :class="($vuetify.theme.dark ? 'red darken-3' : 'red lighten-5 red--text')" label>
+              <ul class="chip-marker">
+                <li>{{ $vuetify.lang.t('$vuetify.lang_58') }}</li>
+                <li><small>{{ orders.ask().length ? $decimal.truncate(orders.ask()[0].price, order.quote_decimal) : '0.00000000' }} {{ parse.quote().toUpperCase() }}</small></li>
+              </ul>
+            </v-chip>
           </v-col>
         </v-row>
-        <v-divider class="mx-2" vertical />
-        <v-menu readonly content-class="elevation-1" top>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn elevation="0" small fab :color="$vuetify.theme.dark ? '' : 'blue lighten-4'" icon v-bind="attrs" v-on="on">
-              <template v-if="scale">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-icon :color="$vuetify.theme.dark ? '' : 'grey darken-1'" v-bind="attrs" v-on="on">
-                      mdi-cog
-                    </v-icon>
-                  </template>
-                  <span v-if="scale">{{ scale }}</span>
-                </v-tooltip>
-              </template>
-              <template v-else>
-                <v-icon :color="$vuetify.theme.dark ? '' : 'grey darken-1'" v-bind="attrs" v-on="on">
-                  mdi-cog
-                </v-icon>
-              </template>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item v-for="scale in $scale.getScale(quote_decimal)" :key="scale" @click="setScale(scale)" link>
-              <v-list-item-title>{{ scale > 0 ? scale : $vuetify.lang.t('$vuetify.lang_64')}}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+
       </v-card-actions>
+      <v-divider />
+
+      <!-- Start: orders ask list element -->
+      <template v-if="orders.ask().length">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.ask()" height="410" item-height="29">
+          <template v-slot:default="{ item }">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="1" :key="item.id">
+              <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
+                <v-col cols="4">
+                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format(item.value, order.base_decimal) }}
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format($decimal.mul(item.value, item.price), order.quote_decimal) }}
+                </v-col>
+              </v-row>
+            </v-component-shift-item>
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-else-if="!overlay">
+        <v-layout style="height: 410px" wrap>
+          <v-flex/>
+          <v-flex class="text-center mx-5" align-self-center>
+            <div>
+              <v-icon size="50">
+                mdi-database-remove-outline
+              </v-icon>
+            </div>
+            <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_62') }}</h4>
+          </v-flex>
+          <v-flex/>
+        </v-layout>
+      </template>
+      <!-- End: orders ask list element -->
 
     </template>
-    <!-- End: price and value element -->
+    <template v-else>
+
+      <!-- Start: orders list element -->
+      <template v-if="orders.assigning().length">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders.assigning()" height="900" item-height="29">
+          <template v-slot:default="{ item }">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning ? 1 : 0" :key="item.id">
+              <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
+                <v-col cols="4">
+                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format(item.value, order.base_decimal) }}
+                </v-col>
+                <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
+                  {{ $decimal.format($decimal.mul(item.value, item.price), order.quote_decimal) }}
+                </v-col>
+              </v-row>
+            </v-component-shift-item>
+          </template>
+        </v-virtual-scroll>
+      </template>
+      <template v-else-if="!overlay">
+        <v-layout style="height: 900px" wrap>
+          <v-flex/>
+          <v-flex class="text-center mx-5" align-self-center>
+            <div>
+              <v-icon size="50">
+                mdi-database-remove-outline
+              </v-icon>
+            </div>
+            <h4 class="text-overline">{{ $vuetify.lang.t('$vuetify.lang_62') }}</h4>
+          </v-flex>
+          <v-flex/>
+        </v-layout>
+      </template>
+      <!-- End: orders list element -->
+
+    </template>
+
+    <!-- Start: tool bar element -->
+    <v-divider />
+    <v-card-actions style="height: 56px;">
+
+      <v-row justify="center" no-gutters>
+        <v-col cols="6">
+          <v-icon class="mx-1" :disabled="!order.range" @click="order.range = false" :color="$vuetify.theme.dark ? '' : 'grey darken-1'">
+            mdi-sort
+          </v-icon>
+          <v-icon class="mx-1" :disabled="order.range" @click="order.range = true" :color="$vuetify.theme.dark ? '' : 'grey darken-1'">
+            mdi-sort-descending
+          </v-icon>
+        </v-col>
+        <v-col class="text-right" cols="6">
+          <div class="mx-1">{{ $vuetify.lang.t('$vuetify.lang_304') }} {{ priceCurrent ? $decimal.format(order.volume) : '0.0000000' }} {{ parse.base().toUpperCase() }}</div>
+        </v-col>
+      </v-row>
+
+    </v-card-actions>
+    <!-- End: tool bar element -->
 
     <v-overlay absolute :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" :value="overlay">
       <v-progress-circular color="yellow darken-3" indeterminate size="50" />
@@ -168,120 +228,38 @@
 </template>
 
 <script>
-
-  import ShiftItem from "./ShiftItem";
+  import ShiftItem from "../Default/ShiftItem.vue";
 
   export default {
-    name: "v-component-spot-book",
+    name: "v-component-book",
     components: {
       'v-component-shift-item': ShiftItem
-    },
-    props: {
-      unit: {
-        type: String
-      }
     },
     data() {
       return {
         hover: false,
-        scale: 0,
-        assigning: 2,
-        base_decimal: 2,
-        quote_decimal: 8,
-        query: '--:--',
         overlay: true,
         eyelet: 2,
-        orders: [],
-        volume: 0,
+        order: {
+          range: false,
+          base_decimal: 2,
+          quote_decimal: 8,
+          items: [],
+          volume: 0
+        }
       }
     },
     watch: {
-      $route(e) {
-        this.getQuery(
-          e.params.unit
-        );
+      $route() {
         this.getOrders(2);
+      },
+      eyelet(e) {
+        this.getOrders(e)
       }
     },
+
     mounted() {
-
-      this.getQuery(this.unit);
-
-      /**
-       * Отслеживаем статус ордера.
-       * @return {callback}:
-       * @object {base_unit: string},
-       * @object {id: int},
-       * @object {assigning: string}
-       * @object {price: float},
-       * @object {quantity: float},
-       * @object {quote_unit: string},
-       * @object {create_at: int},
-       * @object {user_id: int},
-       * @object {value: float}
-       */
-      this.$publish.bind('order/status', (data) => {
-
-        let index = this.orders.map((o) => o.id).indexOf(data.id);
-        let matching = this.orders.some((o) => o.id === data.id);
-
-        if (
-
-          // Проверяем есть ли в массиве объект по идентификатору.
-          matching
-
-        ) {
-
-          switch (data.status) {
-            case 1:
-
-              // Удаляем ордер с массива по идентификатору.
-              this.orders.splice(index, 1);
-
-              break;
-            case 2:
-
-              // Обновляем количество монет ордера.
-              this.orders[index].value = data.value;
-
-              break
-
-          }
-
-          // Получаем текущий объем в ордерах.
-          this.getVolume(this.eyelet);
-
-        } else {
-
-          this.orders.map((o) => {
-            if (typeof o.orders !== "undefined") {
-
-              index = o.orders.map((i) => (i.id).toString()).indexOf((data.id).toString());
-              if (index !== -1) {
-
-                o.orders[index].value = data.value ?? 0;
-
-                if (data.status === 1) {
-                  o.quantity = this.$decimal.sub(o.quantity, data.quantity);
-                  o.orders.splice(index, 1)
-                }
-
-                o.value = 0;
-                o.orders.map((item) => {
-                  o.value += item.value;
-                });
-
-                if (o.orders.length === 0) {
-                  this.orders.splice(this.orders.map((i) => (i.id).toString()).indexOf((o.id).toString()), 1);
-                }
-              }
-
-              // Получаем текущий объем в ордерах.
-              this.getVolume(this.eyelet);
-            }
-          });
-        }
-      });
+      this.getOrders(2);
 
       /**
        * Отслеживаем события нового ордера.
@@ -299,48 +277,81 @@
       this.$publish.bind('order/create', (data) => {
         data.assigning = data.assigning ?? 0;
 
-          if (
+        if (
 
-              // Сверяем принадлежат ли новые события к данному активу,
-              // если аргументы совпадают то привязываем полученные данные из события к данному активу.
-              data.base_unit === this.query.split('-')[0] &&
-              data.quote_unit === this.query.split('-')[1]
+            // Сверяем принадлежат ли новые события к данному активу,
+            // если аргументы совпадают то привязываем полученные данные из события к данному активу.
+            data.base_unit === this.parse.base() &&
+            data.quote_unit === this.parse.quote() &&
 
-          ) {
+            // Добавляем елемент у видимую область.
+            this.eyelet === data.assigning ||
+            this.eyelet === 2
 
-            if (this.eyelet === data.assigning || this.eyelet === 2) {
+        ) {
 
-              // Добавляем новое значения по шкале запроса.
-              if ((this.scale > 0 ? this.isBetween(data.value, 0, this.scale) : true)) {
+          this.order.items.unshift(Object.assign({}, data));
 
-                let item = this.orders.find((o) => o.price === data.price && (o.assigning ? "SELL" : "BUY") === (data.assigning ? "SELL" : "BUY"));
-                if (item) {
+          if (this.order.items.length > 200) {
+            this.order.items.splice(-1)
+          }
 
-                  if (typeof item.orders === "undefined") {
-                    item.orders = [];
-                    item.orders.unshift(Object.assign({}, item));
-                  }
+          // Получаем текущий объем в ордерах.
+          this.getVolume(this.eyelet);
+        }
+      });
 
-                  item.id += Number(data.id);
-                  item.value += data.value;
-                  item.quantity += data.quantity;
+      /**
+       * Отслеживаем статус ордера.
+       * @return {callback}:
+       * @object {base_unit: string},
+       * @object {id: int},
+       * @object {assigning: string}
+       * @object {price: float},
+       * @object {quantity: float},
+       * @object {quote_unit: string},
+       * @object {create_at: int},
+       * @object {user_id: int},
+       * @object {value: float}
+       */
+      this.$publish.bind('order/status', (data) => {
 
-                  item.orders.unshift(Object.assign({}, data));
-                } else {
-                  this.orders.unshift(Object.assign({}, data));
-                }
-              }
+        let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
+        let matching = this.order.items.some((o) => Number(o.id) === data.id);
 
-              // Если количество в книги ордеров превышает больше 100 элементов, то начинаем удалять последний 101 елемент.
-              if (this.orders.length > 100) {
-                this.orders.splice(-1)
-              }
+        if (
 
-              // Получаем текущий объем в ордерах.
-              this.getVolume(this.eyelet);
-            }
+            // Проверяем есть ли в массиве объект по идентификатору.
+            matching
+
+        ) {
+
+          switch (data.status) {
+            case 1:
+
+              // Удаляем ордер с массива по идентификатору.
+              this.order.items.splice(index, 1);
+
+              break;
+            case 2:
+
+              // Обновляем количество монет ордера.
+              this.order.items[index].value = data.value;
+
+              break
 
           }
+
+          if (!data.value) {
+
+            // Удаляем ордер с массива по идентификатору.
+            this.order.items.splice(index, 1);
+          }
+
+          // Получаем текущий объем в ордерах.
+          this.getVolume(this.eyelet);
+
+        }
       });
 
       /**
@@ -358,81 +369,25 @@
       this.$publish.bind('order/cancel', (data) => {
 
         // Удаляем ордер с массива по идентификатору.
-        let index = this.orders.map((o) => o.id).indexOf(data.id);
+        let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
         if (index !== -1) {
-          this.orders.splice(index, 1);
-        } else {
-          this.orders.map((o) => {
-            if (typeof o.orders !== "undefined") {
-
-              index = o.orders.map((i) => (i.id).toString()).indexOf((data.id).toString());
-              if (index !== -1) {
-                o.orders.splice(index, 1);
-
-                o.value = this.$decimal.sub(o.value, data.value);
-                o.quantity = this.$decimal.sub(o.quantity, data.quantity);
-
-                if (o.orders.length === 1) {
-                  if (o.orders[index]) {
-                    o.id = o.orders[index].id;
-                  } else {
-                    o.id = data.id;
-                  }
-
-                  o.orders = [];
-                }
-              } else {
-                index = this.orders.map((i) => (i.id).toString()).indexOf((o.id).toString());
-                if (index !== -1) {
-                  this.orders.splice(index, 1);
-                }
-              }
-            }
-          });
+          this.order.items.splice(index, 1);
         }
 
         // Получаем текущий объем в ордерах.
         this.getVolume(this.eyelet);
       });
-
-      this.getOrders(2);
     },
+
     methods: {
-
-      /**
-       * @param value
-       * @param min
-       * @param max
-       * @returns {boolean}
-       */
-      isBetween(value, min, max) {
-        return value >= min && value <= max
-      },
-
-      /**
-       * @param value
-       */
-      setScale(value) {
-        this.scale = value;
-        this.getOrders(this.assigning);
-      },
-
-      /**
-       * Перезаписываем адрес запроса.
-       * @param query
-       */
-      getQuery(query) {
-        this.query = query;
-        this.scale = 0;
-      },
 
       /**
        *
        */
       getPair() {
-        this.$axios.$post(this.$api.spot.getPair, {base_unit: this.query.split('-')[0], quote_unit: this.query.split('-')[1]}).then((response) => {
-          this.base_decimal = response.fields[0].base_decimal ?? 2;
-          this.quote_decimal = response.fields[0].quote_decimal ?? 8;
+        this.$axios.$post(this.$api.spot.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+          this.order.base_decimal = response.fields[0].base_decimal ?? 2;
+          this.order.quote_decimal = response.fields[0].quote_decimal ?? 8;
         });
       },
 
@@ -441,58 +396,24 @@
        */
       getOrders(assigning) {
         this.overlay = true;
-        this.assigning = assigning;
 
         this.getPair();
 
         this.$axios.$post(this.$api.spot.getOrders, {
           // Назначение [sell:1] - [buy:0].
-          assigning: this.assigning,
+          assigning: assigning,
           // Имя актива (symbol-base).
-          base_unit: this.query.split('-')[0],
+          base_unit: this.parse.base(),
           // Имя актива (symbol-quote).
-          quote_unit: this.query.split('-')[1],
+          quote_unit: this.parse.quote(),
           // Показывать записи если они со статусом в ожидании.
           status: 2,
-          // Максимальное значение значения.
-          decimal: this.scale
+          // Count item.
+          limit: 200
         }).then((response) => {
 
-          this.volume = response.volume ?? 0;
-
-          // Записываем список ордеров в ожидании в массив.
-          this.orders = response.fields ?? [];
-          this.orders.map(item => {
-
-            let items = this.orders.filter((o) => o.price === item.price && o.assigning === item.assigning);
-            if (items.length > 1) {
-
-              let assign = {id: 0, value: 0, quantity: 0, orders: []};
-
-              items.map((c) => {
-                let index = this.orders.map((o) => o.id).indexOf(c.id);
-                if (index !== -1) {
-                  assign.orders.push(this.orders[index]);
-                  this.orders.splice(index, 1);
-                }
-
-                assign.id += Number(c.id);
-                assign.value += c.value;
-                assign.quantity += c.quantity;
-              });
-
-              this.orders.push(Object.assign({
-                user_id: item.user_id,
-                base_unit: item.base_unit,
-                quote_unit: item.quote_unit,
-                assigning: item.assigning,
-                price: item.price,
-                status: "PENDING"
-              }, assign));
-            }
-
-            item.id = Number(item.id);
-          });
+          this.order.volume = response.volume ?? 0;
+          this.order.items = response.fields ?? [];
 
           this.overlay = false;
         });
@@ -506,15 +427,15 @@
           // Назначение [sell:1] - [buy:0].
           assigning: assigning,
           // Имя актива (symbol-base).
-          base_unit: this.query.split('-')[0],
+          base_unit: this.parse.base(),
           // Имя актива (symbol-quote).
-          quote_unit: this.query.split('-')[1],
+          quote_unit: this.parse.quote(),
           // Показывать записи если они со статусом в ожидании.
           status: 2,
           // Количество объектов для вывода.
           limit: 1
         }).then((response) => {
-          this.volume = response.volume ?? 0;
+          this.order.volume = response.volume ?? 0;
         });
       },
 
@@ -525,19 +446,37 @@
         this.$nuxt.$emit("price/update", price)
       }
     },
+
     computed: {
 
       /**
-       * @returns {string}
+       * @returns {{ask: (function(): *[]), bid: (function(): *[]), assigning: (function(): *[])}}
        */
-      replayColor() {
-        switch (this.eyelet) {
-          case 0:
-            return 'teal'
-          case 1:
-            return 'red';
-          case 2:
-            return 'primary';
+      orders() {
+        return {
+          assigning: () => {
+            return this.order.items.filter((item) => (item.assigning ? 1 : 0) === this.eyelet).sort((a, b) => this.order.range ? b.price - a.price : null);
+          },
+          bid: () => {
+            return this.order.items.filter((item) => !item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
+          },
+          ask: () => {
+            return this.order.items.filter((item) => item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
+          }
+        }
+      },
+
+      /**
+       * @returns {{quote: (function(): string), base: (function(): string)}}
+       */
+      parse() {
+        return {
+          base: () => {
+            return this.$route.params.unit.split('-')[0]
+          },
+          quote: () => {
+            return this.$route.params.unit.split('-')[1]
+          }
         }
       },
 
@@ -545,8 +484,8 @@
        * @returns {number|*}
        */
       priceCurrent() {
-        if (this.orders.length) {
-          return this.orders[0].price;
+        if (this.order.items.length) {
+          return this.order.items[0].price;
         }
         return 0;
       },
@@ -555,8 +494,8 @@
        * @returns {number|*}
        */
       pricePrevious() {
-        if (this.orders.length > 1) {
-          return this.orders[1].price;
+        if (this.order.items.length > 1) {
+          return this.order.items[1].price;
         }
         return 0;
       },
@@ -566,7 +505,7 @@
        */
       priceConcurrency() {
 
-        if (this.orders.length !== 1) {
+        if (this.order.items.length !== 1) {
 
           if (this.priceCurrent > this.pricePrevious) {
             return 'teal'
@@ -577,12 +516,18 @@
 
         }
 
-        return this.$vuetify.theme.dark ? 'grey' : ''
+        return this.$vuetify.theme.dark ? 'grey' : 'brown'
       }
     }
   }
 </script>
 
 <style scoped>
+
+  .chip-marker {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
 
 </style>

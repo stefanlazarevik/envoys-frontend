@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar fixed elevate-on-scroll scroll-target="#scrolling-techniques" style="z-index: 6;" app>
+    <v-app-bar fixed elevate-on-scroll scroll-target="#scrolling-techniques" height="64" style="z-index: 6;" app>
       <v-toolbar-title>
         <b class="mx-2">
           <nuxt-link :class="($vuetify.theme.dark ? 'white' : 'black') + '--text text-decoration-none'" to="/">
@@ -57,7 +57,7 @@
   import Theme from '@/components/Theme';
   import Screen from '@/components/Screen';
   import Language from '@/components/Language';
-  import Snackbar from '@/components/Snackbar';
+  import Snackbar from '@/components/Default/Snackbar';
   import MenuDefault from '@/components/Menu/Default';
   import MenuPrivate from '@/components/Menu/Private';
   import Footer from '@/components/Footer';
@@ -98,6 +98,10 @@
          * @return {callback}:
          */
         this.$publish.bind('deposit/status', (data) => {
+          if (!data) {
+            return false
+          }
+
           if (
 
               // Сверяем локальный штат пользователя

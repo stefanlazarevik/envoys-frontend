@@ -205,7 +205,7 @@
 <script>
 
   export default {
-    name: "v-component-dashboard",
+    name: "v-component-spot-dashboard",
     data() {
       return {
         statistic: {},

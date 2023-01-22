@@ -5,53 +5,31 @@
 
       <v-row v-if="$route.query.type === 'spot'" class="ma-1" no-gutters>
 
-        <!-- Start: order book component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-book :unit="unit" />
+        <v-col :order-xl="$store.state.localStorage.screen ? 2 : 0" cols="12" :xl="$store.state.localStorage.screen ? 2 : 3" lg="3" md="12" sm="12" class="hidden-md-and-down hidden-sm-and-down">
+          <!-- Start: order book component -->
+          <v-component-spot-book />
+          <!-- End: order book component -->
         </v-col>
-        <!-- End: order book component -->
 
-        <!-- Start: pair trade chart component -->
-        <v-col cols="12" md="6" sm="6">
+        <v-col :order-xl="$store.state.localStorage.screen ? 0 : 1" cols="12" :xl="$store.state.localStorage.screen ? 8 : 6" lg="6" md="12" sm="12">
+          <!-- Start: pair trade chart component -->
           <nuxt-child />
-        </v-col>
-        <!-- End: pair trade chart component -->
+          <!-- End: pair trade chart component -->
 
-        <!-- Start: list of trading pairs market component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-market :unit="unit" />
+          <!-- Start: my trade history component -->
+          <v-component-spot-history class="mt-2" />
+          <!-- End:  my trade history component -->
         </v-col>
-        <!-- End: list of trading pairs market component -->
 
-        <!-- Start: trade book component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-trade :unit="unit" />
-        </v-col>
-        <!-- End: trade book component -->
+        <v-col :order-xl="$store.state.localStorage.screen ? 2 : 2" cols="12" :xl="$store.state.localStorage.screen ? 2 : 3" lg="3" md="12" sm="12">
+          <!-- Start: trade form component -->
+          <v-component-spot-form />
+          <!-- End: trade form component -->
 
-        <!-- Start: buy order form component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-form :unit="unit" assigning="buy" />
+          <!-- Start: list of trading pairs market component -->
+          <v-component-spot-market class="mt-2" />
+          <!-- End: list of trading pairs market component -->
         </v-col>
-        <!-- End: order form component -->
-
-        <!-- Start: sell order form component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-form :unit="unit" assigning="sell" />
-        </v-col>
-        <!-- End: order form component -->
-
-        <!-- Start: common component -->
-        <v-col cols="12" md="3" sm="6">
-          <v-component-spot-common />
-        </v-col>
-        <!-- End: common component -->
-
-        <!-- Start: history component -->
-        <v-col cols="12" lg="12">
-          <v-component-spot-history :unit="unit" />
-        </v-col>
-        <!-- End: history component -->
 
       </v-row>
 
@@ -75,8 +53,6 @@
   import Market from '@/components/Spot/Market';
   import Form from '@/components/Spot/Form';
   import Book from "@/components/Spot/Book";
-  import Trade from "@/components/Spot/Trade";
-  import Common from "@/components/Spot/Common";
   import History from "@/components/Spot/History";
 
   export default {
@@ -85,14 +61,11 @@
       'v-component-spot-market': Market,
       'v-component-spot-form': Form,
       'v-component-spot-book': Book,
-      'v-component-spot-trade': Trade,
-      'v-component-spot-common': Common,
       'v-component-spot-history': History
     },
     data() {
       return {
         loader: false,
-        unit: undefined
       }
     },
 
@@ -113,23 +86,38 @@
       getSymbol(loader) {
 
         if (this.$route.query.type !== 'spot' && this.$route.query.type !== 'stock') {
-          this.$error.set('Type trade not found!.');
+          this.$nuxt.error({ statusCode: 404, message: 'Type trade not found!.' });
           return false
         }
 
         this.loader = !loader;
 
-        this.$axios.$post(this.$api[this.$route.query.type].getSymbol, {base_unit: this.$route.params.unit.split('-')[0], quote_unit: this.$route.params.unit.split('-')[1]}).then(() => {
-          this.unit = this.$route.params.unit;
-
+        this.$axios.$post(this.$api[this.$route.query.type].getSymbol, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then(() => {
           if (loader) {
             setTimeout(() => {
               this.loader = true;
             }, 1000);
           }
-        }).catch(e => {
-          this.$error.set(e)
+        }).catch((error) => {
+          this.$nuxt.error({ statusCode: 404, message: error.response.data.message });
         });
+      }
+    },
+
+    computed: {
+
+      /**
+       * @returns {{quote: (function(): string), base: (function(): string)}}
+       */
+      parse() {
+        return {
+          base: () => {
+            return this.$route.params.unit.split('-')[0]
+          },
+          quote: () => {
+            return this.$route.params.unit.split('-')[1]
+          }
+        }
       }
     },
 

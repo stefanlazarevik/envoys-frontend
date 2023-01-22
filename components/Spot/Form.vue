@@ -1,92 +1,68 @@
 <template>
   <v-card :disabled="!status && $auth.loggedIn" class="ma-1" height="500" elevation="0">
 
-    <!-- Start: asset balance element -->
+    <!-- Start: app bar element -->
     <v-app-bar color="transparent" height="50" flat>
-      <v-icon size="20">
-        mdi-wallet-outline
-      </v-icon>
-      <v-switch v-model="type" class="mx-3" :label="type ? $vuetify.lang.t('$vuetify.lang_128') : $vuetify.lang.t('$vuetify.lang_24')" hide-details />
-      <v-spacer />
-      <v-menu max-width="110" content-class="elevation-1" open-on-hover bottom offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <template v-if="$decimal.truncate(balance)">
-            <div :class="$vuetify.theme.dark ? 'grey--text' : ''" v-bind="attrs" v-on="on">
-              {{ $decimal.truncate(balance) }} {{ String(symbol).toUpperCase() }}
-            </div>
-          </template>
-          <template v-else>
-            <div :class="$vuetify.theme.dark ? 'grey--text' : ''" v-bind="attrs">
-              0 {{ String(symbol).toUpperCase() }}
-            </div>
-          </template>
-        </template>
-        <v-list>
-          <v-list-item link @click="setPercent(25)">
-            <v-list-item-icon class="mr-1">
-              <v-icon>
-                mdi-alpha-a-box-outline
-              </v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>25%</v-list-item-title>
-          </v-list-item>
-          <v-list-item link @click="setPercent(50)">
-            <v-list-item-icon class="mr-1">
-              <v-icon>
-                mdi-alpha-b-box-outline
-              </v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>50%</v-list-item-title>
-          </v-list-item>
-          <v-list-item link @click="setPercent(75)">
-            <v-list-item-icon class="mr-1">
-              <v-icon>
-                mdi-alpha-c-box-outline
-              </v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>75%</v-list-item-title>
-          </v-list-item>
-          <v-list-item link @click="setPercent(100)">
-            <v-list-item-icon class="mr-1">
-              <v-icon>
-                mdi-alpha-d-box-outline
-              </v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>100%</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <v-tabs fixed-tabs :color="color" v-model="eyelet">
+        <v-tab>
+          {{ $vuetify.lang.t('$vuetify.lang_57') }}
+        </v-tab>
+        <v-tab>
+          {{ $vuetify.lang.t('$vuetify.lang_58') }}
+        </v-tab>
+      </v-tabs>
     </v-app-bar>
-    <!-- End: asset balance element -->
+    <!-- End: app bar element -->
 
     <v-divider />
 
+    <!-- Start: group button -->
+    <v-card-actions>
+      <v-item-group class="market--limit ma-2 mb-n2" v-model="type">
+        <v-item v-slot="{ active, toggle }">
+          <v-chip :color="color" :active-class="color + '--text'" :input-value="active" @click="toggle" filter outlined label>
+            {{ $vuetify.lang.t('$vuetify.lang_128') }}
+          </v-chip>
+        </v-item>
+        <v-item v-slot="{ active, toggle }">
+          <v-chip :color="color" :active-class="color + '--text'" :input-value="active" @click="toggle" filter outlined label>
+            {{ $vuetify.lang.t('$vuetify.lang_24') }}
+          </v-chip>
+        </v-item>
+      </v-item-group>
+    </v-card-actions>
+    <!-- End: group button -->
+
     <!-- Start: form order trade element -->
     <v-card-text>
-      <template v-if="type">
-        <v-text-field :disabled="type" :value="$vuetify.lang.t('$vuetify.lang_134')" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
-          <template v-slot:append>
-            <span class="my-1">{{ getQuery()[0].toUpperCase() }}/{{ getQuery()[1].toUpperCase() }}</span>
-          </template>
-        </v-text-field>
+      <template v-if="!type">
+        <v-hover v-slot="{ hover }" open-delay="200">
+          <v-text-field :disabled="!type" :value="hover ? $vuetify.lang.t('$vuetify.lang_134') : '≈' + price" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
+            <template v-slot:append>
+              <span class="my-1">{{ parse.base().toUpperCase() }}/{{ parse.quote().toUpperCase() }}</span>
+            </template>
+          </v-text-field>
+        </v-hover>
       </template>
       <template v-else>
-        <v-text-field v-model="price" @keyup="setPrice" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
+        <v-text-field v-model="price" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
           <template v-slot:append>
-            <span class="my-1">{{ getQuery()[0].toUpperCase() }}/{{ getQuery()[1].toUpperCase() }}</span>
+            <span class="my-1">{{ parse.base().toUpperCase() }}/{{ parse.quote().toUpperCase() }}</span>
           </template>
         </v-text-field>
       </template>
-      <v-text-field v-model="quantity" @keyup="setQuantity" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_53')">
+      <v-text-field v-model="quantity" @focus="bind.quantity = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_53')">
         <template v-slot:append>
-          <span class="my-1">{{ getQuery()[0].toUpperCase() }}</span>
+          <span class="my-1">{{ type ? parse.base().toUpperCase() : (assigning === 'sell' ? parse.base().toUpperCase() : parse.quote().toUpperCase()) }}</span>
         </template>
       </v-text-field>
-      <v-text-field v-model="value" @keyup="setValue" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
+      <v-text-field v-show="type" v-model="value" @focus="bind.value = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
         <template v-slot:append>
-          <span class="my-1">{{ getQuery()[1].toUpperCase() }}</span>
+          <span class="my-1">{{ type ? parse.quote().toUpperCase() : (assigning === 'sell' ? parse.quote().toUpperCase() : parse.base().toUpperCase()) }}</span>
         </template>
       </v-text-field>
+
+      <v-component-range-slider :eyelet="eyelet" :clear="clear" @input="setPercent" />
     </v-card-text>
     <!-- End: form order trade element -->
 
@@ -94,17 +70,37 @@
 
     <!-- Start: create new order element -->
     <v-card-actions>
-      <div class="flex-fill">
-        <v-btn @click="setOrder" :color="(assigning === 'buy' ? 'teal darken-1' : 'red darken-1') + ' white--text'" large block elevation="0">{{ assigning === 'buy' ? $vuetify.lang.t('$vuetify.lang_57') : $vuetify.lang.t('$vuetify.lang_58') }}</v-btn>
+      <div class="flex-fill ma-2">
+        <v-btn @click="setOrder" :color="(assigning === 'buy' ? 'teal lighten-2' : 'red lighten-2') + ' white--text'" large block elevation="0">{{ assigning === 'buy' ? $vuetify.lang.t('$vuetify.lang_57') : $vuetify.lang.t('$vuetify.lang_58') }}</v-btn>
       </div>
     </v-card-actions>
     <!-- End: create new order element -->
 
     <v-divider />
 
+    <v-card-text>
+      <div :class="(type ? 'my-6' : 'my-13') + ' subtitle-1 text-center'">
+        <template v-if="$decimal.format(balance, 8)">
+          <div :class="$vuetify.theme.dark ? 'grey--text' : ''">
+            {{ $decimal.format(balance, 8) }} {{ String(symbol).toUpperCase() }}
+          </div>
+        </template>
+        <template v-else>
+          <div :class="$vuetify.theme.dark ? 'grey--text' : ''">
+            0 {{ String(symbol).toUpperCase() }}
+          </div>
+        </template>
+      </div>
+    </v-card-text>
+
     <template v-if="!$auth.loggedIn">
       <v-overlay :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" absolute>
         <v-btn color="black--text yellow darken-1 text-capitalize" to="/signin" large elevation="0">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
+      </v-overlay>
+    </template>
+    <template v-else>
+      <v-overlay absolute :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" :value="overlay">
+        <v-progress-circular color="yellow darken-3" indeterminate size="50" />
       </v-overlay>
     </template>
 
@@ -113,61 +109,86 @@
 
 <script>
 
-  import Decimal from "decimal.js";
-
-  Decimal.set({ precision: 8, rounding: 1 })
+  import Range from "../Default/Range.vue";
 
   export default {
-    name: "v-component-spot-form",
-    props: {
-      unit: {
-        type: String
-      },
-      assigning: {
-        type: String
-      }
+    name: "v-component-form",
+    components: {
+      'v-component-range-slider': Range
     },
     data() {
       return {
-        query: '--:--',
-        symbol: null,
+        eyelet: 0,
         price: 0,
         value: 0,
         quantity: 0,
         balance: 0,
         status: 0,
         overlay: true,
-        type: false
+        clear: false,
+        type: 1,
+        assigning: 'buy',
+        bind: {
+          quantity: false,
+          value: false
+        },
+        free: 0.00001
       }
     },
     watch: {
-      $route(e) {
-        this.setQuery(
-          e.params.unit
-        );
-        this.getAsset(
-          this.getSymbol(e.params.unit)
-        );
-        this.getGraph();
+      $route() {
+        this.getAsset(true);
+      },
+      price(e) {
+        if (e) {
+          this.price = e;
+
+          switch (this.assigning) {
+            case 'buy':
+              this.quantity = this.$decimal.div(this.value, this.price);
+              break;
+            case 'sell':
+              this.value = this.$decimal.mul(this.quantity, this.price);
+              break;
+          }
+
+        } else {
+          this.price = 0;
+        }
+      },
+      quantity(e) {
+        if (this.bind.quantity) {
+          this.value = this.$decimal.mul(e, this.price);
+          this.bind.value = false;
+        }
+      },
+      value(e) {
+        if (this.bind.value) {
+          this.quantity = this.$decimal.div(e, this.price);
+          this.bind.quantity = false;
+        }
+      },
+      type() {
+        this.quantity = 0;
+        this.value = 0;
+        this.clear = false;
+
+        setTimeout(() => {
+          this.clear = true;
+        });
+      },
+      eyelet(e) {
+        this.assigning = e ? "sell" : "buy";
+        this.getAsset(true);
       }
     },
     mounted() {
 
-      this.setQuery(this.unit);
-
       /**
-       * Брать цену с ордер листа.
        * @event 'price/update'
        */
       this.$nuxt.$on('price/update', (price) => {
-
-        if (!this.$auth.loggedIn) {
-          return false;
-        }
         this.price = price;
-
-        // Обновляем целевую политику в форме.
-        this.setPrice();
       });
 
       /**
@@ -176,7 +197,7 @@
        */
       this.$nuxt.$on('order/cancel', () => {
         // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-        this.getAsset(null);
+        this.getAsset(false);
       });
 
       /**
@@ -199,7 +220,7 @@
 
         ) {
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(null);
+          this.getAsset(false);
         }
       });
 
@@ -226,13 +247,13 @@
 
           // Сверяем принадлежат ли новые события к данному активу,
           // если аргументы совпадают то привязываем полученные данные из события к данному активу.
-          data.base_unit === this.getQuery()[0] &&
-          data.quote_unit === this.getQuery()[1]
+          data.base_unit === this.parse.base() &&
+          data.quote_unit === this.parse.quote()
 
         ) {
 
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(null);
+          this.getAsset(false);
         }
 
       });
@@ -249,91 +270,71 @@
        * @object {time: int}
        */
       this.$publish.bind('trade/graph:0', (data) => {
-          if (data.fields) {
-            if (
+        if (data.fields) {
+          if (
 
-              // Сверяем принадлежат ли новые события к данному активу,
-              // если аргументы совпадают то привязываем полученные данные из события к данному активу.
-              data.fields.lastItem.base_unit === this.getQuery()[0] &&
-              data.fields.lastItem.quote_unit === this.getQuery()[1]
+            // Сверяем принадлежат ли новые события к данному активу,
+            // если аргументы совпадают то привязываем полученные данные из события к данному активу.
+            data.fields.lastItem.base_unit === this.parse.base() &&
+            data.fields.lastItem.quote_unit === this.parse.quote() &&
 
-            ) {
+            // Не обновляем цену если тип по лимиту.
+            !this.type
 
-              // Эсле поле [value] или поле [quantity] не активно то обновляем данные
-              // полученные из события бегущей строки об торгах.
-              if (!this.value || !this.quantity) {
-                this.price = data.fields[0].close;
-              }
-            }
+          ) {
+            this.price = data.fields[0].close;
           }
+        }
       });
 
-      this.getAsset(null);
-      this.getGraph();
+      this.getAsset(false);
     },
     methods: {
 
       /**
-       * Перезаписываем адрес запроса.
-       * @param query
-       */
-      setQuery(query) {
-        this.query = query;
-      },
-
-      /**
-       * @returns {string[]}
-       */
-      getQuery() {
-        return this.query.split('-')
-      },
-
-      /**
        * Получаем новые данные бегущей строки, данные об торгах.
        */
-      getGraph() {
-        this.$axios.$get(this.$api.spot.getGraph + '?base_unit=' + this.getQuery()[0] + '&quote_unit=' + this.getQuery()[1] + '&limit=1').then((response) => {
-          this.price = response.fields ? response.fields[0].close : 0;
+      getPrice() {
+        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote()).then((response) => {
+          this.price = response.price ?? 0;
         })
       },
 
       /**
        * Получаем данные об активе.
-       * @param symbol
+       * @param overlay
        * @returns {boolean}
        */
-      getAsset(symbol) {
+      getAsset(overlay) {
 
-        if (symbol !== null) {
+        this.getPrice();
+
+        if (overlay) {
           this.overlay = true;
         }
-
-        symbol = (symbol === null ? this.getSymbol(this.query) : symbol);
 
         if (!this.$auth.loggedIn) {
           return false;
         }
 
-        this.$axios.$post(this.$api.spot.getAsset, {symbol: symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.symbol}).then((response) => {
 
           // После перехода на новый актив обнуляем все параметры.
           this.balance = 0;
           this.value = 0;
           this.quantity = 0;
-          this.percent = 0;
-          this.type = false;
+          this.clear = true;
 
           if (response.fields !== undefined) {
             if (response.fields[0].balance !== undefined) {
               this.balance = (response.fields[0].balance).toFixed(8) > 0 ? response.fields[0].balance : 0;
             }
-            let query = this.getQuery();
 
             // Если в этого активе статус 1, то парного ему актива 0,
             // значит налаживаем вето на эту форму в целом.
             this.status = response.fields[0].status ?? 0;
             if (this.status) {
-              this.$axios.$post(this.$api.spot.getPair, {base_unit: query[0], quote_unit: query[1]}).then((response) => {
+              this.$axios.$post(this.$api.spot.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
                 this.status = response.fields[0].status ?? 0;
               }).catch(e => {
                 console.log(e)
@@ -346,73 +347,44 @@
       },
 
       /**
-       * Оделяем запрос на [base] и [quote] ед. изм.
-       * @param query
-       * @returns {null}
-       */
-      getSymbol(query) {
-        switch (this.assigning) {
-          case 'buy':
-            this.symbol = query.split('-')[1];
-            break;
-          case 'sell':
-            this.symbol = query.split('-')[0];
-            break;
-        }
-        return this.symbol;
-      },
-
-      /**
-       * Обновление полей [quantity] и [value].
-       */
-      setPrice() {
-        this.setQuantity();
-        this.setValue();
-      },
-
-      /**
-       * Перезаписываем поле [value].
-       */
-      setQuantity() {
-        this.value = this.$decimal.mul(this.quantity, this.price);
-      },
-
-      /**
-       * Перезаписываем поле [quantity].
-       */
-      setValue() {
-        this.quantity = this.$decimal.div(this.value, this.price);
-      },
-
-      /**
        * Перезаписываем поле [value] по принципу процентной ставки от баланса.
        * @param percent
        */
       setPercent(percent) {
         switch (this.assigning) {
           case 'buy':
-            this.value = this.$decimal.mul(this.balance, percent)  / 100;
+
+            if (this.type) {
+              this.value = this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100;
+              this.quantity = this.$decimal.div(this.value, this.price);
+            } else {
+              this.quantity = this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100;
+            }
+
             break;
           case 'sell':
-            this.value = this.$decimal.mul((this.$decimal.mul(this.balance, percent)  / 100), this.price);
+            this.value = this.$decimal.mul((this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100), this.price);
+            this.quantity = this.$decimal.div(this.value, this.price);
             break;
         }
-        this.setValue();
       },
 
       /**
        * Создаём новый ордер.
        */
       setOrder() {
+
+        this.clear = false;
+
         this.$axios.$post(this.$api.spot.setOrder, {
           // Назначение [sell:1] - [buy:0].
           assigning: this.assigning === 'sell' ? 1 : 0,
           // Имя актива (symbol-base).
-          base_unit: this.getQuery()[0],
+          base_unit: this.parse.base(),
           // Имя актива (symbol-quote).
-          quote_unit: this.getQuery()[1],
+          quote_unit: this.parse.quote(),
           // Тип [market:0] - [limit:1]
-          trade_type: this.type ? 0 : 1,
+          trade_type: this.type,
           // Количество монет sell/buy.
           quantity: this.quantity,
           // Рыночная цена монеты.
@@ -422,7 +394,7 @@
           response.fields[0].assigning = response.fields[0].assigning ? 1 : 0;
 
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
-          this.getAsset(null);
+          this.getAsset(false);
 
           // Озвучиваем действие звуковым сопровождением.
           this.$single.play('create');
@@ -431,10 +403,69 @@
           this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
         });
       }
+    },
+    computed: {
+
+      /**
+       * @returns {string}
+       */
+      symbol() {
+        switch (this.assigning) {
+          case 'buy':
+            return this.parse.quote();
+          case 'sell':
+            return this.parse.base();
+        }
+      },
+
+      /**
+       * @returns {{quote: (function(): string), base: (function(): string)}}
+       */
+      parse() {
+        return {
+          base: () => {
+            return this.$route.params.unit.split('-')[0]
+          },
+          quote: () => {
+            return this.$route.params.unit.split('-')[1]
+          }
+        }
+      },
+
+      /**
+       * @returns {string}
+       */
+      color() {
+        switch (this.eyelet) {
+          case 0:
+            return 'teal'
+          case 1:
+            return 'red';
+        }
+      },
     }
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+  .market--limit {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 10px;
+
+    span {
+      align-items: center;
+      justify-content: center;
+      height: 40px;
+      padding: 8px;
+      flex: 1;
+      cursor: pointer;
+      color: #484848;
+    }
+  }
 
 </style>

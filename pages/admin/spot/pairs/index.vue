@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Pairs from "@/components/Admin/Pairs.vue";
+  import Pairs from "@/components/Admin/Spot/Pairs.vue";
 
   export default {
     components: {

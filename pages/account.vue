@@ -4,7 +4,7 @@
     <v-row class="ma-1" no-gutters>
 
       <!-- Start: assets list component -->
-      <v-col class="pa-1" cols="12" md="3" sm="6">
+      <v-col class="pa-1" cols="12" md="3" sm="12">
         <v-card class="fill-height" elevation="0">
           <v-list dense>
             <v-list-item-group color="primary">
@@ -23,7 +23,7 @@
       <!-- End: assets list component -->
 
       <!-- Start: child container -->
-      <v-col class="pa-1" cols="12" md="9" sm="6">
+      <v-col class="pa-1" cols="12" md="9" sm="12">
         <v-card class="fill-height" elevation="0">
           <nuxt-child />
         </v-card>
