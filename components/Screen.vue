@@ -1,5 +1,5 @@
 <template>
-  <span v-if="$route.name === 'trade-unit'" class="hidden-sm-and-down hidden-md-and-down hidden-lg-and-down">
+  <span v-if="$route.name === 'trade-unit' && $route.query.type === 'spot'" class="hidden-sm-and-down hidden-md-and-down hidden-lg-and-down">
     <v-btn :color="$store.state.localStorage.screen ? '' : 'deep-purple lighten-4'" @click="setScreen" icon>
       <template v-if="$store.state.localStorage.screen">
         <v-icon>

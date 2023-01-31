@@ -213,7 +213,7 @@
           </v-icon>
         </v-col>
         <v-col class="text-right" cols="6">
-          <div class="mx-1">{{ $vuetify.lang.t('$vuetify.lang_304') }} {{ priceCurrent ? $decimal.format(order.volume) : '0.0000000' }} {{ parse.base().toUpperCase() }}</div>
+          <div class="mx-1">{{ $vuetify.lang.t('$vuetify.lang_304') }} {{ priceCurrent ? $decimal.format(order.volume) : 0 }} {{ parse.base().toUpperCase() }}</div>
         </v-col>
       </v-row>
 
@@ -231,7 +231,7 @@
   import ShiftItem from "../Default/ShiftItem.vue";
 
   export default {
-    name: "v-component-book",
+    name: "v-component-spot-book",
     components: {
       'v-component-shift-item': ShiftItem
     },

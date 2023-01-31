@@ -1,5 +1,5 @@
 <template>
-  <section :class="(this.$store.state.localStorage.screen ? '' : 'main-role') + ' pa-0'">
+  <section :class="(this.$store.state.localStorage.screen || $route.query.type === 'stock' ? '' : 'main-role') + ' pa-0'">
 
     <template v-if="loader">
 
@@ -35,7 +35,20 @@
 
       <v-row v-if="$route.query.type === 'stock'" class="ma-1" no-gutters>
 
-        stock trade
+        <v-col cols="12" xl="8" lg="6" md="12" sm="12">
+          <v-component-stock-market />
+          <v-component-stock-common class="mt-2" />
+        </v-col>
+
+        <v-col cols="12" xl="2" lg="3" md="12" sm="12" class="hidden-md-and-down hidden-sm-and-down">
+          <v-component-stock-book />
+          <v-component-stock-depositary class="mt-2" />
+        </v-col>
+
+        <v-col cols="12" xl="2" lg="3" md="12" sm="12">
+          <v-component-stock-form />
+          <v-component-stock-fees class="mt-2" />
+        </v-col>
 
       </v-row>
 
@@ -50,18 +63,30 @@
 
 <script>
 
-  import Market from '@/components/Spot/Market';
-  import Form from '@/components/Spot/Form';
-  import Book from "@/components/Spot/Book";
-  import History from "@/components/Spot/History";
+  import SpotMarket from '~/components/Spot/Market';
+  import SpotForm from '~/components/Spot/Form';
+  import SpotBook from "~/components/Spot/Book";
+  import SpotHistory from "~/components/Spot/History";
+  import StockBook from "~/components/Stock/Book";
+  import StockDepositary from "~/components/Stock/Depositary";
+  import StockForm from '~/components/Stock/Form';
+  import StockFees from '~/components/Stock/Fees';
+  import StockMarket from '~/components/Stock/Market';
+  import StockCommon from '~/components/Stock/Common';
 
   export default {
     auth: false,
     components: {
-      'v-component-spot-market': Market,
-      'v-component-spot-form': Form,
-      'v-component-spot-book': Book,
-      'v-component-spot-history': History
+      'v-component-spot-market': SpotMarket,
+      'v-component-spot-form': SpotForm,
+      'v-component-spot-book': SpotBook,
+      'v-component-spot-history': SpotHistory,
+      'v-component-stock-book': StockBook,
+      'v-component-stock-depositary': StockDepositary,
+      'v-component-stock-form': StockForm,
+      'v-component-stock-fees': StockFees,
+      'v-component-stock-market': StockMarket,
+      'v-component-stock-common': StockCommon
     },
     data() {
       return {

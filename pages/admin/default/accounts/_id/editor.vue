@@ -55,9 +55,6 @@
         rules: {
           default: [
             "accounts",
-            //"news",
-            //"support",
-            //"advertising",
             "deny-record"
           ],
           spot: [
@@ -65,13 +62,10 @@
             "chains",
             "pairs",
             "contracts",
-            //"listing"
           ],
           stock: [
             "markets",
             "sectors",
-            "depositaries",
-            "registrars"
           ]
         },
         account: {

@@ -85,18 +85,6 @@
               icon: "mdi-briefcase-variant-outline",
               display: false,
               to: 'markets'
-            },
-            {
-              title: '$vuetify.lang_302',
-              icon: "mdi-account-tie-outline",
-              display: false,
-              to: 'depositaries'
-            },
-            {
-              title: '$vuetify.lang_306',
-              icon: "mdi-account-edit-outline",
-              display: false,
-              to: 'registrars'
             }
           ]
         }
