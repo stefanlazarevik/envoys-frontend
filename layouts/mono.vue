@@ -33,7 +33,7 @@
 
   import Theme from '@/components/Theme';
   import Language from '@/components/Language';
-  import Snackbar from '@/components/Snackbar';
+  import Snackbar from '@/components/Default/Snackbar';
   import MenuDefault from '@/components/Menu/Default';
   import Footer from '@/components/Footer';
 

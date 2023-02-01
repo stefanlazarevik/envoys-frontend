@@ -8,7 +8,7 @@
         <v-slide-group multiple show-arrows>
           <v-slide-item>
             <ul class="header-line">
-              <li>{{ unit.toUpperCase() }}</li>
+              <li>{{ parse.symbol().toUpperCase() }}</li>
               <li v-if="header.last">
                 <small :class="priceConcurrency + '--text'">
                   <v-icon v-if="priceConcurrency === 'red'" :class="priceConcurrency + '--text'" small>
@@ -63,7 +63,7 @@
           </v-slide-item>
           <v-slide-item>
             <ul class="header-line">
-              <li><small>{{ $vuetify.lang.t('$vuetify.lang_69') }}({{ unit.split('-')[0].toUpperCase() }})</small></li>
+              <li><small>{{ $vuetify.lang.t('$vuetify.lang_69') }}({{ this.parse.base().toUpperCase() }})</small></li>
               <li v-if="header.last">
                 <small class="grey--text">{{ $decimal.format(volume24h) }}</small>
               </li>
@@ -74,7 +74,7 @@
           </v-slide-item>
           <v-slide-item>
             <ul class="header-line">
-              <li><small>{{ $vuetify.lang.t('$vuetify.lang_69') }}({{ unit.split('-')[1].toUpperCase() }})</small></li>
+              <li><small>{{ $vuetify.lang.t('$vuetify.lang_69') }}({{ this.parse.base().toUpperCase() }})</small></li>
               <li v-if="header.last">
                 <small class="grey--text">{{ $decimal.format($decimal.mul(volume24h, minPrice24h)) }}</small>
               </li>
@@ -123,7 +123,6 @@
   export default {
     data() {
       return {
-        unit: undefined,
         overlay: true,
         header: {},
         status: false
@@ -131,26 +130,17 @@
     },
     head() {
       return {
-        title: (this.unit ? this.unit.toUpperCase() : 'Loading') + ' | ' + (this.priceLast ? this.$decimal.format(this.priceLast, 0) : 0)
+        title: (this.parse.symbol() ? this.parse.symbol().toUpperCase() : 'Loading') + ' | ' + (this.priceLast ? this.$decimal.format(this.priceLast, 0) : 0)
       }
     },
-    async asyncData({params}) {
-      const unit = params.unit
-      return { unit }
-    },
     watch: {
-
-      /**
-       * @param e
-       */
-      $route(e) {
-        this.getGraph(e.params.unit);
+      $route() {
+        this.getGraph();
       }
     },
     mounted() {
-      this.unit = this.unit ?? this.$route.params.unit;
 
-      this.getGraph(this.unit);
+      this.getGraph();
 
       /**
        * Отслеживаем события бегущей строки, данные об торгах.
@@ -165,24 +155,21 @@
        * @object {time: int}
        */
       this.$publish.bind('trade/graph:0', (data) => {
-        if (data.fields !== undefined && this.unit.split('-')[0] === data.fields[0].base_unit && this.unit.split('-')[1] === data.fields[0].quote_unit) {
+        if (data.fields !== undefined && this.parse.base() === data.fields[0].base_unit && this.parse.quote() === data.fields[0].quote_unit) {
           this.header = data.stats;
         }
       });
     },
     methods: {
 
-      /**
-       * @param unit
-       */
-      getGraph(unit) {
+      getGraph() {
         this.overlay = true;
 
-        // Иниацылизируем шапку со статическими данными.
-        this.getHeader(unit);
+        // Инициализируем шапку со статическими данными.
+        this.getHeader();
 
         // Проверяем есть ли такая пара.
-        this.$axios.$post(this.$api.exchange.getPair, {base_unit: unit.split('-')[0], quote_unit: unit.split('-')[1]}).then((response) => {
+        this.$axios.$post(this.$api.spot.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
 
           // Если статус пары false, то мы не инициализируем график.
           this.status = response.fields[0].status ?? false;
@@ -238,12 +225,29 @@
        * @param unit
        */
       getHeader(unit) {
-        this.$axios.$get(this.$api.exchange.getGraph + '?base_unit=' + unit.split('-')[0] + '&quote_unit=' + unit.split('-')[1] + '&limit=2').then((response) => {
+        this.$axios.$get(this.$api.spot.getGraph + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
           this.header = response.stats;
         })
       }
     },
     computed: {
+
+      /**
+       * @returns {{quote: (function(): string), base: (function(): string)}}
+       */
+      parse() {
+        return {
+          symbol: () => {
+            return this.$route.params.unit
+          },
+          base: () => {
+            return this.$route.params.unit.split('-')[0]
+          },
+          quote: () => {
+            return this.$route.params.unit.split('-')[1]
+          }
+        }
+      },
 
       /**
        * @returns {number|*}

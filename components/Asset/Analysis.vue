@@ -19,7 +19,7 @@
           </div>
         </template>
         <template v-slot:item.price="{ item }">
-          <nuxt-link :class="($vuetify.theme.dark ? 'white--text' : 'grey--text text--darken-3') + ' text-decoration-none'" :to="`/trade/${item.base_unit}-${item.quote_unit}`">
+          <nuxt-link :class="($vuetify.theme.dark ? 'white--text' : 'grey--text text--darken-3') + ' text-decoration-none'" :to="`/trade/${item.base_unit}-${item.quote_unit}?type=spot`">
             {{ item.price }}&nbsp;<b>{{ item.quote_unit.toUpperCase() }}</b>
           </nuxt-link>
         </template>
@@ -101,7 +101,7 @@
       getAnalysis() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.exchange.getAnalysis, {
+        this.$axios.$post(this.$api.spot.getAnalysis, {
           limit: this.limit,
           page: this.page
         }).then((response) => {

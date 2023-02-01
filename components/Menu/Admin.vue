@@ -1,15 +1,19 @@
 <template>
   <v-list dense>
-    <v-list-item-group color="primary">
-      <v-list-item v-for="(item, i) in navs" :key="i" :to="`/admin/${item.to}`" exact link>
+    <v-list-group v-if="hasOwnProperty(item[0])" v-for="(item, i) in Object.entries(navs)" :key="i" :value="i === 0">
+      <template v-slot:activator>
         <v-list-item-icon class="mr-3">
-          <v-icon v-text="item.icon"></v-icon>
+          <v-icon>mdi-contain</v-icon>
         </v-list-item-icon>
-        <v-list-item-content>
-          {{ item.title }}
-        </v-list-item-content>
+        <v-list-item-title class="text-uppercase mr-2">{{ item[0] }}</v-list-item-title>
+      </template>
+      <v-list-item v-show="nav.display" v-for="(nav, i) in item[1]" :key="i" :to="`/admin/${item[0]}/${nav.to}`" exact link>
+        <v-list-item-title>{{ $vuetify.lang.t(nav.title) }}</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon v-text="nav.icon"></v-icon>
+        </v-list-item-icon>
       </v-list-item>
-    </v-list-item-group>
+    </v-list-group>
   </v-list>
 </template>
 
@@ -18,7 +22,72 @@
     name: "v-component-menu-admin",
     data() {
       return {
-        navs: []
+        navs: {
+          default: [
+            {
+              title: '$vuetify.lang_181',
+              icon: "mdi-account-circle-outline",
+              display: false,
+              to: 'accounts'
+            }/**, {
+              title: '$vuetify.lang_185',
+              icon: "mdi-page-next-outline",
+              display: false,
+              to: 'news'
+            }, {
+              title: '$vuetify.lang_266',
+              icon: "mdi-presentation-play",
+              display: false,
+              to: 'advertising'
+            }, {
+              title: '$vuetify.lang_186',
+              icon: "mdi-robot-excited-outline",
+              display: false,
+              to: 'support'
+            }**/
+          ],
+          spot: [
+            {
+              title: '$vuetify.lang_178',
+              icon: "mdi-priority-high",
+              display: false,
+              to: 'currencies'
+            }, {
+              title: '$vuetify.lang_179',
+              icon: "mdi-upload-network-outline",
+              display: false,
+              to: 'chains'
+            }, {
+              title: '$vuetify.lang_180',
+              icon: "mdi-arrange-send-to-back",
+              display: false,
+              to: 'pairs'
+            }, {
+              title: '$vuetify.lang_182',
+              icon: "mdi-ballot-recount-outline",
+              display: false,
+              to: 'contracts'
+            }/**, {
+              title: '$vuetify.lang_83',
+              icon: "mdi-package-variant-closed-plus",
+              display: false,
+              to: 'listing'
+            }**/],
+          stock: [
+            {
+              title: '$vuetify.lang_300',
+              icon: "mdi-map-outline",
+              display: false,
+              to: 'sectors'
+            },
+            {
+              title: '$vuetify.lang_298',
+              icon: "mdi-briefcase-variant-outline",
+              display: false,
+              to: 'markets'
+            }
+          ]
+        }
       }
     },
     mounted() {
@@ -26,59 +95,16 @@
     },
     methods: {
       rules() {
-        let rules = this.$auth.user.rules;
-        this.menu.map((item) => {
-          if (rules.indexOf(item.to) !== -1) {
-            this.navs.push(item)
+        Object.entries(this.$auth.user.rules).map((item) => {
+          for (let i = 0; i < this.navs[item[0]].length; i++) {
+            if (item[1].indexOf(this.navs[item[0]][i].to) > -1) {
+              this.navs[item[0]][i].display = true;
+            }
           }
         });
-      }
-    },
-    computed: {
-
-      /**
-       * @returns {[{icon: string, to: string, title: *},{icon: string, to: string, title: *},{icon: string, to: string, title: *},{icon: string, to: string, title: *},{icon: string, to: string, title: *},null,null,null,null]}
-       */
-      menu() {
-        return [
-          {
-            title: this.$vuetify.lang.t('$vuetify.lang_178'),
-            icon: "mdi-priority-high",
-            to: 'currencies'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_179'),
-            icon: "mdi-upload-network-outline",
-            to: 'chains'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_180'),
-            icon: "mdi-arrange-send-to-back",
-            to: 'pairs'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_182'),
-            icon: "mdi-ballot-recount-outline",
-            to: 'contracts'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_181'),
-            icon: "mdi-account-circle-outline",
-            to: 'accounts'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_83'),
-            icon: "mdi-package-variant-closed-plus",
-            to: 'listing'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_185'),
-            icon: "mdi-page-next-outline",
-            to: 'news'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_266'),
-            icon: "mdi-presentation-play",
-            to: 'advertising'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_186'),
-            icon: "mdi-robot-excited-outline",
-            to: 'support'
-          }
-        ]
+      },
+      hasOwnProperty(name) {
+        return this.$auth.user.rules.hasOwnProperty(name)
       }
     }
   }

@@ -53,6 +53,11 @@
               {{ $vuetify.lang.t('$vuetify.lang_129') }}
             </v-chip>
           </template>
+          <template v-if="item.status === 'FAILED'">
+            <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
+              {{ $vuetify.lang.t('$vuetify.lang_295') }}
+            </v-chip>
+          </template>
           <template v-if="item.status === 'PROCESSING'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_291') }}
@@ -270,6 +275,10 @@
        * @return {callback}:
        */
       this.$publish.bind('deposit/open', (data) => {
+        if (!data) {
+          return false
+        }
+
         if (
 
             // Сверяем локальный штат пользователя
@@ -317,7 +326,7 @@
       getTransactions() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.exchange.getTransactions, {
+        this.$axios.$post(this.$api.spot.getTransactions, {
           symbol: this.$route.params.symbol,
           tx_type: this.type,
           limit: this.limit,
@@ -341,7 +350,7 @@
        * @param id
        */
       cancelWithdraw(id) {
-        this.$axios.$post(this.$api.exchange.cancelWithdraw, {
+        this.$axios.$post(this.$api.spot.cancelWithdraw, {
           // Идентификатор вывода для удаления.
           id: id
         }).then(() => {

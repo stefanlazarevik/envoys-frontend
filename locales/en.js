@@ -33,7 +33,7 @@ export default {
   lang_28: "Forgot your password?",
   lang_29: "Sign In",
   lang_30: "Sign Up",
-  lang_31: "Trading terminal",
+  lang_31: "Spot trade",
   lang_32: "Articles",
   lang_33: "Confirm Login",
   lang_34: "Please check the following to protect your account",
@@ -130,7 +130,7 @@ export default {
   lang_130: "Canceled",
   lang_131: "Pending",
   lang_132: "Assigning",
-  lang_133: "Base/Quote unit",
+  lang_133: "Pair",
   lang_134: "At market price",
   lang_135: "No orders to display, start trading now",
   lang_136: "Pending orders",
@@ -291,96 +291,17 @@ export default {
   lang_291: "In processing",
   lang_292: "Fee costs (Reverse)",
   lang_293: "Decimals",
-  lang_294: "Broker market",
-
-  lang_firstsrc_1: {
-    title_1: "Digital Exchange by",
-    title_2: "Envoys Vision"
-  },
-
-  lang_firstsrc_2: "Trade now",
-
-  lang_currency_table_1: {
-    title_1: "Most popular",
-    title_2: "currency",
-    title_3: "assets",
-  },
-
-  lang_currency_table_2: "Name", 
-  lang_currency_table_3: "Price", 
-  lang_currency_table_4: "Change", 
-  lang_currency_table_5: "Market", 
-
-  lang_aboutus_1: "About Us",
-  lang_aboutus_2: "Our team has been working on the universal exchange project for more than 3 years",
-  lang_aboutus_3: `Our team has been working on the universal
-            exchange project for more than 3 years and consists of specialists who have worked both with blockchain
-            projects and worked in senior positions
-            in the stock exchange, legal regulators and provided consulting services to companies from various industries,
-            in particular in the mining sector. Our experience has given us an understanding of,
-            what problems are faced by business, investors and traders
-            and we know what is required for each of the parties and how to solve these issues. Our project intends to
-            change the world of finance by making all processes more efficient and transparent by working
-            in the legal field of the countries in which we operate.
-            At the same time, we strive to create a unique platform that transforms the implementation of the activities
-            of the main
-            financial markets in the blockchain.`,
-  lang_aboutus_4: "Obtaining licenses for depository activities",
-  lang_aboutus_5: "September 2021 - launch and testing platform",
-  lang_aboutus_6: "State registration",
-  lang_aboutus_7: "Launched all services",
-  lang_aboutus_8: "Read documents",
-
-  lang_partners_1: "Our partners",
-  lang_achievements_1: "Safe & Secure Platform",
-  lang_achievements_2: "Our industry-leading security and financial stability keep your identity and funds safe and secure.",
-  lang_achievements_3: "Fast Crypto Listing",
-  lang_achievements_4: "We launch new and high-quality crypto projects efficiently with good liquidity.",
-  lang_achievements_5: "Wide Crypto Variety",
-  lang_achievements_6: "We rank top among first-tier exchanges with the highest number of listed crypto.",
-  lang_ex_features_1:{
-    title_1: "Features of",
-    title_2: "the exchange",
-  },
-  lang_ex_features_2: "The world of finance is changing rapidly all over the world interest in cryptocurrencies and blockchain technology in general is growing more and more every year. We strive to create the Envoys Vision platform that will combine the traditional asset market and blockchain technology, starting with a new innovative universal crypto asset exchange.",
-  lang_ex_features_3: "Envoys Vision Digital Exchange trading system supports various professional trading options, such as:",
-  lang_ex_features_4: "Limit trades (GTC, IOC, FOK, Post only order)",
-  lang_ex_features_5: "Market Transactions",
-  lang_ex_features_6: "Stop-limit trades",
-  lang_ex_features_7: "Envoys Vision Digital Exchange trading system supports various professional trading options, such as:",
-  lang_ex_features_8: "Limit trades (GTC, IOC, FOK, Post only order)",
-  lang_ex_features_9: "Market Transactions",
-  lang_ex_features_10: "Stop-limit trades",
-  lang_ex_features_11: "Envoys Vision Digital Exchange trading system supports various professional trading options, such as:",
-  lang_ex_features_12: "Limit trades (GTC, IOC, FOK, Post only order)",
-  lang_ex_features_13: "Market Transactions",
-  lang_ex_features_14: "Stop-limit trades",
-  lang_contacts_1: {
-    title_1: 'Contact',
-    title_2: 'information',
-  },
-  lang_contacts_2: 'Envoys Vision head office',
-  lang_contacts_3: 'Gogol.st 300/3',
-  lang_contacts_4: 'Depository',
-  lang_contacts_5: 'Storage and accounting of securities.',
-  lang_contacts_6: 'Exchange',
-  lang_contacts_7: 'According to the listing and the bidding rules, and more.',
-  lang_footer_1: 'Risk warning: Trading in financial instruments is a risky activity, but also losses.Please note that Markets does not provide services in the following countries.',
-  lang_footer_2: 'Markets Ltd. has no representative offices of the company on the territory of the Kyrgyz Republic.',
-  lang_footer_3: 'Our Products',
-  lang_footer_4: 'Stock Exchange',
-  lang_footer_5: 'DEX',
-  lang_footer_6: 'Documents',
-  lang_footer_7: 'Links',
-  lang_footer_8: 'Main',
-  lang_footer_9: 'Market',
-  lang_footer_10: 'Buy a crypto',
-  lang_footer_11: 'FR participants',
-  lang_footer_12: 'References',
-  lang_footer_13: 'Depository',
-  lang_footer_14: 'Politic & Privacy',
-  lang_footer_15: 'Privacy policy',
-  lang_footer_16: 'AML Policy',
-  lang_footer_17: 'Personal data processing conditions',
-  lang_footer_18: 'Social Media',
+  lang_294: "",
+  lang_295: "Error",
+  lang_296: "Canceled orders",
+  lang_297: "Stock trade",
+  lang_298: "Markets",
+  lang_299: "Add a new market",
+  lang_300: "Sectors",
+  lang_301: "Add a new sector",
+  lang_302: "Depositaries",
+  lang_303: "Performed in full",
+  lang_304: "Volume",
+  lang_305: "Order Book",
+  lang_306: "Registrars"
 }

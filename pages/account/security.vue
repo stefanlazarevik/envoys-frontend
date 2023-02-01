@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import Soon from "~/components/Soon";
+  import Soon from "~/components/Default/Soon";
 
   export default {
     components: {

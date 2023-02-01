@@ -1,7 +1,6 @@
 import Decimal from "decimal.js";
 
-Decimal.set({ precision: 8, rounding: 1 })
-
+Decimal.set({ precision: 16 });
 export default (context, inject) => {
 
   /**
@@ -33,49 +32,50 @@ export default (context, inject) => {
     /**
      * @param number
      * @param to
-     * @returns {number}
+     * @returns {number|Decimal}
      */
     mul(number, to) {
       if (this.isNumber(number)) {
         return 0
       }
-      return Number(new Decimal(number).mul(to))
+
+      return new Decimal(number).mul(to);
     },
 
     /**
      * @param number
      * @param to
-     * @returns {number}
+     * @returns {number|Decimal}
      */
     div(number, to) {
       if (this.isNumber(number)) {
         return 0
       }
-      return Number(new Decimal(number).div(to));
+      return new Decimal(number).div(to);
     },
 
     /**
      * @param number
      * @param to
-     * @returns {number}
+     * @returns {number|Decimal}
      */
     sub(number, to) {
       if (this.isNumber(number)) {
         return 0
       }
-      return Number(new Decimal(number).sub(to));
+      return new Decimal(number).sub(to);
     },
 
     /**
      * @param number
      * @param to
-     * @returns {number}
+     * @returns {number|Decimal}
      */
     add(number, to) {
       if (this.isNumber(number)) {
         return 0
       }
-      return Number(new Decimal(number).plus(to));
+      return new Decimal(number).plus(to);
     },
 
     /**
@@ -104,7 +104,33 @@ export default (context, inject) => {
         precision = this.precision(number);
       }
 
-      return number ? (number).toFixed(precision ?? 2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0;
+      return number ? String(this.substr(number, precision ?? 2)).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0;
+    },
+
+    /**
+     * @param number
+     * @param precision
+     * @returns {*|number|string}
+     */
+    substr(number, precision) {
+      if (this.isNumber(number)) {
+        return 0
+      }
+
+      if (String(number).split('e-').length === 2) {
+        return new Decimal(number).toFixed(precision)
+      }
+
+      if (precision === undefined || precision === 0) {
+        precision = this.precision(number);
+      }
+
+      let string = String(number).split('.')
+      if (string.length === 2) {
+        return `${string[0]}.${string[1].substring(0, precision)}`
+      }
+
+      return number
     },
 
     /**

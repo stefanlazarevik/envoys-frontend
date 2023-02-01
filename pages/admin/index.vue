@@ -1,18 +1,18 @@
 <template>
 
   <!-- Start: dashboard component -->
-  <v-component-dashboard />
+  <v-component-spot-dashboard />
   <!-- End: dashboard component -->
 
 </template>
 
 <script>
-  import Dashboard from "../../components/Admin/Dashboard";
+  import Dashboard from "../../components/Admin/Spot/Dashboard.vue";
 
   export default {
     name: "index",
     components: {
-      'v-component-dashboard': Dashboard
+      'v-component-spot-dashboard': Dashboard
     },
   }
 </script>

@@ -64,7 +64,7 @@
       getAsset() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.exchange.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
+        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
           this.overlay = false;
         }).catch(e => {
