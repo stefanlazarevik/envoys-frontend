@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import History from "@/components/Asset/History";
+  import History from "~/components/Asset/History";
 
   export default {
     components: {

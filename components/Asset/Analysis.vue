@@ -34,7 +34,7 @@
           </v-progress-circular>
         </template>
         <template v-slot:item.chart="{ item }">
-          <v-sparkline :value="item.chart" :smooth="16" :height="80" line-width="2" :padding="10" :gradient="['#396dc7', '#d3d4ef', '#dbe7e7']" />
+          <v-sparkline :value="item.candles" :smooth="16" :height="80" line-width="2" :padding="10" :gradient="['#396dc7', '#d3d4ef', '#dbe7e7']" />
         </template>
       </v-data-table>
       <!-- End: data table -->
@@ -107,8 +107,8 @@
         }).then((response) => {
           this.analysis = response.fields ?? [];
           this.analysis.map((item) => {
-            if(item.chart) {
-              item.chart.reverse()
+            if(item.candles) {
+              item.candles.reverse()
             }
           });
           this.count = response.count ?? 0;

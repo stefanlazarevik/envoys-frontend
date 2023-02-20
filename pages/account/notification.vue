@@ -1,14 +1,14 @@
 <template>
-  <v-layout class="bg-image" fill-height wrap>
+  <v-layout fill-height wrap>
     <v-flex/>
-    <v-flex align-self-center class="text-center relative mx-4 my-16" md4 mx5 sm6>
+    <v-flex align-self-center class="text-center relative mx-4 my-16" md5 mx5 sm6 xl4>
       <v-switch
           v-model="sample"
           color="primary"
           :label="$vuetify.lang.t('$vuetify.lang_167')"
           :messages="$vuetify.lang.t('$vuetify.lang_168')"
           value="order_filled"
-          @click="setSample"
+          @click="setSample('order_filled')"
       ></v-switch>
       <v-switch
           v-model="sample"
@@ -16,7 +16,7 @@
           :label="$vuetify.lang.t('$vuetify.lang_165')"
           :messages="$vuetify.lang.t('$vuetify.lang_166')"
           value="withdrawal"
-          @click="setSample"
+          @click="setSample('withdrawal')"
       ></v-switch>
       <v-switch
           v-model="sample"
@@ -24,7 +24,7 @@
           :label="$vuetify.lang.t('$vuetify.lang_169')"
           :messages="$vuetify.lang.t('$vuetify.lang_170')"
           value="login"
-          @click="setSample"
+          @click="setSample('login')"
       ></v-switch>
       <v-switch
           v-model="sample"
@@ -32,7 +32,7 @@
           :label="$vuetify.lang.t('$vuetify.lang_163')"
           :messages="$vuetify.lang.t('$vuetify.lang_164')"
           value="news"
-          @click="setSample"
+          @click="setSample('news')"
       ></v-switch>
     </v-flex>
     <v-flex/>
@@ -62,7 +62,7 @@
        */
       getUser() {
         this.$axios.$post(this.$api.account.getUser).then((response) => {
-          this.sample = response.sample ?? [];
+          this.sample = response.fields[0].sample ?? [];
         });
       },
 
@@ -71,7 +71,7 @@
        */
       setSample(e) {
         this.$axios.$post(this.$api.account.setUser, {
-          sample: e.path[1].firstChild.value
+          sample: e
         });
       }
     }
@@ -79,19 +79,6 @@
 </script>
 
 <style scoped>
-
-  .bg-image::after {
-    content: "";
-    width: 100%;
-    height: 100%;
-    /*background-image: url(/asset/5.png);*/
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
-    position: absolute;
-    display: block;
-    opacity: 0.1;
-  }
 
   .relative {
     position: relative;

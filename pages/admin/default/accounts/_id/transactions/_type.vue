@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Transactions from "@/components/Admin/Spot/Transactions.vue";
+  import Transactions from "~/components/Admin/Spot/Transactions.vue";
 
   export default {
     components: {

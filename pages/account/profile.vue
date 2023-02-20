@@ -1,7 +1,7 @@
 <template>
-  <v-layout class="bg-image" fill-height wrap>
+  <v-layout fill-height wrap>
     <v-flex/>
-    <v-flex align-self-center class="text-center relative my-16" md4 mx5 sm6 xl3>
+    <v-flex align-self-center class="text-center relative my-16" md5 mx5 sm6 xl4>
       <v-form class="mt-1" ref="form">
         <v-text-field v-model="old_password" color="primary" :label="$vuetify.lang.t('$vuetify.lang_175')" outlined :rules="rulesOldPassword" required>
           <template #message="{ message }">

@@ -27,8 +27,7 @@
     data() {
       return {
         items: [
-          {icon: 'mdi-alpha-e-circle-outline', title: 'lang_31', to: '/trade/eth-usd?type=spot'},
-          {icon: 'mdi-alpha-s-circle-outline', title: 'lang_297', to: '/trade/csco.us-usd?type=stock'}
+          {icon: 'mdi-alpha-e-circle-outline', title: 'lang_31', to: '/trade/eth-usd?type=spot'}
         ],
       }
     }

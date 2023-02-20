@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Contracts from "@/components/Admin/Spot/Contracts.vue";
+  import Contracts from "~/components/Admin/Spot/Contracts.vue";
 
   export default {
     components: {

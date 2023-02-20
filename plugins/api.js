@@ -2,7 +2,6 @@ export default ({ app }, inject) => {
   app.$api = {
     index: {
       getStatistic: '/index/get-statistic',
-      getCurrencies: '/index/get-currencies',
       getPairs: '/index/get-pairs'
     },
     auth: {
@@ -10,18 +9,21 @@ export default ({ app }, inject) => {
       actionSignin: '/auth/action-signin',
       actionReset: '/auth/action-reset',
       setLogout: '/auth/set-logout',
-      getRefresh: '/auth/get-refresh'
+      getRefresh: '/auth/get-refresh',
+      getSecure: '/auth/get-secure'
     },
     account: {
       getUser: '/account/get-user',
       setUser: '/account/set-user',
-      getActions: '/account/get-actions'
+      getActions: '/account/get-actions',
+      getSecure: '/account/get-secure',
+      setSecure: '/account/set-secure'
     },
     spot: {
       getPrice: '/spot/get-price',
       getSymbol: '/spot/get-symbol',
       getMarkers: '/spot/get-markers',
-      getGraph: '/spot/get-graph',
+      getCandles: '/spot/get-candles',
       getTrades: '/spot/get-trades',
       getPairs: '/spot/get-pairs',
       getPair: '/spot/get-pair',
@@ -37,8 +39,9 @@ export default ({ app }, inject) => {
       getTransfers: '/spot/get-transfers',
       getAnalysis: '/spot/get-analysis'
     },
-    stock: {
-      getSymbol: '/stock/get-symbol',
+    ads: {
+      getAdvertisements: '/ads-shot/get-advertisements',
+      getAdvertising: '/ads-shot/get-advertising'
     },
     admin: {
       spot: {
@@ -60,23 +63,18 @@ export default ({ app }, inject) => {
         setContract: '/admin/spot/set-contract',
         deleteContract: '/admin/spot/delete-contract',
         getTransactions: '/admin/spot/get-transactions',
-        getOrders: '/admin/spot/get-orders',
-        getAssets: '/admin/spot/get-assets'
-      },
-      stock: {
-        setMarket: '/admin/stock/set-market',
-        getMarket: '/admin/stock/get-market',
-        getMarkets: '/admin/stock/get-markets',
-        deleteMarket: '/admin/stock/delete-market',
-        setSector: '/admin/stock/set-sector',
-        getSector: '/admin/stock/get-sector',
-        getSectors: '/admin/stock/get-sectors',
-        deleteSector: '/admin/stock/delete-sector',
+        getAssets: '/admin/spot/get-assets',
+        getReserves: '/admin/spot/get-reserves',
+        setReserveUnlock: '/admin/spot/get-reserve-unlock'
       },
       account: {
         getAccounts: '/admin/account/get-accounts',
         getAccount: '/admin/account/get-account',
         setAccount: '/admin/account/set-account'
+      },
+      ads: {
+        setAdvertising: '/admin/ads-shot/set-advertising',
+        deleteAdvertising: '/admin/ads-shot/delete-advertising'
       }
     },
     status: '/status',

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Actions from "@/components/Account/Actions";
+  import Actions from "~/components/Account/Actions";
 
   export default {
     components: {

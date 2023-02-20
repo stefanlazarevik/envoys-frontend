@@ -29,16 +29,16 @@
               icon: "mdi-account-circle-outline",
               display: false,
               to: 'accounts'
-            }/**, {
-              title: '$vuetify.lang_185',
-              icon: "mdi-page-next-outline",
-              display: false,
-              to: 'news'
             }, {
               title: '$vuetify.lang_266',
               icon: "mdi-presentation-play",
               display: false,
               to: 'advertising'
+            }/**, {
+              title: '$vuetify.lang_185',
+              icon: "mdi-page-next-outline",
+              display: false,
+              to: 'news'
             }, {
               title: '$vuetify.lang_186',
               icon: "mdi-robot-excited-outline",
@@ -58,7 +58,7 @@
               display: false,
               to: 'chains'
             }, {
-              title: '$vuetify.lang_180',
+              title: '$vuetify.lang_160',
               icon: "mdi-arrange-send-to-back",
               display: false,
               to: 'pairs'
@@ -67,26 +67,17 @@
               icon: "mdi-ballot-recount-outline",
               display: false,
               to: 'contracts'
+            }, {
+              title: '$vuetify.lang_335',
+              icon: "mdi-cash-lock",
+              display: false,
+              to: 'reserves'
             }/**, {
               title: '$vuetify.lang_83',
               icon: "mdi-package-variant-closed-plus",
               display: false,
               to: 'listing'
-            }**/],
-          stock: [
-            {
-              title: '$vuetify.lang_300',
-              icon: "mdi-map-outline",
-              display: false,
-              to: 'sectors'
-            },
-            {
-              title: '$vuetify.lang_298',
-              icon: "mdi-briefcase-variant-outline",
-              display: false,
-              to: 'markets'
-            }
-          ]
+            }**/]
         }
       }
     },
@@ -95,7 +86,7 @@
     },
     methods: {
       rules() {
-        Object.entries(this.$auth.user.rules).map((item) => {
+        Object.entries(this.$auth.$state.user.fields[0].rules).map((item) => {
           for (let i = 0; i < this.navs[item[0]].length; i++) {
             if (item[1].indexOf(this.navs[item[0]][i].to) > -1) {
               this.navs[item[0]][i].display = true;
@@ -104,7 +95,7 @@
         });
       },
       hasOwnProperty(name) {
-        return this.$auth.user.rules.hasOwnProperty(name)
+        return this.$auth.$state.user.fields[0].rules.hasOwnProperty(name)
       }
     }
   }

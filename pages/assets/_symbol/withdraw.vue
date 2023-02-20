@@ -62,18 +62,12 @@
 
                       <!-- Start: init steps component -->
                       <v-card elevation="0" outlined>
-                        <v-stepper class="transparent" v-model="next" flat>
-                          <v-stepper-header class="step-header">
-                            <v-stepper-step color="yellow darken-1" editable :complete="next > 1" step="1">
-                              {{ $vuetify.lang.t('$vuetify.lang_152') }}
-                            </v-stepper-step>
-                            <v-divider />
-                            <v-stepper-step color="yellow darken-1" :complete="next > 2" step="2">
-                              {{ $vuetify.lang.t('$vuetify.lang_153') }}
-                            </v-stepper-step>
-                          </v-stepper-header>
+                        <v-stepper class="transparent pb-0" v-model="next" flat vertical>
 
                           <!-- Start: step withdraw: 1 -->
+                          <v-stepper-step style="cursor: pointer" @click="next = 1" color="yellow darken-1" :complete="next > 1" step="1">
+                            {{ $vuetify.lang.t('$vuetify.lang_152') }}
+                          </v-stepper-step>
                           <v-stepper-content step="1">
                             <v-form class="mt-1" ref="form">
                               <v-text-field v-model="to" color="primary" :label="$vuetify.lang.t('$vuetify.lang_104')" outlined :rules="rulesAddress" required>
@@ -96,31 +90,39 @@
                                 <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setStep(2, item)">{{ $vuetify.lang.t('$vuetify.lang_40') }}</v-btn>
                               </template>
                             </v-form>
-
                           </v-stepper-content>
                           <!-- End: step withdraw: 1 -->
 
                           <!-- Start: step withdraw: 2 -->
-                          <v-stepper-content step="2">
+                          <v-stepper-step style="cursor: pointer" @click="next = 2" color="yellow darken-1" :complete="next > 2" step="2">
+                            {{ $vuetify.lang.t('$vuetify.lang_153') }}
+                          </v-stepper-step>
+                          <v-stepper-content class="mb-1" step="2">
 
-                            <v-text-field class="mt-2" color="primary" outlined :label="$vuetify.lang.t('$vuetify.lang_155')" v-model="secure" :counter="6" :hint="$vuetify.lang.t('$vuetify.lang_43') + $auth.$state.user.email">
-                              <template v-slot:append>
-                                <template v-if="timer === 60 || timer === 0">
-                                  <span class="my-1" @click="setRefresh()" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</span>
-                                </template>
-                                <template v-else>
-                                  <span class="my-1">{{ timer }}</span>
-                                </template>
+                            <div>{{ $vuetify.lang.t('$vuetify.lang_35') }}: <span v-if="timer === 60 || timer === 0"><a @click="setRefresh()" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</a></span><span v-else>({{ timer }})</span></div>
+                            <v-otp-input v-model="email_code" length="6" />
+                            <v-btn v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="$auth.$state.user.fields[0].factor_secure ? next = 3 : setWithdraw(item)">
+                              <template v-if="$auth.$state.user.fields[0].factor_secure">
+                                {{ $auth.$state.user.fields[0].factor_secure ? $vuetify.lang.t('$vuetify.lang_40') : $vuetify.lang.t('$vuetify.lang_29') }}
                               </template>
-                            </v-text-field>
-
-                            <template v-if="secure">
-                              <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">
+                              <template v-else>
                                 {{ $vuetify.lang.t('$vuetify.lang_111') }} <span v-if="quantity">({{ $vuetify.lang.t('$vuetify.lang_103') }}: {{ $decimal.truncate(quantity > 0 ? $decimal.sub(quantity, item.fees_withdraw) : 0) }} <b>{{ asset.symbol.toUpperCase() }}</b>)</span>
-                              </v-btn>
-                            </template>
+                              </template>
+                            </v-btn>
+
                           </v-stepper-content>
                           <!-- End: step withdraw: 2 -->
+
+                          <!-- Start: step withdraw: 3 -->
+                          <v-stepper-step v-if="$auth.$state.user.fields[0].factor_secure" color="yellow darken-1" :complete="next > 3" step="3">
+                            {{ $vuetify.lang.t('$vuetify.lang_294') }}
+                          </v-stepper-step>
+                          <v-stepper-content class="mb-1" v-if="$auth.$state.user.fields[0].factor_secure" step="3">
+                            <div>{{ $vuetify.lang.t('$vuetify.lang_308') }}</div>
+                            <v-otp-input v-model="factor_code" length="6" />
+                            <v-btn v-if="factor_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
+                          </v-stepper-content>
+                          <!-- End: step withdraw: 3 -->
 
                         </v-stepper>
                       </v-card>
@@ -237,9 +239,9 @@
         overlay: true,
         price: 0,
         timer: 60,
-        secure: '',
-        to: '',
-        free: 0.00001
+        email_code: '',
+        factor_code: '',
+        to: ''
       }
     },
     watch: {
@@ -334,7 +336,7 @@
         if (number >= balance) {
           return (balance > this.asset.max_withdraw ? this.asset.max_withdraw : balance)
         }
-        return number
+        return this.asset.max_withdraw
       },
 
       /**
@@ -356,7 +358,8 @@
           platform: item.platform,
           quantity: this.quantity,
           address: this.to,
-          secure: this.secure
+          email_code: this.email_code,
+          factor_code: this.factor_code
         }).then(() => {
           this.$nuxt.$emit('withdraw/create', {
             symbol: this.$route.params.symbol,
@@ -378,7 +381,6 @@
        */
       setStep(step, item) {
         if (!this.$refs.form[0].validate()) return false;
-        this.quantity -= this.free;
         if (this.quantity > this.getReserveBalance(item) || this.quantity < Number(this.$decimal.add(this.asset.min_withdraw, item.fees_withdraw).valueOf())) {
           this.$snackbar.open({
             content: this.$vuetify.lang.t('$vuetify.lang_154'),

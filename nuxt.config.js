@@ -146,7 +146,7 @@ export default {
   },
 
   server: {
-    port: 3559,
+    port: 3119,
     host: "0.0.0.0"
   },
 

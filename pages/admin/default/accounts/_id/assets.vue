@@ -1,11 +1,19 @@
 <template>
-  <div>
-    assets
-  </div>
+
+  <!-- Start: assets component -->
+  <v-component-assets />
+  <!-- End: assets component -->
+
 </template>
 
 <script>
-  export default {}
+import Assets from "@/components/Admin/Spot/Assets.vue";
+
+export default {
+  components: {
+    'v-component-assets': Assets
+  }
+}
 </script>
 
 <style scoped>

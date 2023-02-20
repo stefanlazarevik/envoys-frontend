@@ -135,12 +135,12 @@
     },
     watch: {
       $route() {
-        this.getGraph();
+        this.getCandles();
       }
     },
     mounted() {
 
-      this.getGraph();
+      this.getCandles();
 
       /**
        * Отслеживаем события бегущей строки, данные об торгах.
@@ -154,7 +154,7 @@
        * @object {quote_unit: string},
        * @object {time: int}
        */
-      this.$publish.bind('trade/graph:0', (data) => {
+      this.$publish.bind('trade/candles:0', (data) => {
         if (data.fields !== undefined && this.parse.base() === data.fields[0].base_unit && this.parse.quote() === data.fields[0].quote_unit) {
           this.header = data.stats;
         }
@@ -162,7 +162,7 @@
     },
     methods: {
 
-      getGraph() {
+      getCandles() {
         this.overlay = true;
 
         // Инициализируем шапку со статическими данными.
@@ -225,7 +225,7 @@
        * @param unit
        */
       getHeader(unit) {
-        this.$axios.$get(this.$api.spot.getGraph + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
+        this.$axios.$get(this.$api.spot.getCandles + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
           this.header = response.stats;
         })
       }

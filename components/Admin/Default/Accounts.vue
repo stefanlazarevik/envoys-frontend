@@ -96,17 +96,12 @@
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
             <v-row class="mt-2">
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="6">
                 <v-btn :to="`/admin/default/accounts/${item.id}/transactions`" class="mb-5 text-capitalize" block depressed large outlined color="red">
                   {{ $vuetify.lang.t('$vuetify.lang_273') }} {{ item.counts.transaction }}
                 </v-btn>
               </v-col>
-              <v-col cols="12" md="4">
-                <v-btn :to="`/admin/default/accounts/${item.id}/orders`" class="mb-5 text-capitalize" block depressed large outlined color="cyan">
-                  {{ $vuetify.lang.t('$vuetify.lang_183') }} {{ item.counts.order }}
-                </v-btn>
-              </v-col>
-              <v-col cols="12" md="4">
+              <v-col cols="12" md="6">
                 <v-btn :to="`/admin/default/accounts/${item.id}/assets`" class="mb-5 text-capitalize" block depressed large outlined color="lime">
                   {{ $vuetify.lang.t('$vuetify.lang_79') }} {{ item.counts.asset }}
                 </v-btn>

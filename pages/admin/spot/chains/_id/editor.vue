@@ -8,21 +8,17 @@
         <v-select v-model="chain.platform" :items="$platform.list" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_113')" outlined></v-select>
         <v-select v-model="chain.status" :items="status" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_191')" outlined></v-select>
         <v-text-field v-model="chain.rpc" color="primary" :label="$vuetify.lang.t('$vuetify.lang_219')" outlined></v-text-field>
-        <v-select v-model="chain.tag" :items="$tag.list" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_283')" outlined />
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field v-model="chain.explorer_link" color="primary" :label="$vuetify.lang.t('$vuetify.lang_224')" outlined></v-text-field>
         <v-text-field v-model="chain.confirmation" color="primary" :label="$vuetify.lang.t('$vuetify.lang_153')" outlined></v-text-field>
         <v-text-field v-model="chain.time_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_225')" outlined></v-text-field>
-        <v-text-field v-model="chain.rpc_user" color="orange" :label="$vuetify.lang.t('$vuetify.lang_227')" outlined></v-text-field>
         <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.address" :label="$vuetify.lang.t('$vuetify.lang_230')" outlined></v-text-field>
-        <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.block" :label="$vuetify.lang.t('$vuetify.lang_220')" outlined></v-text-field>
+        <v-select v-model="chain.tag" :items="$tag.list" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_283')" outlined />
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field v-model="chain.fees_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>
         <v-text-field v-model="chain.network" color="primary" :label="$vuetify.lang.t('$vuetify.lang_112')" outlined></v-text-field>
-        <v-text-field v-model="chain.rpc_key" color="orange" :label="$vuetify.lang.t('$vuetify.lang_214')" outlined></v-text-field>
-        <v-text-field v-model="chain.rpc_password" color="orange" :label="$vuetify.lang.t('$vuetify.lang_228')" outlined></v-text-field>
         <v-select v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.parent_symbol" :items="currencies" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
@@ -38,6 +34,7 @@
             </v-list-item>
           </template>
         </v-select>
+        <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.block" :label="$vuetify.lang.t('$vuetify.lang_220')" outlined></v-text-field>
       </v-col>
     </v-row>
     <!-- End: chain info form -->
@@ -102,11 +99,6 @@
             <tr>
               <td>{{ $vuetify.lang.t('$vuetify.lang_225') }}</td>
               <td>{{ $vuetify.lang.t('$vuetify.lang_239') }}</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>{{ $vuetify.lang.t('$vuetify.lang_227') }}, {{ $vuetify.lang.t('$vuetify.lang_214') }}, {{ $vuetify.lang.t('$vuetify.lang_228') }}</td>
-              <td>{{ $vuetify.lang.t('$vuetify.lang_240') }}</td>
               <td>-</td>
             </tr>
             <tr v-if="$platform.get(chain.platform).type === 'CRYPTO'">

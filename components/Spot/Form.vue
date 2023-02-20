@@ -141,17 +141,14 @@
       },
       price(e) {
         if (e) {
-          this.price = e;
-
           switch (this.assigning) {
             case 'buy':
-              this.quantity = this.$decimal.div(this.value, this.price);
+              this.quantity = this.$decimal.div(this.value, e);
               break;
             case 'sell':
-              this.value = this.$decimal.mul(this.quantity, this.price);
+              this.value = this.$decimal.mul(this.quantity, e);
               break;
           }
-
         } else {
           this.price = 0;
         }
@@ -216,7 +213,7 @@
             // Сверяем локальный штат пользователя
             // это у нас пользовательский [id] с полученным из события пользовательским [user_id],
             // если аргументы совпадают то это значит что ордер сработал частично или полностью.
-            data.user_id === Number(this.$auth.$state.user.id)
+            data.user_id === Number(this.$auth.$state.user.fields[0].id)
 
         ) {
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
@@ -269,7 +266,7 @@
        * @object {quote_unit: string},
        * @object {time: int}
        */
-      this.$publish.bind('trade/graph:0', (data) => {
+      this.$publish.bind('trade/candles:0', (data) => {
         if (data.fields) {
           if (
 

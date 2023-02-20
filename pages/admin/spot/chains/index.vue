@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Chains from "@/components/Admin/Spot/Chains.vue";
+  import Chains from "~/components/Admin/Spot/Chains.vue";
 
   export default {
     components: {

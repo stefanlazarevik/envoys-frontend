@@ -26,7 +26,7 @@
 
 <script>
 
-  import AdminMenu from "@/components/Menu/Admin";
+  import AdminMenu from "~/components/Menu/Admin";
 
   export default {
     auth: true,

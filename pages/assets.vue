@@ -34,7 +34,7 @@
       'v-component-assets': Assets
     },
     async asyncData({ $auth, $vuetify, error }) {
-      if(!$auth.$state.user.status) {
+      if(!$auth.$state.user.fields[0].status) {
         error({
           message: $vuetify.lang.t('$vuetify.lang_252')
         });

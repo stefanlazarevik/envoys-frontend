@@ -82,7 +82,7 @@
     },
     mounted() {
       this.interval.map((interval) => {
-        this.channels.push('trade/graph:' + interval);
+        this.channels.push('trade/candles:' + interval);
       });
       this.$publish.subscribe('exchange', this.channels, (error) => {
         console.log(error);
@@ -107,7 +107,7 @@
               // Сверяем локальный штат пользователя
               // это у нас пользовательский [id] с полученным из события пользовательским [user_id],
               // если аргументы совпадают то это значит что ордер сработал частично или полностью.
-              data.user_id === Number(this.$auth.$state.user.id) &&
+              data.user_id === Number(this.$auth.$state.user.fields[0].id) &&
 
               // Крюк уведомления о выполнении депозита.
               data.hook
@@ -131,7 +131,7 @@
     methods: {
       isAdmin() {
         if (this.$auth.$state.user) {
-          this.admin = Object.entries(this.$auth.$state.user.rules ?? null).length > 0;
+          this.admin = Object.entries(this.$auth.$state.user.fields[0].rules ?? null).length > 0;
         }
       }
     },

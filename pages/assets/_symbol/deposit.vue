@@ -162,7 +162,7 @@
 
 <script>
 
-  import Qrcode from "@/components/Qrcode";
+  import Qrcode from "~/components/Qrcode";
 
   export default {
     components: {

@@ -55,6 +55,7 @@
         rules: {
           default: [
             "accounts",
+            "advertising",
             "deny-record"
           ],
           spot: [
@@ -62,10 +63,7 @@
             "chains",
             "pairs",
             "contracts",
-          ],
-          stock: [
-            "markets",
-            "sectors",
+            "reserves"
           ]
         },
         account: {
@@ -116,10 +114,10 @@
        */
       getAccount() {
         this.$axios.$post(this.$api.admin.account.getAccount, {id: this.$route.params.id}).then((response) => {
-          if (Object.keys(response.rules).length === 0) {
-            response.rules = this.account.rules;
+          if (Object.keys(response.fields[0].rules).length === 0) {
+            response.fields[0].rules = this.account.rules;
           }
-          this.account = Object.assign(this.account, response);
+          this.account = Object.assign(this.account, response.fields[0]);
         });
       },
 

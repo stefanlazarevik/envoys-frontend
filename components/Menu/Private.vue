@@ -12,8 +12,8 @@
         <v-list :color="$vuetify.theme.dark ? 'grey darken-4' : 'deep-purple lighten-5'">
           <v-list-item :color="$vuetify.theme.dark ? '' : 'deep-purple lighten-4'">
             <v-list-item-content>
-              <v-list-item-title :class="$vuetify.theme.dark ? 'ml-2' : 'ml-2 brown--text'">{{ $auth.$state.user.name }}</v-list-item-title>
-              <v-list-item-subtitle :class="$vuetify.theme.dark ? 'ml-2' : 'ml-2 grey--text'">{{ $auth.$state.user.email }}</v-list-item-subtitle>
+              <v-list-item-title :class="$vuetify.theme.dark ? 'ml-2' : 'ml-2 brown--text'">{{ $auth.$state.user.fields[0].name }}</v-list-item-title>
+              <v-list-item-subtitle :class="$vuetify.theme.dark ? 'ml-2' : 'ml-2 grey--text'">{{ $auth.$state.user.fields[0].email }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -50,7 +50,7 @@
     },
     methods: {
       setLogout() {
-        this.$auth.logout({ data: {refresh: this.$auth.$storage['_state']['_refresh_token.local'], email: this.$auth.$state.user.email}}).then(() => {
+        this.$auth.logout({ data: {refresh: this.$auth.$storage['_state']['_refresh_token.local'], email: this.$auth.$state.user.fields[0].email}}).then(() => {
           this.$router.push('/');
         });
       }

@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import Orders from "@/components/Orders";
+  import Orders from "~/components/Orders";
 
   export default {
     components: {

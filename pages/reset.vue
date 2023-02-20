@@ -25,7 +25,7 @@
               {{ $vuetify.lang.t('$vuetify.lang_22') }}
             </v-stepper-step>
             <v-stepper-content step="1">
-              <v-form class="mt-2" ref="form1">
+              <v-form class="mt-2" ref="email">
                 <v-text-field color="primary" outlined :label="$vuetify.lang.t('$vuetify.lang_4')" v-model="email" :rules="rulesEmail" required>
                   <template #message="{ message }">
                     {{ $vuetify.lang.t(message) }}
@@ -43,18 +43,9 @@
               <small>{{ $vuetify.lang.t('$vuetify.lang_37') }}</small>
             </v-stepper-step>
             <v-stepper-content step="2">
-              <v-text-field class="mt-2" color="primary" outlined :label="$vuetify.lang.t('$vuetify.lang_35')" v-model="secure" :counter="6" :hint="$vuetify.lang.t('$vuetify.lang_43') + email">
-                <template v-slot:append>
-                  <template v-if="timer === 60 || timer === 0">
-                    <span class="my-1" @click="actionReset(1)" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</span>
-                  </template>
-                  <template v-else>
-                    <span class="my-1">{{ timer }}</span>
-                  </template>
-                </template>
-              </v-text-field>
-
-              <v-btn v-if="secure.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="actionReset(2)">{{ $vuetify.lang.t('$vuetify.lang_40') }}</v-btn>
+              <div>{{ $vuetify.lang.t('$vuetify.lang_35') }}: <span v-if="timer === 60 || timer === 0"><a @click="actionReset(1)" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</a></span><span v-else>({{ timer }})</span></div>
+              <v-otp-input v-model="email_code" length="6" />
+              <v-btn v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="actionReset(2)">{{ $vuetify.lang.t('$vuetify.lang_40') }}</v-btn>
             </v-stepper-content>
             <!-- End: step auth reset: 2 -->
 
@@ -63,19 +54,7 @@
               {{ $vuetify.lang.t('$vuetify.lang_39') }}
             </v-stepper-step>
             <v-stepper-content step="3">
-              <v-form class="mt-2" ref="form2">
-                <v-text-field color="primary" outlined :label="$vuetify.lang.t('$vuetify.lang_5')" v-model="password" :rules="rulesPassword" :counter="8" :append-icon="print ? 'mdi-eye' : 'mdi-eye-off'" :type="print ? 'text' : 'password'" @click:append="print = !print" required>
-                  <template #message="{ message }">
-                    {{ $vuetify.lang.t(message) }}
-                  </template>
-                </v-text-field>
-                <v-text-field color="primary" outlined :label="$vuetify.lang.t('$vuetify.lang_9')" :rules="rulesConfirm" :type="print ? 'text' : 'password'" required>
-                  <template #message="{ message }">
-                    {{ $vuetify.lang.t(message) }}
-                  </template>
-                </v-text-field>
-                <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="actionReset(3)">{{ $vuetify.lang.t('$vuetify.lang_40') }}</v-btn>
-              </v-form>
+              <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="actionReset(3)">{{ $vuetify.lang.t('$vuetify.lang_90') }}</v-btn>
             </v-stepper-content>
             <!-- End: step auth reset: 3 -->
 
@@ -107,9 +86,8 @@
         finish: false,
         next: 1,
         timer: 60,
-        secure: '',
-        email: '',
-        password: ''
+        email_code: '',
+        email: ''
       }
     },
     mounted() {
@@ -124,8 +102,8 @@
     methods: {
       actionReset(task) {
         if (task === 0 || task === 1 || task === 2) {
-          if (this.$refs.form1.validate()) {
-            this.$axios.$post(this.$api.auth.actionReset, {email: this.email, secure: this.secure, reset: task}).then(() => {
+          if (this.$refs.email.validate()) {
+            this.$axios.$post(this.$api.auth.actionReset, {email: this.email, email_code: this.email_code, reset: task}).then(() => {
               switch (task) {
                 case 0:
                   this.next = 2;
@@ -142,13 +120,11 @@
             });
           }
         } else {
-          if (this.$refs.form2.validate()) {
-            this.$axios.$post(this.$api.auth.actionReset, {email: this.email, secure: this.secure, password: this.password, reset: task}).then(() => {
-              this.finish = true;
-            }).catch((error) => {
-              this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
-            });
-          }
+          this.$axios.$post(this.$api.auth.actionReset, {email: this.email, email_code: this.email_code, reset: task}).then(() => {
+            this.finish = true;
+          }).catch((error) => {
+            this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
+          });
         }
       },
       getTimer() {
@@ -167,18 +143,6 @@
         return [
           (v) => !!v || '$vuetify.lang_12',
           (v) => /.+@.+/.test(v) || '$vuetify.lang_13'
-        ]
-      },
-      rulesPassword() {
-        return [
-          (v) => !!v || '$vuetify.lang_14',
-          (v) => v.length >= 8 || '$vuetify.lang_16'
-        ]
-      },
-      rulesConfirm() {
-        return [
-          (v) => !!v || '$vuetify.lang_17',
-          (v) => v === this.password || '$vuetify.lang_18'
         ]
       }
     }
