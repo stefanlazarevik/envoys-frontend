@@ -97,7 +97,7 @@
                           <v-stepper-step style="cursor: pointer" @click="next = 2" color="yellow darken-1" :complete="next > 2" step="2">
                             {{ $vuetify.lang.t('$vuetify.lang_153') }}
                           </v-stepper-step>
-                          <v-stepper-content class="mb-1" step="2">
+                          <v-stepper-content step="2">
 
                             <div>{{ $vuetify.lang.t('$vuetify.lang_35') }}: <span v-if="timer === 60 || timer === 0"><a @click="setRefresh()" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</a></span><span v-else>({{ timer }})</span></div>
                             <v-otp-input v-model="email_code" length="6" />
