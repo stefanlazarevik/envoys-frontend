@@ -101,7 +101,7 @@
 
                             <div>{{ $vuetify.lang.t('$vuetify.lang_35') }}: <span v-if="timer === 60 || timer === 0"><a @click="setRefresh()" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</a></span><span v-else>({{ timer }})</span></div>
                             <v-otp-input v-model="email_code" length="6" />
-                            <v-btn v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="$auth.$state.user.fields[0].factor_secure ? next = 3 : setWithdraw(item)">
+                            <v-btn :disabled="disabled" v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="$auth.$state.user.fields[0].factor_secure ? next = 3 : setWithdraw(item)">
                               <template v-if="$auth.$state.user.fields[0].factor_secure">
                                 {{ $auth.$state.user.fields[0].factor_secure ? $vuetify.lang.t('$vuetify.lang_40') : $vuetify.lang.t('$vuetify.lang_29') }}
                               </template>
@@ -120,7 +120,7 @@
                           <v-stepper-content class="mb-1" v-if="$auth.$state.user.fields[0].factor_secure" step="3">
                             <div>{{ $vuetify.lang.t('$vuetify.lang_308') }}</div>
                             <v-otp-input v-model="factor_code" length="6" />
-                            <v-btn v-if="factor_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
+                            <v-btn :disabled="disabled" v-if="factor_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
                           </v-stepper-content>
                           <!-- End: step withdraw: 3 -->
 
@@ -241,7 +241,8 @@
         timer: 60,
         email_code: '',
         factor_code: '',
-        to: ''
+        to: '',
+        disabled: false
       }
     },
     watch: {
@@ -355,6 +356,7 @@
        * @param item
        */
       setWithdraw(item) {
+        this.disabled = true;
         this.$axios.$post(this.$api.spot.setWithdraw, {
           id: item.id,
           symbol: this.$route.params.symbol,
