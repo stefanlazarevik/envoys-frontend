@@ -400,7 +400,6 @@
 </script>
 
 <style lang="scss">
-
   .slide {
     margin: 7.5px 0;
 
@@ -420,10 +419,8 @@
       }
     }
   }
-
   .flex-center > .v-slide-group__wrapper > .v-slide-group__content {
       align-items: center;
       justify-content: center;
   }
-
 </style>

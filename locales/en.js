@@ -341,5 +341,5 @@ export default {
   lang_341: 'So far, no one has brought the currency to the exchange',
   lang_342: 'According to your request, there are no reserves with such parameters',
   lang_343: 'User has no assets',
-  lang_344: 'The user has not generated any asset'
+  lang_344: 'The user has not generated any asset',
 }
