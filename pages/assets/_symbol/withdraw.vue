@@ -333,10 +333,13 @@
       getReserveBalance(item) {
         let number = item.reserve;
         let balance = this.asset.balance ?? 0;
-        if (number >= balance) {
-          return (balance > this.asset.max_withdraw ? this.asset.max_withdraw : balance)
+        if (balance > this.asset.max_withdraw) {
+          return this.asset.max_withdraw
         }
-        return this.asset.max_withdraw
+        if (balance > number) {
+          return number
+        }
+        return balance
       },
 
       /**
