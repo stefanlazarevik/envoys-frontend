@@ -13,7 +13,6 @@
         <v-text-field v-model="chain.explorer_link" color="primary" :label="$vuetify.lang.t('$vuetify.lang_224')" outlined></v-text-field>
         <v-text-field v-model="chain.confirmation" color="primary" :label="$vuetify.lang.t('$vuetify.lang_153')" outlined></v-text-field>
         <v-text-field v-model="chain.time_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_225')" outlined></v-text-field>
-        <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.address" :label="$vuetify.lang.t('$vuetify.lang_230')" outlined></v-text-field>
         <v-select v-model="chain.tag" :items="$tag.list" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_283')" outlined />
       </v-col>
       <v-col cols="12" md="4">
@@ -101,11 +100,6 @@
               <td>{{ $vuetify.lang.t('$vuetify.lang_239') }}</td>
               <td>-</td>
             </tr>
-            <tr v-if="$platform.get(chain.platform).type === 'CRYPTO'">
-              <td>{{ $vuetify.lang.t('$vuetify.lang_230') }}</td>
-              <td>{{ $vuetify.lang.t('$vuetify.lang_241') }}</td>
-              <td>-</td>
-            </tr>
           </tbody>
         </template>
       </v-simple-table>
@@ -134,11 +128,7 @@
         chain: {
           name: "",
           rpc: "",
-          rpc_key: "",
-          rpc_user: "",
-          rpc_password: "",
           explorer_link: "",
-          address: "",
           network: 0,
           confirmation: 0,
           time_withdraw: 10,
