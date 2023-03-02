@@ -63,8 +63,8 @@
             </template>
           </v-chip>
         </template>
-        <template v-slot:item.fees_withdraw="{ item }">
-          {{ item.fees_withdraw ? item.fees_withdraw : '∽' /*Supplier dependent*/ }} <b>{{ $platform.getSymbol(item.platform) }}</b>
+        <template v-slot:item.fees="{ item }">
+          {{ item.fees ? item.fees : '∽' /*Supplier dependent*/ }} <b>{{ $platform.getSymbol(item.platform) }}</b>
         </template>
         <template v-slot:item.status="{ item }">
           <template v-if="item.status">
@@ -320,7 +320,7 @@
             text: this.$vuetify.lang.t('$vuetify.lang_221'),
             align: 'start',
             sortable: true,
-            value: 'fees_withdraw'
+            value: 'fees'
           }, {
             text: this.$vuetify.lang.t('$vuetify.lang_81'),
             align: 'start',

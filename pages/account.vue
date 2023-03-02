@@ -42,7 +42,7 @@
     computed: {
 
       /**
-       * @returns {[{title: string, to: string},{title: string, to: string},{title: string, to: string}]}
+       * @returns {[{icon: string, to: string, title: string},{icon: string, to: string, title: string},{icon: string, to: string, title: string},{icon: string, to: string, title: string},{icon: string, to: string, title: string}]}
        */
       navs() {
         return [
@@ -62,6 +62,10 @@
             title: this.$vuetify.lang.t('$vuetify.lang_161'),
             icon: "mdi-account-convert-outline",
             to: 'actions'
+          }, {
+            title: this.$vuetify.lang.t('$vuetify.lang_345'),
+            icon: "mdi-account-multiple-check-outline",
+            to: 'kyc'
           }
         ]
       }

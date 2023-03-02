@@ -50,8 +50,8 @@
             <span>{{ item.address }}</span>
           </v-tooltip>
         </template>
-        <template v-slot:item.fees_withdraw="{ item }">
-          {{ item.fees_withdraw }} <b>{{ (item.parent_symbol).toUpperCase() }}</b>
+        <template v-slot:item.fees="{ item }">
+          {{ item.fees }} <b>{{ (item.parent_symbol).toUpperCase() }}</b>
         </template>
         <template v-slot:item.protocol="{ item }">
           <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
@@ -246,7 +246,7 @@
             text: this.$vuetify.lang.t('$vuetify.lang_221'),
             align: 'start',
             sortable: true,
-            value: 'fees_withdraw'
+            value: 'fees'
           }, {
             text: this.$vuetify.lang.t('$vuetify.lang_270'),
             align: 'start',

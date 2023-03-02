@@ -45,8 +45,8 @@
             <b>{{ item.symbol.toUpperCase() }}</b>
           </div>
         </template>
-        <template v-slot:item.fin_type="{ item }">
-          <template v-if="item.fin_type">
+        <template v-slot:item.type="{ item }">
+          <template v-if="item.type">
             Fiat
           </template>
           <template v-else>
@@ -272,7 +272,7 @@
             text: this.$vuetify.lang.t('$vuetify.lang_208'),
             align: 'start',
             sortable: true,
-            value: 'fin_type'
+            value: 'type'
           }, {
             text: this.$vuetify.lang.t('$vuetify.lang_189'),
             align: 'start',

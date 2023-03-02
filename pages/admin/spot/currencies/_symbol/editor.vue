@@ -62,10 +62,9 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field v-model="currency.symbol" color="primary" :label="$vuetify.lang.t('$vuetify.lang_187')" outlined></v-text-field>
-        <v-text-field v-model="currency.min_deposit" color="primary" :label="$vuetify.lang.t('$vuetify.lang_200')" outlined></v-text-field>
         <v-text-field v-model="currency.fees_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_201')" outlined></v-text-field>
         <v-select v-model="currency.status" :items="status" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_191')" outlined></v-select>
-        <v-select v-model="currency.fin_type" :items="type" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_208')" outlined></v-select>
+        <v-select v-model="currency.type" :items="type" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_208')" outlined></v-select>
       </v-col>
       <v-col cols="12" md="4">
         <v-text-field v-model="currency.min_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_202')" outlined></v-text-field>
@@ -120,7 +119,6 @@
           symbol: "",
           min_withdraw: 0.0001,
           max_withdraw: 100,
-          min_deposit: 0.0100,
           min_trade: 0.0100,
           max_trade: 1000000,
           fees_trade: 0.1500,
@@ -128,7 +126,7 @@
           marker: false,
           chains_ids: [],
           icon: false,
-          fin_type: "CRYPTO",
+          type: "CRYPTO",
           status: false
         },
         image: "",

@@ -1,7 +1,8 @@
 export const state = () => ({
   dark: false,
   i18n: null,
-  screen: false
+  screen: false,
+  url: null
 })
 
 export const mutations = {
@@ -14,4 +15,7 @@ export const mutations = {
   setLanguage(state, payload) {
     state.i18n = payload;
   },
+  setUrl(state, payload) {
+    state.url = payload;
+  }
 }

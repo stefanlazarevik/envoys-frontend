@@ -36,7 +36,7 @@
       </v-col>
       <v-col cols="12" md="4">
         <v-select v-model="contract.platform" :items="$platform.getType('CRYPTO')" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_113')" outlined></v-select>
-        <v-text-field v-model="contract.fees_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>
+        <v-text-field v-model="contract.fees" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>
       </v-col>
     </v-row>
     <!-- End: contract info form -->
@@ -104,7 +104,7 @@
           symbol: "",
           chain_id: 0,
           address: "",
-          fees_withdraw: 0.01,
+          fees: 0.01,
           decimals: 6,
           protocol: "ERC20",
           platform: "ETHEREUM"

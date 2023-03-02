@@ -63,7 +63,8 @@
             "chains",
             "pairs",
             "contracts",
-            "reserves"
+            "reserves",
+            "repayments"
           ]
         },
         account: {

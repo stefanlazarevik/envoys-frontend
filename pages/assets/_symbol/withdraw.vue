@@ -2,7 +2,7 @@
   <div class="ma-4">
 
     <template v-if="asset.chains">
-      <template v-if="!asset.fin_type">
+      <template v-if="!asset.type">
 
         <!-- Start: tabs bar -->
         <v-tabs v-model="eyelet" color="primary">
@@ -101,12 +101,17 @@
 
                             <div>{{ $vuetify.lang.t('$vuetify.lang_35') }}: <span v-if="timer === 60 || timer === 0"><a @click="setRefresh()" style="cursor: pointer;">{{ $vuetify.lang.t('$vuetify.lang_36') }}</a></span><span v-else>({{ timer }})</span></div>
                             <v-otp-input v-model="email_code" length="6" />
-                            <v-btn :disabled="disabled" v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="$auth.$state.user.fields[0].factor_secure ? next = 3 : setWithdraw(item)">
-                              <template v-if="$auth.$state.user.fields[0].factor_secure">
-                                {{ $auth.$state.user.fields[0].factor_secure ? $vuetify.lang.t('$vuetify.lang_40') : $vuetify.lang.t('$vuetify.lang_29') }}
+                            <v-btn class="mb-5" :disabled="disabled" v-if="email_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="$auth.$state.user.fields[0].factor_secure ? next = 3 : setWithdraw(item)">
+                              <template v-if="disabled">
+                                <v-progress-circular indeterminate color="amber"></v-progress-circular>
                               </template>
                               <template v-else>
-                                {{ $vuetify.lang.t('$vuetify.lang_111') }} <span v-if="quantity">({{ $vuetify.lang.t('$vuetify.lang_103') }}: {{ $decimal.truncate(quantity > 0 ? $decimal.sub(quantity, item.fees_withdraw) : 0) }} <b>{{ asset.symbol.toUpperCase() }}</b>)</span>
+                                <template v-if="$auth.$state.user.fields[0].factor_secure">
+                                  {{ $auth.$state.user.fields[0].factor_secure ? $vuetify.lang.t('$vuetify.lang_40') : $vuetify.lang.t('$vuetify.lang_92') }}
+                                </template>
+                                <template v-else>
+                                  {{ $vuetify.lang.t('$vuetify.lang_111') }} <span v-if="quantity">({{ $vuetify.lang.t('$vuetify.lang_103') }}: {{ $decimal.format(quantity, 8) }} <b>{{ asset.symbol.toUpperCase() }}</b>)</span>
+                                </template>
                               </template>
                             </v-btn>
 
@@ -120,7 +125,14 @@
                           <v-stepper-content class="mb-1" v-if="$auth.$state.user.fields[0].factor_secure" step="3">
                             <div>{{ $vuetify.lang.t('$vuetify.lang_308') }}</div>
                             <v-otp-input v-model="factor_code" length="6" />
-                            <v-btn :disabled="disabled" v-if="factor_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
+                            <v-btn :disabled="disabled" v-if="factor_code.length === 6" color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click="setWithdraw(item)">
+                              <template v-if="disabled">
+                                <v-progress-circular indeterminate color="amber"></v-progress-circular>
+                              </template>
+                              <template v-else>
+                                {{ $vuetify.lang.t('$vuetify.lang_92') }}
+                              </template>
+                            </v-btn>
                           </v-stepper-content>
                           <!-- End: step withdraw: 3 -->
 
@@ -156,13 +168,13 @@
                       {{ $vuetify.lang.t('$vuetify.lang_102').replace(/%1/g, item.time_withdraw) }}
                     </v-card-text>
                   </v-card>
-                  <v-card v-if="item.fees_withdraw" elevation="0" outlined>
+                  <v-card v-if="item.fees" elevation="0" outlined>
                     <v-card-subtitle :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
-                      <b>{{ $vuetify.lang.t('$vuetify.lang_20') }}:</b> {{ $decimal.truncate(item.fees_withdraw) }} {{ asset.symbol.toUpperCase() }} /≈ ${{ $decimal.truncate(price ? (item.fees_withdraw ? $decimal.mul(price, item.fees_withdraw) : 0) : (item.fees_withdraw ? item.fees_withdraw : 0)) }}
+                      <b>{{ $vuetify.lang.t('$vuetify.lang_20') }}:</b> {{ $decimal.truncate(item.fees) }} {{ asset.symbol.toUpperCase() }} /≈ ${{ $decimal.truncate(price ? (item.fees ? $decimal.mul(price, item.fees) : 0) : (item.fees ? item.fees : 0)) }}
                     </v-card-subtitle>
                     <v-divider />
                     <v-card-text :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
-                      <b>{{ $vuetify.lang.t('$vuetify.lang_100') }}:</b> {{ item.fees_withdraw ? $decimal.add(asset.min_withdraw, item.fees_withdraw) : 0 }} <b>{{ asset.symbol.toUpperCase() }}</b>
+                      <b>{{ $vuetify.lang.t('$vuetify.lang_100') }}:</b> {{ item.fees ? $decimal.add(asset.min_withdraw, item.fees) : 0 }} <b>{{ asset.symbol.toUpperCase() }}</b>
                     </v-card-text>
                     <v-divider />
                     <v-card-text :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
@@ -376,6 +388,7 @@
             content: `${error.response.data.code}: ${error.response.data.message}`,
             color: 'red darken-2'
           });
+          this.disabled = false;
         });
       },
 
@@ -386,7 +399,7 @@
        */
       setStep(step, item) {
         if (!this.$refs.form[0].validate()) return false;
-        if (this.quantity > this.getReserveBalance(item) || this.quantity < Number(this.$decimal.add(this.asset.min_withdraw, item.fees_withdraw).valueOf())) {
+        if (this.quantity > this.getReserveBalance(item) || this.quantity < Number(this.$decimal.add(this.asset.min_withdraw, item.fees).valueOf())) {
           this.$snackbar.open({
             content: this.$vuetify.lang.t('$vuetify.lang_154'),
             color: 'red darken-2'

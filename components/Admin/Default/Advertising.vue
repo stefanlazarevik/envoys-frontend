@@ -1,21 +1,30 @@
 <template>
   <div>
 
+    <!-- Start: app bar element -->
+    <v-app-bar color="transparent" height="50" flat>
+      <v-tabs v-model="type">
+        <v-tab>
+          {{ $vuetify.lang.t('$vuetify.lang_91') }}
+        </v-tab>
+        <v-tab>
+          {{ $vuetify.lang.t('$vuetify.lang_159') }}
+        </v-tab>
+      </v-tabs>
+    </v-app-bar>
+    <!-- End: app bar element -->
+
+    <v-divider />
+
     <!-- Start: header bar -->
     <div class="pa-2">
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6">
           <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large to="/admin/default/advertising/create/editor">
             <v-icon color="green">mdi-plus-thick</v-icon> {{ $vuetify.lang.t('$vuetify.lang_320') }}
           </v-btn>
         </v-col>
-        <v-col cols="12" md="4">
-          <v-radio-group style="margin: 5px 0" class="mx-4" v-model="type" hide-details row>
-            <v-radio label="Text" :value="0"></v-radio>
-            <v-radio label="Sticker" :value="1"></v-radio>
-          </v-radio-group>
-        </v-col>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6">
           <v-btn color="black--text grey lighten-5 text-capitalize" elevation="0" large class="float-end">
             {{ count }}
           </v-btn>

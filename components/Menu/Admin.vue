@@ -72,6 +72,11 @@
               icon: "mdi-cash-lock",
               display: false,
               to: 'reserves'
+            }, {
+              title: '$vuetify.lang_353',
+              icon: "mdi-credit-card-refresh-outline",
+              display: false,
+              to: 'repayments'
             }/**, {
               title: '$vuetify.lang_83',
               icon: "mdi-package-variant-closed-plus",

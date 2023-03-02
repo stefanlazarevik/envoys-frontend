@@ -14,9 +14,10 @@
         <v-text-field v-model="chain.confirmation" color="primary" :label="$vuetify.lang.t('$vuetify.lang_153')" outlined></v-text-field>
         <v-text-field v-model="chain.time_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_225')" outlined></v-text-field>
         <v-select v-model="chain.tag" :items="$tag.list" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_283')" outlined />
+        <v-text-field v-model="chain.decimals" color="primary" :label="$vuetify.lang.t('$vuetify.lang_293')" outlined></v-text-field>
       </v-col>
       <v-col cols="12" md="4">
-        <v-text-field v-model="chain.fees_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>
+        <v-text-field v-model="chain.fees" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" :hint="$vuetify.lang.t('$vuetify.lang_353')" outlined></v-text-field>
         <v-text-field v-model="chain.network" color="primary" :label="$vuetify.lang.t('$vuetify.lang_112')" outlined></v-text-field>
         <v-select v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.parent_symbol" :items="currencies" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
           <template v-slot:item="{ item, attrs, on }">
@@ -130,10 +131,11 @@
           rpc: "",
           explorer_link: "",
           network: 0,
+          decimals: 18,
           confirmation: 0,
           time_withdraw: 10,
           status: false,
-          fees_withdraw: 0,
+          fees: 0,
           parent_symbol: "",
           tag: "C_NONE",
           platform: "ETHEREUM"

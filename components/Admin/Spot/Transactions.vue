@@ -65,10 +65,10 @@
           </v-tooltip>
         </template>
         <template v-slot:item.value="{ item }">
-          {{ item.tx_type ? '-' : '+' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
+          {{ item.assignment ? '-' : '+' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
         </template>
         <template v-slot:item.status="{ item }">
-          <template v-if="item.status === 'PENDING'">
+          <template v-if="item.status === 'PENDING' || item.status === 'LOCK'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_131') }}
             </v-chip>
@@ -137,7 +137,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.tx_type">
+                <v-list-item v-if="item.assignment">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_20') }}
@@ -147,7 +147,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.tx_type">
+                <v-list-item v-if="item.assignment">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_107') }}
@@ -157,7 +157,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.chain.confirmation && !item.tx_type">
+                <v-list-item v-if="item.chain.confirmation && !item.assignment">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_153') }}
@@ -248,7 +248,7 @@
 
         this.$axios.$post(this.$api.admin.spot.getTransactions, {
           id: this.$route.params.id,
-          tx_type: this.type,
+          assignment: this.type,
           search: this.search,
           limit: this.limit,
           page: this.page

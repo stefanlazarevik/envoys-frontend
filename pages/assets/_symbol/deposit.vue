@@ -2,7 +2,7 @@
   <div class="ma-4">
 
     <template v-if="asset.chains && (!empty || empty === 1)">
-      <template v-if="!asset.fin_type">
+      <template v-if="!asset.type">
 
         <!-- Start: tabs bar -->
         <v-tabs v-model="eyelet" color="primary">
@@ -89,7 +89,7 @@
                   </v-card>
                   <v-card elevation="0" outlined>
                     <v-card-subtitle class="text-uppercase">
-                      <b class="red--text">{{ $vuetify.lang.t('$vuetify.lang_88').replace(/%1/g, asset['min_deposit']).replace(/%2/g, asset['symbol'].toUpperCase()) }}</b>
+                      <b class="red--text">{{ $vuetify.lang.t('$vuetify.lang_88').replace(/%1/g, $decimal.truncate(item.fees, 6)).replace(/%2/g, asset['symbol'].toUpperCase()) }}</b>
                     </v-card-subtitle>
                     <v-divider />
                     <v-card-text :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
@@ -104,7 +104,7 @@
               <v-layout fill-height style="height:200px;" wrap>
                 <v-flex/>
                 <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
-                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 0), asset.fin_type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 0), asset.type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
                 </v-flex>
                 <v-flex/>
               </v-layout>
@@ -136,7 +136,7 @@
               <v-layout fill-height style="height:200px;" wrap>
                 <v-flex/>
                 <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
-                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, 0, asset.fin_type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, 0, asset.type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
                 </v-flex>
                 <v-flex/>
               </v-layout>
@@ -163,6 +163,7 @@
 <script>
 
   import Qrcode from "~/components/Qrcode";
+  import decimal from "../../../plugins/decimal";
 
   export default {
     components: {
@@ -187,6 +188,21 @@
       this.getAsset();
     },
     methods: {
+      decimal,
+
+      round(number, precision, isDown) {
+        const factor = Math.pow(10, precision);
+        let tempNumber = number * factor;
+        let roundedTempNumber = 0;
+        if (isDown) {
+          tempNumber = -tempNumber;
+          roundedTempNumber = Math.round(tempNumber) * -1;
+        } else {
+          roundedTempNumber = Math.round(tempNumber);
+        }
+        return roundedTempNumber / factor;
+      },
+
 
       /**
        *
@@ -198,7 +214,7 @@
         this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
 
-          if (!this.asset.fin_type) {
+          if (!this.asset.type) {
             this.asset.chains.map((item) => {
               if (!item.contract) {
                 this.empty += 1;
@@ -215,12 +231,12 @@
       /**
        * @param platform
        * @param protocol
-       * @param fin_type
+       * @param type
        * @param index
        */
-      setAsset(platform, protocol, fin_type, index) {
-        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, fin_type: fin_type}).then((response) => {
-          if (fin_type) {
+      setAsset(platform, protocol, type, index) {
+        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, type: type}).then((response) => {
+          if (type) {
             for (let i = 0; i < this.asset.chains.length; i++) {
               this.asset.chains[i].exist = true;
             }

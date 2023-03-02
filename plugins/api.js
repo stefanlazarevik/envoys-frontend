@@ -16,8 +16,9 @@ export default ({ app }, inject) => {
       getUser: '/account/get-user',
       setUser: '/account/set-user',
       getActions: '/account/get-actions',
-      getSecure: '/account/get-secure',
-      setSecure: '/account/set-secure'
+      getFactor: '/account/get-factor',
+      setFactor: '/account/set-factor',
+      setKyc: '/account/set-kyc'
     },
     spot: {
       getPrice: '/spot/get-price',
@@ -65,12 +66,15 @@ export default ({ app }, inject) => {
         getTransactions: '/admin/spot/get-transactions',
         getAssets: '/admin/spot/get-assets',
         getReserves: '/admin/spot/get-reserves',
-        setReserveUnlock: '/admin/spot/get-reserve-unlock'
+        setReserveUnlock: '/admin/spot/set-reserve-unlock',
+        getRepayments: '/admin/spot/get-repayments',
+        setRepayment: '/admin/spot/set-repayment',
       },
       account: {
         getAccounts: '/admin/account/get-accounts',
         getAccount: '/admin/account/get-account',
-        setAccount: '/admin/account/set-account'
+        setAccount: '/admin/account/set-account',
+        getKycApplicant: '/admin/account/get-kyc-applicant'
       },
       ads: {
         setAdvertising: '/admin/ads-shot/set-advertising',

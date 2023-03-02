@@ -17,7 +17,7 @@
           </template>
         </template>
         <template v-slot:item.type="{ item }">
-          <template v-if="item.tx_type === 'WITHDRAWS'">
+          <template v-if="item.assignment === 'WITHDRAWS'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'red lighten-5 red--text') + ' ml-0 mr-2'" label small>
               <v-icon :color="item.status === 'PENDING' ? 'light-blue' : 'green'" size="15">
                 mdi-arrow-top-left
@@ -40,10 +40,10 @@
           </v-chip>
         </template>
         <template v-slot:item.value="{ item }">
-          {{ item.tx_type ? '-' : '+' }}{{ item.value }} <b>{{ item.symbol.toUpperCase() }}</b>
+          {{ item.assignment ? '-' : '+' }}{{ $decimal.format(item.value, 8) }} <b>{{ item.symbol.toUpperCase() }}</b>
         </template>
         <template v-slot:item.status="{ item }">
-          <template v-if="item.status === 'PENDING'">
+          <template v-if="item.status === 'PENDING' || item.status === 'LOCK'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_131') }}
             </v-chip>
@@ -106,14 +106,14 @@
                 <v-list-item>
                   <v-item-group>
                     <v-list-item-subtitle>
-                      {{ item.tx_type ? $vuetify.lang.t('$vuetify.lang_105') : $vuetify.lang.t('$vuetify.lang_287') }}
+                      {{ item.assignment ? $vuetify.lang.t('$vuetify.lang_105') : $vuetify.lang.t('$vuetify.lang_287') }}
                     </v-list-item-subtitle>
                     <v-list-item-title>
-                      {{ item.tx_type ? '-' : '+' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
+                      {{ item.assignment ? '-' : '+' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.tx_type && item.status === 'FILLED'">
+                <v-list-item v-if="item.assignment && item.status === 'FILLED'">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_20') }}
@@ -123,13 +123,13 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.tx_type && item.status === 'FILLED'">
+                <v-list-item v-if="item.assignment && item.status === 'FILLED'">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_107') }}
                     </v-list-item-subtitle>
                     <v-list-item-title>
-                      {{ item.fees ? item.value - item.fees : item.value }} {{ item.symbol.toUpperCase() }}
+                      {{ item.fees ? $decimal.sub(item.value, item.fees) : item.value }} {{ item.symbol.toUpperCase() }}
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
@@ -167,7 +167,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.chain.confirmation && !item.tx_type">
+                <v-list-item v-if="item.chain.confirmation && !item.assignment">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_153') }}
@@ -187,7 +187,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.status === 'PENDING' && item.tx_type === 'WITHDRAWS'">
+                <v-list-item v-if="item.status === 'PENDING' && item.assignment === 'WITHDRAWS'">
                   <v-btn color="white--text red text-capitalize" @click="cancelWithdraw(item.id)" large block elevation="0">{{ $vuetify.lang.t('$vuetify.lang_124') }}</v-btn>
                 </v-list-item>
               </v-list>
@@ -328,7 +328,7 @@
 
         this.$axios.$post(this.$api.spot.getTransactions, {
           symbol: this.$route.params.symbol,
-          tx_type: this.type,
+          assignment: this.type,
           limit: this.limit,
           page: this.page
         }).then((response) => {

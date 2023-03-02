@@ -179,7 +179,7 @@
             sortable: false,
             value: 'sell_ratio'
           }, {
-            text: this.$vuetify.lang.t('$vuetify.lang_159'),
+            text: this.$vuetify.lang.t('$vuetify.lang_332'),
             width: '20%',
             align: 'end',
             sortable: false,

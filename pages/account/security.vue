@@ -7,29 +7,26 @@
       <div>{{ $vuetify.lang.t('$vuetify.lang_297') }}</div>
 
       <v-card class="mt-4" outlined>
-        <v-hover v-slot="{ hover }" open-delay="200">
-          <div class="ma-4" v-if="hover">
-            <template v-if="factors.secure">
-              <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click.stop="getSecure(1)">{{ $vuetify.lang.t('$vuetify.lang_300') }}</v-btn>
-            </template>
-            <template v-else>
-              <v-btn color="white--text red lighten-1 text-capitalize" large block elevation="0" @click.stop="getSecure(2)">{{ $vuetify.lang.t('$vuetify.lang_301') }}</v-btn>
-            </template>
-          </div>
-          <div v-else>
-            <v-list height="76">
-              <v-list-item>
-                <v-list-item-avatar>
-                  <v-img src="/svg/2fa.svg" />
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>{{ $vuetify.lang.t('$vuetify.lang_298') }}</v-list-item-title>
-                  <v-list-item-subtitle>{{ $vuetify.lang.t('$vuetify.lang_299') }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </div>
-        </v-hover>
+        <v-list height="76">
+          <v-list-item>
+            <v-list-item-avatar>
+              <v-img src="/svg/2fa.svg" />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ $vuetify.lang.t('$vuetify.lang_298') }}</v-list-item-title>
+              <v-list-item-subtitle>{{ $vuetify.lang.t('$vuetify.lang_299') }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider />
+        <v-card-actions>
+          <template v-if="factors.secure">
+            <v-btn color="black--text yellow darken-1 text-capitalize" large block elevation="0" @click.stop="getFactor(1)">{{ $vuetify.lang.t('$vuetify.lang_300') }}</v-btn>
+          </template>
+          <template v-else>
+            <v-btn color="white--text red lighten-1 text-capitalize" large block elevation="0" @click.stop="getFactor(2)">{{ $vuetify.lang.t('$vuetify.lang_301') }}</v-btn>
+          </template>
+        </v-card-actions>
       </v-card>
 
       <v-dialog v-model="dialogs.enable" width="500">
@@ -54,7 +51,7 @@
                 </v-text-field>
                 <div class="mt-2">{{ $vuetify.lang.t('$vuetify.lang_308') }}</div>
                 <v-otp-input v-model="factors.code" length="6" />
-                <v-btn class="mt-2" block color="black--text yellow darken-1 text-capitalize" elevation="0" @click="setSecure(1)" large>{{ $vuetify.lang.t('$vuetify.lang_309') }}</v-btn>
+                <v-btn class="mt-2" block color="black--text yellow darken-1 text-capitalize" elevation="0" @click="setFactor(1)" large>{{ $vuetify.lang.t('$vuetify.lang_309') }}</v-btn>
               </v-flex>
               <v-flex/>
             </v-layout>
@@ -74,7 +71,7 @@
           <v-card-text>
             <div class="mt-2">{{ $vuetify.lang.t('$vuetify.lang_308') }}</div>
             <v-otp-input v-model="factors.code" length="6" />
-            <v-btn class="mt-2" block color="black--text yellow darken-1 text-capitalize" elevation="0" @click="setSecure(2)" large>{{ $vuetify.lang.t('$vuetify.lang_310') }}</v-btn>
+            <v-btn class="mt-2" block color="black--text yellow darken-1 text-capitalize" elevation="0" @click="setFactor(2)" large>{{ $vuetify.lang.t('$vuetify.lang_310') }}</v-btn>
           </v-card-text>
           <v-card-actions style="display: grid;" class="text-center grey lighten-3">
             <small class="my-4">{{ $vuetify.lang.t('$vuetify.lang_311') }}</small>
@@ -109,15 +106,15 @@
       }
     },
     mounted() {
-      this.getSecure(0);
+      this.getFactor(0);
     },
     methods: {
       copy() {
         document.getElementById("copy").select();
         document.execCommand("copy");
       },
-      getSecure(exp) {
-        this.$axios.$post(this.$api.account.getSecure).then((response) => {
+      getFactor(exp) {
+        this.$axios.$post(this.$api.account.getFactor).then((response) => {
           this.factors.code = '';
           if (response.secret && response.url) {
             this.factors.secret = response.secret;
@@ -134,8 +131,8 @@
           }
         });
       },
-      setSecure(exp) {
-        this.$axios.$post(this.$api.account.setSecure, {secret: this.factors.secret, code: this.factors.code}).then(_ => {
+      setFactor(exp) {
+        this.$axios.$post(this.$api.account.setFactor, {secret: this.factors.secret, code: this.factors.code}).then(_ => {
           this.factors.secret = '';
           this.factors.code = '';
           this.factors.url = '';
@@ -143,17 +140,12 @@
             case 1:
               this.dialogs.enable = false;
               this.factors.secure = false;
-              //this.$auth.$state.user.fields[0].factor_secure = false;
               break;
             case 2:
               this.dialogs.disable = false;
               this.factors.secure = true;
-              //this.$auth.$state.user.fields[0].factor_secure = true;
               break;
           }
-          //console.log(this.$auth.$state.user);
-          //this.$auth.setUser(this.$auth.$state.user);
-          //console.log(this.$auth.$state.user);
         }).catch((error) => {
           this.$snackbar.open({
             content: `${error.response.data.code}: ${error.response.data.message}`,

@@ -75,7 +75,7 @@
     },
     data() {
       return {
-        channels: ['order/create', 'order/status', 'order/cancel', 'deposit/open', 'deposit/status', 'withdraw/status', 'broker/depth'],
+        channels: ['order/create', 'order/status', 'order/cancel', 'deposit/open', 'deposit/status', 'withdraw/status', 'broker/depth', 'account/kyc-verify'],
         interval: [0, 60, 300, 900, 1800, 3600, 86400],
         admin: false
       }

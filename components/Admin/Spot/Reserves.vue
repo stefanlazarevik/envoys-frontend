@@ -45,9 +45,9 @@
             {{ item.platform }}
           </v-chip>
         </template>
-        <template v-slot:item.init="{ item }">
+        <template v-slot:item.start="{ item }">
           <template v-if="item.lock">
-            <v-btn @click="setReserveUnlock(item.id)" color="red white--text" elevation="0">
+            <v-btn @click="setReserveUnlock(item.id)" class="text-capitalize" color="red" elevation="0" outlined>
               {{ $vuetify.lang.t('$vuetify.lang_339') }}
             </v-btn>
           </template>
@@ -208,7 +208,7 @@ export default {
           text: this.$vuetify.lang.t('$vuetify.lang_338'),
           align: 'center',
           sortable: false,
-          value: 'init'
+          value: 'start'
         }
       ]
     }
