@@ -353,7 +353,7 @@ export default {
   lang_353: 'Deficit repayments',
   lang_354: 'Pay off the deficit',
   lang_355: 'The amount that was transferred to the asset to pay for the withdrawal fee',
-  lang_356: '',
+  lang_356: 'Currently, there is no shortage',
   lang_357: '',
   lang_358: '',
   lang_359: '',

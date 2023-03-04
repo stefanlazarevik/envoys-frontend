@@ -16,19 +16,24 @@
           </v-tooltip>
         </template>
         <template v-slot:item.value="{ item }">
-          <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
+          <template v-if="item.protocol">
+            {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
+          </template>
+          <template v-else>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
               <span v-bind="attrs" v-on="on">
                 {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
               </span>
-            </template>
-            <span>
+              </template>
+              <span>
               {{ $vuetify.lang.t('$vuetify.lang_355') }}
             </span>
-          </v-tooltip>
+            </v-tooltip>
+          </template>
         </template>
         <template v-slot:item.fees="{ item }">
-          {{ $decimal.format(item.fees ? item.fees : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
+          {{ $decimal.format(item.fees ? item.fees : 0) }} <b>{{ item.protocol ? (item.parent_symbol).toUpperCase() : (item.symbol).toUpperCase() }}</b>
         </template>
         <template v-slot:item.protocol="{ item }">
           <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
@@ -48,7 +53,7 @@
           </template>
           <template v-else>
             <v-btn class="text-capitalize" color="red" elevation="0" outlined>
-              {{ $vuetify.lang.t('$vuetify.lang_354') }} ({{ $decimal.add(item.value, item.fees ?? 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>)
+              {{ $vuetify.lang.t('$vuetify.lang_354') }} ({{ item.protocol ? item.fees : $decimal.add(item.value, item.fees ?? 0) }} <b>{{ item.protocol ? (item.parent_symbol).toUpperCase() : (item.symbol).toUpperCase() }}</b>)
             </v-btn>
           </template>
         </template>
@@ -76,6 +81,19 @@
       <!-- End: pagination -->
 
     </template>
+
+    <!-- Start: no history -->
+    <template v-else-if="!overlay">
+      <v-layout fill-height wrap>
+        <v-flex/>
+        <v-flex align-self-center class="text-center my-16" md4 mx5 sm6 xl3>
+          <v-img class="ma-auto" width="250" src="/asset/3.png" />
+          <h2>{{ $vuetify.lang.t('$vuetify.lang_356') }}</h2>
+        </v-flex>
+        <v-flex/>
+      </v-layout>
+    </template>
+    <!-- End: no history -->
 
     <v-overlay absolute :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="0.8" :value="overlay">
       <v-progress-circular color="yellow darken-3" indeterminate size="50" />

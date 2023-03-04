@@ -35,6 +35,14 @@
         <template v-slot:item.value="{ item }">
           {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
         </template>
+        <template v-slot:item.reverse="{ item }">
+          <template v-if="item.protocol">
+            <span class="red--text">OFF</span>
+          </template>
+          <template v-else>
+            {{ $decimal.format(item.reverse ? item.reverse : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
+          </template>
+        </template>
         <template v-slot:item.protocol="{ item }">
           <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
             {{ item.protocol ?? 'Mainnet' }}
@@ -189,6 +197,11 @@ export default {
           align: 'start',
           sortable: false,
           value: 'value'
+        }, {
+          text: this.$vuetify.lang.t('$vuetify.lang_292'),
+          align: 'start',
+          sortable: false,
+          value: 'reverse'
         }, {
           text: this.$vuetify.lang.t('$vuetify.lang_336'),
           align: 'start',
