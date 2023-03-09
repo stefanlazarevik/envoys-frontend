@@ -5,7 +5,7 @@
 
       <!-- Start: assets list component -->
       <v-col class="pa-1" cols="12" md="3" sm="12">
-        <v-card class="fill-height" elevation="0" outlined>
+        <v-card class="fill-height" elevation="0">
           <v-component-assets />
         </v-card>
       </v-col>

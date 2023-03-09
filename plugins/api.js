@@ -74,7 +74,7 @@ export default ({ app }, inject) => {
         getReserves: '/admin/spot/get-reserves',
         setReserveUnlock: '/admin/spot/set-reserve-unlock',
         getRepayments: '/admin/spot/get-repayments',
-        setRepayment: '/admin/spot/set-repayment',
+        setRepayment: '/admin/spot/set-repayment'
       },
       account: {
         getAccounts: '/admin/account/get-accounts',

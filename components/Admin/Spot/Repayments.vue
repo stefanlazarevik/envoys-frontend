@@ -52,7 +52,7 @@
             </v-icon>
           </template>
           <template v-else>
-            <v-btn class="text-capitalize" color="red" elevation="0" outlined>
+            <v-btn @click="setRepayment(item.id);" class="text-capitalize" color="red" elevation="0" outlined>
               {{ $vuetify.lang.t('$vuetify.lang_354') }} ({{ item.protocol ? item.fees : $decimal.add(item.value, item.fees ?? 0) }} <b>{{ item.protocol ? (item.parent_symbol).toUpperCase() : (item.symbol).toUpperCase() }}</b>)
             </v-btn>
           </template>
@@ -119,6 +119,10 @@
       this.getRepayments();
     },
     methods: {
+
+      /**
+       *
+       */
       getRepayments() {
         this.overlay = true;
 
@@ -130,6 +134,18 @@
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
+        });
+      },
+
+      /**
+       * @param id
+       */
+      setRepayment(id) {
+        this.$axios.$post(this.$api.admin.spot.setRepayment, {id: id}).then((response) => {
+          console.log(response);
+          if (response.success) {
+            this.getRepayments();
+          }
         });
       },
 
