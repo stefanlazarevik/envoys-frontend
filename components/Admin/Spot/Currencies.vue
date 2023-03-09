@@ -54,7 +54,7 @@
           </template>
         </template>
         <template v-slot:item.fees_charges="{ item }">
-          {{ $decimal.truncate(item.fees_charges) }} <b>{{ item.symbol.toUpperCase() }}</b>
+          {{ $decimal.format(item.fees_charges, 8) }} <b>{{ item.symbol.toUpperCase() }}</b>
         </template>
         <template v-slot:item.marker="{ item }">
           <template v-if="item.marker">

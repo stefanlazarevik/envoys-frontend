@@ -107,7 +107,7 @@
                 </v-btn>
               </v-col>
               <v-col v-if="item.kyc_secure" cols="12" md="4">
-                <v-btn @click="getKycApplicant(item.kyc_secret)" class="mb-5 text-capitalize" block depressed large outlined color="primary">
+                <v-btn @click="getApplicant(item.kyc_secret)" class="mb-5 text-capitalize" block depressed large outlined color="primary">
                   {{ $vuetify.lang.t('$vuetify.lang_352') }}
                 </v-btn>
               </v-col>
@@ -476,8 +476,8 @@
       /**
        * @param id
        */
-      getKycApplicant(id) {
-        this.$axios.$post(this.$api.admin.account.getKycApplicant, {
+      getApplicant(id) {
+        this.$axios.$post(this.$api.kyc.getApplicant, {
           id: id
         }).then((response) => {
           this.applicant = response;

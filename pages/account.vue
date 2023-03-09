@@ -62,10 +62,6 @@
             title: this.$vuetify.lang.t('$vuetify.lang_161'),
             icon: "mdi-account-convert-outline",
             to: 'actions'
-          }, {
-            title: this.$vuetify.lang.t('$vuetify.lang_345'),
-            icon: "mdi-account-multiple-check-outline",
-            to: 'kyc'
           }
         ]
       }

@@ -342,12 +342,6 @@
 
           }
 
-          if (!data.value) {
-
-            // Удаляем ордер с массива по идентификатору.
-            this.order.items.splice(index, 1);
-          }
-
           // Получаем текущий объем в ордерах.
           this.getVolume(this.eyelet);
 

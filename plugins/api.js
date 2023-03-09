@@ -18,7 +18,13 @@ export default ({ app }, inject) => {
       getActions: '/account/get-actions',
       getFactor: '/account/get-factor',
       setFactor: '/account/set-factor',
-      setKyc: '/account/set-kyc'
+    },
+    kyc: {
+      setProcess: '/verification/set-process',
+      setCanceled: '/verification/set-canceled',
+      getStatus: '/verification/get-status',
+      getPrivilege: '/verification/get-privilege',
+      getApplicant: '/verification/get-applicant'
     },
     spot: {
       getPrice: '/spot/get-price',

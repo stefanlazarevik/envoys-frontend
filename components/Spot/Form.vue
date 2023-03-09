@@ -18,7 +18,7 @@
 
     <!-- Start: group button -->
     <v-card-actions>
-      <v-item-group class="market--limit ma-2 mb-n2" v-model="type">
+      <v-item-group class="market--limit ma-2 mb-n2" v-model="trading">
         <v-item v-slot="{ active, toggle }">
           <v-chip :color="color" :active-class="color + '--text'" :input-value="active" @click="toggle" filter outlined label>
             {{ $vuetify.lang.t('$vuetify.lang_128') }}
@@ -35,9 +35,9 @@
 
     <!-- Start: form order trade element -->
     <v-card-text>
-      <template v-if="!type">
+      <template v-if="!trading">
         <v-hover v-slot="{ hover }" open-delay="200">
-          <v-text-field :disabled="!type" :value="hover ? $vuetify.lang.t('$vuetify.lang_134') : '≈' + price" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
+          <v-text-field :disabled="!trading" :value="hover ? $vuetify.lang.t('$vuetify.lang_134') : '≈' + price" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_52')">
             <template v-slot:append>
               <span class="my-1">{{ parse.base().toUpperCase() }}/{{ parse.quote().toUpperCase() }}</span>
             </template>
@@ -53,12 +53,12 @@
       </template>
       <v-text-field v-model="quantity" @focus="bind.quantity = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_53')">
         <template v-slot:append>
-          <span class="my-1">{{ type ? parse.base().toUpperCase() : (assigning === 'sell' ? parse.base().toUpperCase() : parse.quote().toUpperCase()) }}</span>
+          <span class="my-1">{{ trading ? parse.base().toUpperCase() : (assigning === 'sell' ? parse.base().toUpperCase() : parse.quote().toUpperCase()) }}</span>
         </template>
       </v-text-field>
-      <v-text-field v-show="type" v-model="value" @focus="bind.value = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
+      <v-text-field v-show="trading" v-model="value" @focus="bind.value = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
         <template v-slot:append>
-          <span class="my-1">{{ type ? parse.quote().toUpperCase() : (assigning === 'sell' ? parse.quote().toUpperCase() : parse.base().toUpperCase()) }}</span>
+          <span class="my-1">{{ trading ? parse.quote().toUpperCase() : (assigning === 'sell' ? parse.quote().toUpperCase() : parse.base().toUpperCase()) }}</span>
         </template>
       </v-text-field>
 
@@ -79,7 +79,7 @@
     <v-divider />
 
     <v-card-text>
-      <div :class="(type ? 'my-6' : 'my-13') + ' subtitle-1 text-center'">
+      <div :class="(trading ? 'my-6' : 'my-13') + ' subtitle-1 text-center'">
         <template v-if="$decimal.format(balance, 8)">
           <div :class="$vuetify.theme.dark ? 'grey--text' : ''">
             {{ $decimal.format(balance, 8) }} {{ String(symbol).toUpperCase() }}
@@ -126,7 +126,7 @@
         status: 0,
         overlay: true,
         clear: false,
-        type: 1,
+        trading: 1,
         assigning: 'buy',
         bind: {
           quantity: false,
@@ -165,7 +165,7 @@
           this.bind.quantity = false;
         }
       },
-      type() {
+      trading() {
         this.quantity = 0;
         this.value = 0;
         this.clear = false;
@@ -276,7 +276,7 @@
             data.fields.lastItem.quote_unit === this.parse.quote() &&
 
             // Не обновляем цену если тип по лимиту.
-            !this.type
+            !this.trading
 
           ) {
             this.price = data.fields[0].close;
@@ -351,7 +351,7 @@
         switch (this.assigning) {
           case 'buy':
 
-            if (this.type) {
+            if (this.trading) {
               this.value = this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100;
               this.quantity = this.$decimal.div(this.value, this.price);
             } else {
@@ -381,7 +381,7 @@
           // Имя актива (symbol-quote).
           quote_unit: this.parse.quote(),
           // Тип [market:0] - [limit:1]
-          trading: this.type,
+          trading: this.trading,
           // Количество монет sell/buy.
           quantity: this.quantity,
           // Рыночная цена монеты.
