@@ -46,6 +46,18 @@ export default ({ app }, inject) => {
       getTransfers: '/spot/get-transfers',
       getAnalysis: '/spot/get-analysis'
     },
+    stock: {
+      setAgent: '/stock/set-agent',
+      getAgent: '/stock/get-agent',
+      deleteAgent: '/stock/delete-agent',
+      getBroker: '/stock/get-brokers',
+      getRequests: '/stock/get-requests',
+      getAgents: '/stock/get-agents',
+      setSetting: '/stock/request/set-setting',
+      setBlocked: '/stock/agent/set-blocked',
+      getAssets: '/stock/get-assets',
+      getAsset: '/stock/get-asset'
+    },
     ads: {
       getAdvertisements: '/ads-shot/get-advertisements',
       getAdvertising: '/ads-shot/get-advertising'
