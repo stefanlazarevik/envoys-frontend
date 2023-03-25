@@ -122,7 +122,7 @@
                     </v-card-text>
                   </template>
 
-                  <template v-if="broker">
+                  <template v-if="agent.items[broker]">
                     <v-divider />
                     <v-card-actions>
                       <v-btn style="text-transform: none !important;" color="black--text yellow darken-1 text-capitalize" @click="next.agent = 3" block large elevation="0">
@@ -291,7 +291,6 @@
       getAgent() {
         this.$axios.$post(this.$api.stock.getAgent).then((response) => {
           let fields = response.fields ?? [];
-          console.log(fields);
           if (fields.length > 0) {
             this.agent.item.id = fields[0].id;
             this.agent.item.user_id = fields[0].user_id;

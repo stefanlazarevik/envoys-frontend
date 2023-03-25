@@ -34,10 +34,10 @@
               </v-icon>
             </template>
             <v-list>
-              <v-list-item @click="setSetting(item.id, 3, item.user_id)" link>
+              <v-list-item @click="setSetting(item.id, 7, item.user_id)" link>
                 <v-list-item-title>Confirm</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="setSetting(item.id,4, item.user_id)" link>
+              <v-list-item @click="setSetting(item.id,8, item.user_id)" link>
                 <v-list-item-title>Reject</v-list-item-title>
               </v-list-item>
               <v-list-item @click="getApplicant(item.applicant)" link>
@@ -365,6 +365,7 @@
         <v-flex align-self-center class="text-center my-16" md4 mx5 sm6 xl3>
           <v-img class="ma-auto" width="250" src="/asset/3.png" />
           <h2>Новых запросов нет</h2>
+          У вас пока нет новых запросов
         </v-flex>
         <v-flex/>
       </v-layout>

@@ -1,9 +1,9 @@
 <template>
-  <section :class="(this.$store.state.localStorage.screen ? '' : 'main-role') + ' pa-0'">
+  <section :class="(this.$store.state.localStorage.screen || $route.query.type === 'stock' ? '' : 'main-role') + ' pa-0'">
 
     <template v-if="loader">
 
-      <v-row class="ma-1" no-gutters>
+      <v-row v-if="$route.query.type === 'spot'" class="ma-1" no-gutters>
 
         <v-col :order-xl="$store.state.localStorage.screen ? 2 : 0" cols="12" :xl="$store.state.localStorage.screen ? 2 : 3" lg="3" md="12" sm="12" class="hidden-md-and-down hidden-sm-and-down">
           <!-- Start: order book component -->
@@ -33,6 +33,28 @@
 
       </v-row>
 
+      <v-row v-if="$route.query.type === 'stock'" class="ma-1" no-gutters>
+
+        <v-col cols="12" xl="8" lg="6" md="12" sm="12">
+          <!-- Start: pair trade chart component -->
+          <nuxt-child />
+          <!-- End: pair trade chart component -->
+
+          <v-component-stock-history class="mt-2" />
+
+        </v-col>
+
+        <v-col cols="12" xl="2" lg="3" md="12" sm="12" class="hidden-md-and-down hidden-sm-and-down">
+          <v-component-stock-book />
+        </v-col>
+
+        <v-col cols="12" xl="2" lg="3" md="12" sm="12">
+          <v-component-stock-form />
+          <v-component-stock-market class="mt-2" />
+        </v-col>
+
+      </v-row>
+
     </template>
 
     <v-overlay absolute :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="1" :value="!loader">
@@ -44,18 +66,27 @@
 
 <script>
 
-  import Market from '@/components/Spot/Market';
-  import Form from '@/components/Spot/Form';
-  import Book from "~/components/Spot/Book";
-  import History from "~/components/Spot/History";
+  import SpotMarket from '~/components/Spot/Market';
+  import SpotForm from '~/components/Spot/Form';
+  import SpotBook from "~/components/Spot/Book";
+  import SpotHistory from "~/components/Spot/History";
+
+  import StockBook from "~/components/Stock/Book";
+  import StockForm from '~/components/Stock/Form';
+  import StockMarket from '~/components/Stock/Market';
+  import StockHistory from "~/components/Stock/History";
 
   export default {
     auth: false,
     components: {
-      'v-component-spot-market': Market,
-      'v-component-spot-form': Form,
-      'v-component-spot-book': Book,
-      'v-component-spot-history': History
+      'v-component-spot-market': SpotMarket,
+      'v-component-spot-form': SpotForm,
+      'v-component-spot-book': SpotBook,
+      'v-component-spot-history': SpotHistory,
+      'v-component-stock-book': StockBook,
+      'v-component-stock-form': StockForm,
+      'v-component-stock-market': StockMarket,
+      'v-component-stock-history': StockHistory
     },
     data() {
       return {
@@ -63,25 +94,38 @@
       }
     },
 
+    watch: {
+      $route() {
+        this.getSymbol(false);
+      }
+    },
+
     /**
      *
      */
     mounted() {
-      this.getSymbol();
+      this.getSymbol(true);
     },
 
     methods: {
-      getSymbol() {
+      getSymbol(loader) {
 
-        this.loader = false;
+        if (this.$route.query.type !== 'spot' && this.$route.query.type !== 'stock') {
+          this.$nuxt.error({ statusCode: 404, message: 'Type trade not found!.' });
+          return false
+        }
 
-        this.$axios.$post(this.$api.spot.getSymbol, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then(() => {
-          setTimeout(() => {
-            this.loader = true;
-          }, 1000);
-        }).catch((error) => {
-          this.$nuxt.error({ statusCode: 404, message: error.response.data.message });
-        });
+        this.loader = !loader;
+
+        //this.$axios.$post(this.$api[this.$route.query.type].getSymbol, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then(() => {
+          if (loader) {
+            setTimeout(() => {
+              this.loader = true;
+            }, 1000);
+          }
+        //}).catch((error) => {
+        //  this.$nuxt.error({ statusCode: 404, message: error.response.data.message });
+        //});
       }
     },
 

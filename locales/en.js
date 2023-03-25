@@ -358,7 +358,7 @@ export default {
   lang_358: 'Increase your daily withdrawal limit by %1 times, if your current withdrawal limit is 100 USD dollars. After passing the standard procedure (KYC %2), your withdrawal limit will increase to %3 USD dollars.',
   lang_359: 'Or you can cancel the verification process by clicking on the button',
   lang_360: 'Cancel verification',
-  lang_361: '',
+  lang_361: 'Stock trade',
   lang_362: '',
   lang_363: '',
   lang_364: '',

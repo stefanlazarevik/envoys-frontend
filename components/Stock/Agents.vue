@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%;">
 
     <template v-if="items.length">
 
@@ -59,8 +59,8 @@
         <v-flex/>
         <v-flex align-self-center class="text-center my-16" md4 mx5 sm6 xl3>
           <v-img class="ma-auto" width="250" src="/asset/3.png" />
-          <h2>{{ $vuetify.lang.t('$vuetify.lang_271') }}</h2>
-          {{ $vuetify.lang.t('$vuetify.lang_272') }}
+          <h2>Мои агенты</h2>
+          У вас пока нет агентов
         </v-flex>
         <v-flex/>
       </v-layout>

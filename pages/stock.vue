@@ -123,11 +123,6 @@
               </template>
 
               <v-component-stock-assets />
-
-              <v-divider />
-              <v-card-actions>
-                <v-btn to="?type=trade" color="black--text yellow darken-1 text-capitalize" large block elevation="0">Перейти к торгам</v-btn>
-              </v-card-actions>
             </v-card>
           </v-col>
           <!-- End: assets list component -->
@@ -135,7 +130,19 @@
           <!-- Start: child container -->
           <v-col class="pa-1" cols="12" md="9" sm="12">
             <v-card class="fill-height" elevation="0">
-              <nuxt-child />
+              <template v-if="this.agent.id">
+                <nuxt-child />
+              </template>
+              <template v-else>
+                <v-layout fill-height wrap>
+                  <v-flex/>
+                  <v-flex align-self-center class="text-center my-16" md4 mx5 sm6 xl3>
+                    <v-img class="ma-auto" width="250" src="/asset/3.png" />
+                    <h2>Создайте торговый счет что бы начать торговать.</h2>
+                  </v-flex>
+                  <v-flex/>
+                </v-layout>
+              </template>
             </v-card>
           </v-col>
           <!-- End: child container -->
@@ -290,7 +297,7 @@
             {
               title: 'Запросы на вывод',
               icon: "mdi-credit-card-check-outline",
-              to: 'withdraw'
+              to: 'withdrawals'
             }
           ]
         }

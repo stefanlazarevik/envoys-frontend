@@ -236,7 +236,7 @@ export default ({ app }, inject) => {
      * @private
      */
     send(params) {
-      let request = app.$api.spot.getCandles;
+      let request = app.$api[app.router.app['_route'].query.type === 'spot' ? 'spot' : 'stock'].getCandles;
       if (params) {
         for (let i = 0; i < Object.keys(params).length; ++i) {
           let key = Object.keys(params)[i];

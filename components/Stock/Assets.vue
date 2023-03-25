@@ -44,12 +44,17 @@
           </v-list-item-action>
           <v-list-item-content />
           <v-list-item-action class="d-block text-right teal--text text--darken-3">
-            {{ item.balance ?? 0 }}
+            {{ $decimal.format(item.balance, 8) }}
           </v-list-item-action>
         </v-list-item>
         </template>
       </v-virtual-scroll>
     </v-hover>
+
+    <v-divider />
+    <v-card-actions v-if="items.length">
+      <v-btn :to="`/trade/${items[0].symbol}-${items[0].zone}?type=stock`" color="text-capitalize" large block elevation="0">Перейти к торгам</v-btn>
+    </v-card-actions>
   </div>
 </template>
 
@@ -67,19 +72,47 @@
       eyelet(e) {
         this.type = e === 1;
 
-        this.getAssets(false);
+        this.getAssets();
       }
     },
     mounted() {
-      this.getAssets(false);
+
+      this.$nuxt.$on('stock/sub/asset', (data) => {
+        //this.items.map(item => {
+        //  if(item.symbol === data.symbol) {
+        //    if (!item.balance) {
+        //      item.balance = 0;
+        //    }
+        //    item.balance -= Number(data.value);
+        //    console.log(item.balance, Number(data.value));
+        //  }
+        //});
+        this.getAssets();
+      });
+
+      this.$nuxt.$on('stock/add/asset', (data) => {
+        //this.items.map(item => {
+        //  if(item.symbol === data.symbol) {
+        //    if (!item.balance) {
+        //      item.balance = 0;
+        //    }
+        //    item.balance += Number(data.value);
+        //    console.log(item.balance, Number(data.value));
+        //  }
+        //});
+        this.getAssets();
+      });
+
+      this.getAssets();
     },
     methods: {
-      getAssets(go) {
+
+      getAssets() {
         this.$axios.$post(this.$api.stock.getAssets, {fiat: this.type}).then((response) => {
           this.items = response.fields ?? [];
 
-          if (go) {
-            this.$router.push('/stock/' + this.items[0].symbol + '?type=trade');
+          if (!this.$route.params.symbol) {
+            this.$router.push('/stock/' + this.items[0].symbol);
           }
         });
       },
