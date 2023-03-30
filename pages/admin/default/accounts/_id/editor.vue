@@ -59,7 +59,7 @@
             "deny-record"
           ],
           spot: [
-            "currencies",
+            "assets",
             "chains",
             "pairs",
             "contracts",

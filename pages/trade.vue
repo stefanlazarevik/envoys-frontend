@@ -150,7 +150,7 @@
      *
      */
     beforeDestroy() {
-      this.$publish.unbind(['trade/candles:0', 'order/status', 'order/create', 'order/cancel']);
+      this.$publish.unbind(['trade/ticker:0', 'order/status', 'order/create', 'order/cancel']);
 
       // Internal event off.
       this.$nuxt.$off('deposit/open/status');

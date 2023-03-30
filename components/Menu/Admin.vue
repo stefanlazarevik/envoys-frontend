@@ -51,7 +51,7 @@
               title: '$vuetify.lang_178',
               icon: "mdi-priority-high",
               display: false,
-              to: 'currencies'
+              to: 'assets'
             }, {
               title: '$vuetify.lang_179',
               icon: "mdi-upload-network-outline",

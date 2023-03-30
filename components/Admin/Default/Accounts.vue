@@ -102,7 +102,7 @@
                 </v-btn>
               </v-col>
               <v-col cols="12" :md="item.kyc_secure ? 4 : 6">
-                <v-btn :to="`/admin/default/accounts/${item.id}/assets`" class="mb-5 text-capitalize" block depressed large outlined color="lime">
+                <v-btn :to="`/admin/default/accounts/${item.id}/balances`" class="mb-5 text-capitalize" block depressed large outlined color="lime">
                   {{ $vuetify.lang.t('$vuetify.lang_79') }} {{ item.counts.asset }}
                 </v-btn>
               </v-col>

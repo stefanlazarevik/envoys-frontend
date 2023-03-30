@@ -6,12 +6,12 @@
       <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines.top" :items="orders" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer show-expand single-expand>
         <template v-slot:item.data-table-expand="{ item, expand, isExpanded }">
           <template v-if="isExpanded">
-            <v-icon @click="getTransfers(item.id, item.assigning, expand(!isExpanded))">
+            <v-icon @click="getTrades(item.id, item.assigning, expand(!isExpanded))">
               mdi-chevron-up
             </v-icon>
           </template>
           <template v-else>
-            <v-icon @click="getTransfers(item.id, item.assigning, expand(!isExpanded))">
+            <v-icon @click="getTrades(item.id, item.assigning, expand(!isExpanded))">
               mdi-chevron-down
             </v-icon>
           </template>
@@ -79,7 +79,12 @@
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
             <v-card class="my-4" outlined elevation="0">
-              <v-data-table :headers="headlines.child" :items="transfers" :hide-default-header="!transfers.length" hide-default-footer>
+              <v-data-table :headers="headlines.child" :items="trades" :hide-default-header="!trades.length" hide-default-footer>
+                <template v-slot:item.maker="{ item }">
+                  <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
+                    {{ item.maker ? "Maker" : "Taker" }}
+                  </v-chip>
+                </template>
                 <template v-slot:item.quantity="{ item }">
                   <template v-if="item.assigning">
                     - {{ $decimal.truncate(item.quantity) }} {{ item.base_unit.toUpperCase() }}
@@ -89,13 +94,13 @@
                   </template>
                 </template>
                 <template v-slot:item.fees="{ item }">
-                  {{ getFees(item) }} {{ item.assigning ? item.quote_unit.toUpperCase() : item.base_unit.toUpperCase() }}
+                  {{ $decimal.format(item.fees, 8) }} {{ item.base_unit.toUpperCase() }} <small>{{ $decimal.truncate($decimal.mul(item.fees, item.price), 8) }} {{ item.quote_unit.toUpperCase() }}</small>
                 </template>
                 <template v-slot:item.price="{ item }">
                   {{ item.price }} {{ item.quote_unit.toUpperCase() }}
                 </template>
                 <template v-slot:item.total="{ item }">
-                  {{ $decimal.truncate($decimal.sub($decimal.mul(item.quantity, item.price), getFees(item))) }} {{ item.quote_unit.toUpperCase() }}
+                  {{ $decimal.format($decimal.sub($decimal.mul(item.quantity, item.price), $decimal.mul(item.fees, item.price)), 8) }} {{ item.quote_unit.toUpperCase() }} <small>{{ $decimal.format($decimal.mul(item.quantity, item.price), 8) }} {{ item.quote_unit.toUpperCase() }}</small>
                 </template>
                 <template v-slot:item.create_at="{ item }">
                   <div>
@@ -152,7 +157,7 @@
     data() {
       return {
         orders: [],
-        transfers: [],
+        trades: [],
         overlay: true,
         limit: 15,
         count: 0,
@@ -194,14 +199,14 @@
        * @param assigning
        * @param callback
        */
-      getTransfers(id, assigning, callback) {
-        this.$axios.$post(this.$api.spot.getTransfers, {
+      getTrades(id, assigning, callback) {
+        this.$axios.$post(this.$api.spot.getTrades, {
           order_id: id,
           owner: true,
           assigning: assigning,
           limit: 100,
         }).then((response) => {
-          this.transfers = response.fields ?? [];
+          this.trades = response.fields ?? [];
           if (typeof callback === 'function') {
             callback();
           }
@@ -221,9 +226,9 @@
        */
       getFees(item) {
         if (item.assigning) {
-          return this.$decimal.truncate(this.$decimal.mul(this.$decimal.div(this.$decimal.mul(item.quantity, item.price), 100), item.fees), 0);
+          return this.$decimal.format(this.$decimal.mul(item.fees, item.price), 8);
         } else {
-          return this.$decimal.truncate(this.$decimal.mul(this.$decimal.div(item.quantity, 100), item.fees), 0);
+          return this.$decimal.format(item.fees, 8);
         }
       }
     },
@@ -302,6 +307,11 @@
           ],
           child: [
             {
+              text: this.$vuetify.lang.t('$vuetify.lang_82'),
+              align: 'center',
+              sortable: false,
+              value: 'maker'
+            }, {
               text: this.$vuetify.lang.t('$vuetify.lang_53'),
               align: 'start',
               sortable: true,

@@ -7,13 +7,12 @@
 </template>
 
 <script>
-import Assets from "@/components/Admin/Spot/Assets.vue";
-
-export default {
-  components: {
-    'v-component-assets': Assets
+  import Assets from "~/components/Admin/Spot/Assets.vue";
+  export default {
+    components: {
+      'v-component-assets': Assets
+    }
   }
-}
 </script>
 
 <style scoped>

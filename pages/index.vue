@@ -197,8 +197,8 @@
                         </template>
                       </td>
                       <td class="text-center" width="150">
-                        <template v-if="item.candles">
-                          <v-sparkline :value="item.candles" :smooth="16" :height="100" line-width="2" :gradient="$vuetify.theme.dark ? ['#8a8a8a', '#bbbbbb'] : ['#2a7e1d', '#82c977']" />
+                        <template v-if="item.ticker">
+                          <v-sparkline :value="item.ticker" :smooth="16" :height="100" line-width="2" :gradient="$vuetify.theme.dark ? ['#8a8a8a', '#bbbbbb'] : ['#2a7e1d', '#82c977']" />
                         </template>
                         <template v-else>
                           <v-chip label>
@@ -291,7 +291,7 @@
        * @object {quote_unit: string},
        * @object {time: int}
        */
-      this.$publish.bind('trade/candles:0', (data) => {
+      this.$publish.bind('trade/ticker:0', (data) => {
         if (data.fields && data.fields.length > 1) {
           this.pairs.filter((item) => {
             if (
@@ -303,9 +303,9 @@
 
             ) {
 
-              if (item.candles) {
-                item.candles.splice(0, 1);
-                item.candles.push(data.fields[0].close);
+              if (item.ticker) {
+                item.ticker.splice(0, 1);
+                item.ticker.push(data.fields[0].close);
               }
 
               if (data.stats?.volume) {

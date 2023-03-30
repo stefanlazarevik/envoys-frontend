@@ -12,7 +12,7 @@
         </v-avatar>
       </v-col>
       <v-col cols="12" md="4">
-        <v-select v-model="pair.base_unit" :items="currencies" item-text="symbol" item-value="symbol" @change="getMarketPrice" :label="$vuetify.lang.t('$vuetify.lang_253')" outlined>
+        <v-select v-model="pair.base_unit" :items="assets" item-text="symbol" item-value="symbol" @change="getMarketPrice" :label="$vuetify.lang.t('$vuetify.lang_253')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
               <v-list-item-avatar>
@@ -27,7 +27,7 @@
             </v-list-item>
           </template>
         </v-select>
-        <v-select v-model="pair.quote_unit" :items="currencies" item-text="symbol" item-value="symbol" @change="getMarketPrice" :label="$vuetify.lang.t('$vuetify.lang_254')" outlined>
+        <v-select v-model="pair.quote_unit" :items="assets" item-text="symbol" item-value="symbol" @change="getMarketPrice" :label="$vuetify.lang.t('$vuetify.lang_254')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
               <v-list-item-avatar>
@@ -123,7 +123,7 @@
   export default {
     data() {
       return {
-        currencies: [],
+        assets: [],
         status: [
           { value: false, name: "OFF" },
           { value: true, name: "ON" },
@@ -148,7 +148,6 @@
       }
     },
     mounted() {
-      this.getCurrencies();
       this.getPair();
     },
     methods: {
@@ -180,6 +179,8 @@
        *
        */
       getPair() {
+        this.getAssets();
+
         this.$axios.$post(this.$api.admin.spot.getPair, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0)
         }).then((response) => {
@@ -209,9 +210,9 @@
       /**
        *
        */
-      getCurrencies() {
-        this.$axios.$post(this.$api.admin.spot.getCurrencies).then((response) => {
-          this.currencies = response.fields ?? [];
+      getAssets() {
+        this.$axios.$post(this.$api.admin.spot.getAssets).then((response) => {
+          this.assets = response.fields ?? [];
         })
       }
     }

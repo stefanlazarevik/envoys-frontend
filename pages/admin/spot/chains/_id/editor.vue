@@ -19,7 +19,7 @@
       <v-col cols="12" md="4">
         <v-text-field v-model="chain.fees" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" :hint="$vuetify.lang.t('$vuetify.lang_353')" outlined></v-text-field>
         <v-text-field v-model="chain.network" color="primary" :label="$vuetify.lang.t('$vuetify.lang_112')" outlined></v-text-field>
-        <v-select v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.parent_symbol" :items="currencies" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
+        <v-select v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.parent_symbol" :items="assets" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
               <v-list-item-avatar>
@@ -125,7 +125,7 @@
           { value: false, name: "OFF"},
           { value: true, name: "ON"},
         ],
-        currencies: [],
+        assets: [],
         chain: {
           name: "",
           rpc: "",
@@ -144,7 +144,6 @@
     },
     mounted() {
       this.getChain();
-      this.getCurrencies();
     },
     methods: {
 
@@ -152,6 +151,8 @@
        *
        */
       getChain() {
+        this.getAssets();
+
         this.$axios.$post(this.$api.admin.spot.getChain, {
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0)
         }).then((response) => {
@@ -187,9 +188,9 @@
       /**
        *
        */
-      getCurrencies() {
-        this.$axios.$post(this.$api.admin.spot.getCurrencies).then((response) => {
-          this.currencies = response.fields ?? [];
+      getAssets() {
+        this.$axios.$post(this.$api.admin.spot.getAssets).then((response) => {
+          this.assets = response.fields ?? [];
         })
       }
     }

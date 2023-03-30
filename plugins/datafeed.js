@@ -118,7 +118,7 @@ export default ({ app }, inject) => {
          * @object {quote_unit: string},
          * @object {time: int}
          */
-        app.$publish.bind('trade/candles:' + query.resolution, (data) => {
+        app.$publish.bind('trade/ticker:' + query.resolution, (data) => {
           if (data.fields !== undefined && symbol[0].toLowerCase() === data.fields[0].base_unit && symbol[1].toLowerCase() === data.fields[0].quote_unit) {
             this.record(data.fields[0]);
           }
@@ -155,7 +155,7 @@ export default ({ app }, inject) => {
         return;
       }
 
-      app.$publish.unbind(['trade/candles:' + this.interval(this.$subscribers[subscriberUID].resolution)]);
+      app.$publish.unbind(['trade/ticker:' + this.interval(this.$subscribers[subscriberUID].resolution)]);
       delete this.$subscribers[subscriberUID];
     },
 
@@ -236,7 +236,7 @@ export default ({ app }, inject) => {
      * @private
      */
     send(params) {
-      let request = app.$api[app.router.app['_route'].query.type === 'spot' ? 'spot' : 'stock'].getCandles;
+      let request = app.$api[app.router.app['_route'].query.type === 'spot' ? 'spot' : 'stock'].getTicker;
       if (params) {
         for (let i = 0; i < Object.keys(params).length; ++i) {
           let key = Object.keys(params)[i];

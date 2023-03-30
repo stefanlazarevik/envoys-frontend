@@ -266,7 +266,7 @@
        * @object {quote_unit: string},
        * @object {time: int}
        */
-      this.$publish.bind('trade/candles:0', (data) => {
+      this.$publish.bind('trade/ticker:0', (data) => {
         if (data.fields) {
           if (
 

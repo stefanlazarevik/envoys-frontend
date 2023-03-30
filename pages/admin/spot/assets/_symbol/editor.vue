@@ -11,20 +11,20 @@
               <v-list-item>
                 <v-list-item-avatar>
                   <v-avatar color="indigo">
-                    <template v-if="currency.icon">
+                    <template v-if="asset.icon">
                       <v-img :src="image" />
                     </template>
                     <template v-else>
-                      <span class="white--text text-h5">{{ currency.symbol }}</span>
+                      <span class="white--text text-h5">{{ asset.symbol }}</span>
                     </template>
                   </v-avatar>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title>
-                    {{ currency.symbol ? currency.symbol.toUpperCase() : $vuetify.lang.t('$vuetify.lang_205') }}
+                    {{ asset.symbol ? asset.symbol.toUpperCase() : $vuetify.lang.t('$vuetify.lang_205') }}
                   </v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ currency.name ? currency.name : $vuetify.lang.t('$vuetify.lang_206') }}
+                    {{ asset.name ? asset.name : $vuetify.lang.t('$vuetify.lang_206') }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -37,14 +37,14 @@
       <v-col cols="12" md="4" align-self="center">
         <v-card height="80" outlined rounded="lg">
           <v-card-title class="mt-2">
-            {{ $vuetify.lang.t('$vuetify.lang_148') }} {{ currency.fees_trade }}%
+            {{ $vuetify.lang.t('$vuetify.lang_148') }} {{ asset.fees_trade }}%
           </v-card-title>
         </v-card>
       </v-col>
       <v-col cols="12" md="4" align-self="center">
         <v-card height="80" outlined rounded="lg">
           <v-card-title class="mt-2">
-            {{ $vuetify.lang.t('$vuetify.lang_149') }} {{ currency.fees_discount ? $decimal.truncate($decimal.sub(currency.fees_trade, currency.fees_discount)) : 0 }}%
+            {{ $vuetify.lang.t('$vuetify.lang_149') }} {{ asset.fees_discount ? $decimal.truncate($decimal.sub(asset.fees_trade, asset.fees_discount)) : 0 }}%
           </v-card-title>
         </v-card>
       </v-col>
@@ -55,28 +55,28 @@
     <!-- Start: crypto info form -->
     <v-row>
       <v-col cols="12" md="4">
-        <v-text-field v-model="currency.name" color="primary" :label="$vuetify.lang.t('$vuetify.lang_188')" outlined></v-text-field>
-        <v-text-field v-model="currency.max_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_198')" outlined></v-text-field>
-        <v-text-field v-model="currency.max_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_199')" outlined></v-text-field>
-        <v-select v-model="currency.marker" :items="marker" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_190')" outlined></v-select>
+        <v-text-field v-model="asset.name" color="primary" :label="$vuetify.lang.t('$vuetify.lang_188')" outlined></v-text-field>
+        <v-text-field v-model="asset.max_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_198')" outlined></v-text-field>
+        <v-text-field v-model="asset.max_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_199')" outlined></v-text-field>
+        <v-select v-model="asset.marker" :items="marker" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_190')" outlined></v-select>
       </v-col>
       <v-col cols="12" md="4">
-        <v-text-field v-model="currency.symbol" color="primary" :label="$vuetify.lang.t('$vuetify.lang_187')" outlined></v-text-field>
-        <v-text-field v-model="currency.fees_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_201')" outlined></v-text-field>
-        <v-select v-model="currency.status" :items="status" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_191')" outlined></v-select>
-        <v-select v-model="currency.type" :items="type" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_208')" outlined></v-select>
+        <v-text-field v-model="asset.symbol" color="primary" :label="$vuetify.lang.t('$vuetify.lang_187')" outlined></v-text-field>
+        <v-text-field v-model="asset.fees_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_201')" outlined></v-text-field>
+        <v-select v-model="asset.status" :items="status" item-text="name" item-value="value" :label="$vuetify.lang.t('$vuetify.lang_191')" outlined></v-select>
+        <v-select v-model="asset.type" :items="type" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_208')" outlined></v-select>
       </v-col>
       <v-col cols="12" md="4">
-        <v-text-field v-model="currency.min_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_202')" outlined></v-text-field>
-        <v-text-field v-model="currency.min_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_203')" outlined></v-text-field>
-        <v-text-field v-model="currency.fees_discount" color="primary" :label="$vuetify.lang.t('$vuetify.lang_207')" outlined></v-text-field>
-        <v-select v-model="currency.chains_ids" :items="chains" item-text="name" item-value="id" :label="$vuetify.lang.t('$vuetify.lang_179')" multiple outlined>
+        <v-text-field v-model="asset.min_withdraw" color="primary" :label="$vuetify.lang.t('$vuetify.lang_202')" outlined></v-text-field>
+        <v-text-field v-model="asset.min_trade" color="primary" :label="$vuetify.lang.t('$vuetify.lang_203')" outlined></v-text-field>
+        <v-text-field v-model="asset.fees_discount" color="primary" :label="$vuetify.lang.t('$vuetify.lang_207')" outlined></v-text-field>
+        <v-select v-model="asset.chains_ids" :items="chains" item-text="name" item-value="id" :label="$vuetify.lang.t('$vuetify.lang_179')" multiple outlined>
           <template v-slot:selection="{ item, index }">
             <v-chip v-if="index === 0">
               <span>{{ item.name }}</span>
             </v-chip>
             <span v-if="index === 1" class="grey--text text-caption">
-              (+{{ currency.chains_ids.length - 1 }} others)
+              (+{{ asset.chains_ids.length - 1 }} others)
             </span>
           </template>
         </v-select>
@@ -87,10 +87,10 @@
     <v-file-input counter chips show-size truncate-length="34" outlined @change="onChange" />
 
     <template v-if="$route.params.symbol === 'create'">
-      <v-btn v-if="image" block color="black--text yellow darken-1 text-capitalize mb-3" elevation="0" large @click="setCurrency">{{ $vuetify.lang.t('$vuetify.lang_195') }}</v-btn>
+      <v-btn v-if="image" block color="black--text yellow darken-1 text-capitalize mb-3" elevation="0" large @click="setAsset">{{ $vuetify.lang.t('$vuetify.lang_195') }}</v-btn>
     </template>
     <template v-else>
-      <v-btn block color="white--text red darken-1 text-capitalize mb-3" elevation="0" large @click="setCurrency">{{ $vuetify.lang.t('$vuetify.lang_204') }}</v-btn>
+      <v-btn block color="white--text red darken-1 text-capitalize mb-3" elevation="0" large @click="setAsset">{{ $vuetify.lang.t('$vuetify.lang_204') }}</v-btn>
     </template>
 
   </div>
@@ -114,7 +114,7 @@
           { value: false, name: "OFF" },
           { value: true, name: "ON" },
         ],
-        currency: {
+        asset: {
           name: "",
           symbol: "",
           min_withdraw: 0.0001,
@@ -133,24 +133,25 @@
       }
     },
     mounted() {
-      this.getCurrency();
-      this.getChains();
+      this.getAsset();
     },
     methods: {
 
       /**
        *
        */
-      getCurrency() {
-        this.$axios.$post(this.$api.admin.spot.getCurrency, {
+      getAsset() {
+        this.$axios.$post(this.$api.admin.spot.getAsset, {
           symbol: (this.$route.params.symbol !== "create" ? this.$route.params.symbol : "")
         }).then((response) => {
           if (response.fields) {
-            this.currency = Object.assign(this.currency, response.fields[0]);
-            for (let i = 0; i < this.currency.chains_ids.length; i++) {
-              this.currency.chains_ids[i] = (this.currency.chains_ids[i]).toString()
+            this.asset = Object.assign(this.asset, response.fields[0]);
+            for (let i = 0; i < this.asset.chains_ids.length; i++) {
+              this.asset.chains_ids[i] = (this.asset.chains_ids[i]).toString()
             }
-            this.image = this.$storages(['icon'], this.currency.symbol);
+            this.image = this.$storages(['icon'], this.asset.symbol);
+
+            this.getChains();
           }
         });
       },
@@ -158,16 +159,16 @@
       /**
        *
        */
-      setCurrency() {
-        if (this.currency.chains_ids === null) {
-          this.currency.chains_ids = []
+      setAsset() {
+        if (this.asset.chains_ids === null) {
+          this.asset.chains_ids = []
         }
-        this.$axios.$post(this.$api.admin.spot.setCurrency, {
+        this.$axios.$post(this.$api.admin.spot.setAsset, {
           symbol: (this.$route.params.symbol !== "create" ? this.$route.params.symbol : ""),
           image: this.image.split(',')[1],
-          currency: this.currency
+          asset: this.asset
         }).then(() => {
-          return this.$router.push('/admin/spot/currencies');
+          return this.$router.push('/admin/spot/assets');
         }).catch((error) => {
           this.$snackbar.open({
             content: `${error.response.data.code}: ${error.response.data.message}`,
@@ -192,7 +193,7 @@
         const reader = new FileReader();
         reader.onload = e => {
           this.image = e.target.result;
-          this.currency.icon = true;
+          this.asset.icon = true;
         };
         reader.readAsDataURL(file);
       },

@@ -175,7 +175,7 @@ export default {
   lang_175: "Old password",
   lang_176: "Save changes",
   lang_177: "Admin panel",
-  lang_178: "Currencies",
+  lang_178: "Assets",
   lang_179: "Chains",
   lang_180: "",
   lang_181: "Accounts",

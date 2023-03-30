@@ -82,7 +82,7 @@
     },
     mounted() {
       this.interval.map((interval) => {
-        this.channels.push('trade/candles:' + interval);
+        this.channels.push('trade/ticker:' + interval);
       });
       this.$publish.subscribe('exchange', this.channels, (error) => {
         console.log(error);

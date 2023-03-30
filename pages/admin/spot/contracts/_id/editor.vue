@@ -16,7 +16,7 @@
         </v-select>
       </v-col>
       <v-col cols="12" md="4">
-        <v-select v-model="contract.symbol" :items="currencies" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_187')" outlined>
+        <v-select v-model="contract.symbol" :items="assets" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_187')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
               <v-list-item-avatar>
@@ -97,7 +97,7 @@
   export default {
     data() {
       return {
-        currencies: [],
+        assets: [],
         chains: [],
         protocols: this.$protocol.list || [],
         contract: {
@@ -114,7 +114,6 @@
     mounted() {
       this.getContract();
       this.getChains();
-      this.getCurrencies();
 
       setTimeout(() => {
         this.getTag();
@@ -166,6 +165,8 @@
        *
        */
       getChains() {
+        this.getAssets();
+
         this.$axios.$post(this.$api.admin.spot.getChains).then((response) => {
           this.chains = response.fields ?? [];
           this.chains = this.chains.filter((item) => item.platform !== 'VISA' && item.platform !== 'MASTERCARD');
@@ -175,9 +176,9 @@
       /**
        *
        */
-      getCurrencies() {
-        this.$axios.$post(this.$api.admin.spot.getCurrencies).then((response) => {
-          this.currencies = response.fields ?? [];
+      getAssets() {
+        this.$axios.$post(this.$api.admin.spot.getAssets).then((response) => {
+          this.assets = response.fields ?? [];
         })
       }
     }
