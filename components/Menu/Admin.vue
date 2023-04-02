@@ -1,20 +1,22 @@
 <template>
-  <v-list dense>
-    <v-list-group v-if="hasOwnProperty(item[0])" v-for="(item, i) in Object.entries(navs)" :key="i" :value="i === 0">
-      <template v-slot:activator>
-        <v-list-item-icon class="mr-3">
-          <v-icon>mdi-contain</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title class="text-uppercase mr-2">{{ item[0] }}</v-list-item-title>
-      </template>
-      <v-list-item v-show="nav.display" v-for="(nav, i) in item[1]" :key="i" :to="`/admin/${item[0]}/${nav.to}`" exact link>
-        <v-list-item-title>{{ $vuetify.lang.t(nav.title) }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon v-text="nav.icon"></v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-    </v-list-group>
-  </v-list>
+  <v-card-text>
+    <v-list class="pa-0 rounded-menu" rounded>
+      <v-list-group v-if="hasOwnProperty(item[0])" v-for="(item, i) in Object.entries(navs)" :key="i" :value="i === 0">
+        <template v-slot:activator>
+          <v-list-item-icon class="mr-3">
+            <v-icon>mdi-contain</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title class="text-uppercase mr-2">{{ item[0] }}</v-list-item-title>
+        </template>
+        <v-list-item v-show="nav.display" v-for="(nav, i) in item[1]" :key="i" :to="`/admin/${item[0]}/${nav.to}`" exact link>
+          <v-list-item-title>{{ $vuetify.lang.t(nav.title) }}</v-list-item-title>
+          <v-list-item-icon>
+            <v-icon v-text="nav.icon"></v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </v-list-group>
+    </v-list>
+  </v-card-text>
 </template>
 
 <script>

@@ -31,12 +31,11 @@
             </v-list-item>
           </template>
         </v-select>
-        <v-select v-model="contract.chain_id" :items="chains" item-text="name" item-value="id" @change="getTag" :label="$vuetify.lang.t('$vuetify.lang_268')" outlined></v-select>
-        <v-text-field v-model="contract.decimals" color="primary" :label="$vuetify.lang.t('$vuetify.lang_293')" outlined></v-text-field>
+        <v-select v-model="contract.chain_id" :items="chains" item-text="name" item-value="id" @change="getProtocol" :label="$vuetify.lang.t('$vuetify.lang_268')" outlined></v-select>
       </v-col>
       <v-col cols="12" md="4">
-        <v-select v-model="contract.platform" :items="$platform.getType('CRYPTO')" item-text="name" item-value="name" :label="$vuetify.lang.t('$vuetify.lang_113')" outlined></v-select>
         <v-text-field v-model="contract.fees" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" outlined></v-text-field>
+        <v-text-field v-model="contract.decimals" color="primary" :label="$vuetify.lang.t('$vuetify.lang_293')" outlined></v-text-field>
       </v-col>
     </v-row>
     <!-- End: contract info form -->
@@ -59,7 +58,7 @@
           </thead>
           <tbody>
           <tr>
-            <td>{{ $vuetify.lang.t('$vuetify.lang_269') }}, {{ $vuetify.lang.t('$vuetify.lang_113') }}, {{ $vuetify.lang.t('$vuetify.lang_270') }}</td>
+            <td>{{ $vuetify.lang.t('$vuetify.lang_269') }}, {{ $vuetify.lang.t('$vuetify.lang_270') }}</td>
             <td>{{ $vuetify.lang.t('$vuetify.lang_275') }}</td>
             <td>*</td>
           </tr>
@@ -106,30 +105,16 @@
           address: "",
           fees: 0.01,
           decimals: 6,
-          protocol: "ERC20",
-          platform: "ETHEREUM"
+          protocol: "erc20",
+          platform: "ethereum"
         }
       }
     },
     mounted() {
       this.getContract();
       this.getChains();
-
-      setTimeout(() => {
-        this.getTag();
-      }, 1000);
     },
     methods: {
-
-      /**
-       *
-       */
-      getTag() {
-        this.protocols = this.$protocol.getTag(this.chains.find((item) => item.id === this.contract.chain_id).tag)
-        if (this.protocols.length) {
-          this.contract.protocol = this.protocols[0].name;
-        }
-      },
 
       /**
        *
@@ -168,8 +153,9 @@
         this.getAssets();
 
         this.$axios.$post(this.$api.admin.spot.getChains).then((response) => {
-          this.chains = response.fields ?? [];
-          this.chains = this.chains.filter((item) => item.platform !== 'VISA' && item.platform !== 'MASTERCARD');
+          this.chains = response.fields?.filter((item) => item.platform !== 'visa' && item.platform !== 'mastercard' && item.platform !== 'bitcoin');
+
+          this.getProtocol();
         })
       },
 
@@ -180,6 +166,18 @@
         this.$axios.$post(this.$api.admin.spot.getAssets).then((response) => {
           this.assets = response.fields ?? [];
         })
+      },
+
+      /**
+       *
+       */
+      getProtocol() {
+        let chain = this.chains.find((item) => item.id === this.contract.chain_id);
+        this.protocols = this.$protocol.getTag(chain?.tag ?? 'erc20');
+        if (this.protocols.length) {
+          this.contract.platform = chain.platform;
+          this.contract.protocol = this.protocols[0].name;
+        }
       }
     }
   }

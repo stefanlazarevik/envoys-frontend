@@ -1,5 +1,5 @@
 <template>
-  <v-card :disabled="!status && $auth.loggedIn" class="ma-1" height="500" elevation="0">
+  <v-card :disabled="!status && $auth.loggedIn" class="ma-1 rounded-lg" height="500" elevation="0">
 
     <!-- Start: app bar element -->
     <v-app-bar color="transparent" height="50" flat>
@@ -370,25 +370,22 @@
        * Создаём новый ордер.
        */
       setOrder() {
-
         this.clear = false;
 
         this.$axios.$post(this.$api.spot.setOrder, {
           // Назначение [sell:1] - [buy:0].
-          assigning: this.assigning === 'sell' ? 1 : 0,
+          assigning: this.assigning,
           // Имя актива (symbol-base).
           base_unit: this.parse.base(),
           // Имя актива (symbol-quote).
           quote_unit: this.parse.quote(),
           // Тип [market:0] - [limit:1]
-          trading: this.trading,
+          trading: this.trading ? 'limit' : 'market',
           // Количество монет sell/buy.
           quantity: this.quantity,
           // Рыночная цена монеты.
           price: this.price,
         }).then((response) => {
-
-          response.fields[0].assigning = response.fields[0].assigning ? 1 : 0;
 
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
           this.getAsset(false);

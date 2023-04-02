@@ -140,3 +140,10 @@
     }
   }
 </script>
+
+<style>
+/* List menu rounded */
+.rounded-menu .v-list-item, .rounded-menu .v-list-item::before, .rounded-menu .v-list-item > .v-ripple__container {
+    border-radius: 8px !important;
+}
+</style>

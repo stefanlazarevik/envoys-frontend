@@ -19,7 +19,7 @@
         <template v-slot:item.assigning="{ item }">
           <v-tooltip top>
             <template v-slot:activator="{ on, attrs }">
-              <template v-if="item.assigning">
+              <template v-if="item.assigning === 'sell'">
                 <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'red lighten-5 red--text') + ' ml-0 mr-2'" label small>
                   <v-icon color="red" size="15">
                     mdi-arrow-top-left
@@ -52,17 +52,17 @@
           {{ $decimal.truncate($decimal.mul(item.quantity, item.price)) }} {{ item.quote_unit.toUpperCase() }}
         </template>
         <template v-slot:item.status="{ item }">
-          <template v-if="item.status === 'PENDING'">
+          <template v-if="item.status === 'pending'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_131') }}
             </v-chip>
           </template>
-          <template v-if="item.status === 'FILLED'">
+          <template v-if="item.status === 'filled'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_129') }}
             </v-chip>
           </template>
-          <template v-if="item.status === undefined">
+          <template v-if="item.status === 'cancel'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_130') }}
             </v-chip>
@@ -86,7 +86,7 @@
                   </v-chip>
                 </template>
                 <template v-slot:item.quantity="{ item }">
-                  <template v-if="item.assigning">
+                  <template v-if="item.assigning === 'sell'">
                     - {{ $decimal.truncate(item.quantity) }} {{ item.base_unit.toUpperCase() }}
                   </template>
                   <template v-else>
@@ -235,30 +235,23 @@
     computed: {
 
       /**
-       * @returns {number}
+       * @returns {any}
        */
       status() {
-        switch (this.$route.params.status) {
-          case 'all':
-            return 3
-          case 'pending':
-            return 2
-          case 'filled':
-            return 1
-        }
+        return this.$route.params.status
       },
 
       /**
-       * @returns {number}
+       * @returns {any}
        */
       assigning() {
         switch (this.$route.params.assigning) {
           case 'purchase':
-            return 0
+            return 'buy'
           case 'sale':
-            return 1
+            return 'sell'
           default:
-            return 3
+            return null
         }
       },
 

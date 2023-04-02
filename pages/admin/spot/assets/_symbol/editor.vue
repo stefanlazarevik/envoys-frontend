@@ -8,26 +8,26 @@
 
           <!-- Start: icon crypto -->
           <v-list>
-              <v-list-item>
-                <v-list-item-avatar>
-                  <v-avatar color="indigo">
-                    <template v-if="asset.icon">
-                      <v-img :src="image" />
-                    </template>
-                    <template v-else>
-                      <span class="white--text text-h5">{{ asset.symbol }}</span>
-                    </template>
-                  </v-avatar>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ asset.symbol ? asset.symbol.toUpperCase() : $vuetify.lang.t('$vuetify.lang_205') }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ asset.name ? asset.name : $vuetify.lang.t('$vuetify.lang_206') }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-avatar color="indigo">
+                  <template v-if="asset.icon">
+                    <v-img :src="image" />
+                  </template>
+                  <template v-else>
+                    <span class="white--text text-h5">{{ asset.symbol }}</span>
+                  </template>
+                </v-avatar>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ asset.symbol ? asset.symbol.toUpperCase() : $vuetify.lang.t('$vuetify.lang_205') }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ asset.name ? asset.name : $vuetify.lang.t('$vuetify.lang_206') }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
           <!-- End: icon crypto -->
 

@@ -1,10 +1,10 @@
 <template>
-  <v-card class="ma-1" elevation="0" height="500">
+  <v-card class="ma-1 rounded-lg" elevation="0" height="500">
 
     <template v-if="status && count >= 60">
 
       <!-- Start: trading view -->
-      <v-app-bar class="toolbar-px-zero" color="transparent" flat height="50">
+      <v-app-bar class="toolbar-px-zero rounded-lg" color="transparent" flat height="50">
         <v-slide-group multiple show-arrows>
           <v-slide-item>
             <ul class="header-line">
@@ -222,10 +222,10 @@
       },
 
       /**
-       * @param unit
+       *
        */
-      getHeader(unit) {
-        this.$axios.$get(this.$api[this.$route.query.type === 'spot' ? 'spot' : 'stock'].getTicker + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
+      getHeader() {
+        this.$axios.$get(this.$api.ohlcv.getTicker + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
           this.header = response.stats;
         })
       }

@@ -34,10 +34,10 @@
               </v-icon>
             </template>
             <v-list>
-              <v-list-item @click="setSetting(item.id, 7, item.user_id)" link>
+              <v-list-item @click="setSetting(item.id, 'access', item.user_id)" link>
                 <v-list-item-title>Confirm</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="setSetting(item.id,8, item.user_id)" link>
+              <v-list-item @click="setSetting(item.id,'rejected', item.user_id)" link>
                 <v-list-item-title>Reject</v-list-item-title>
               </v-list-item>
               <v-list-item @click="getApplicant(item.applicant)" link>

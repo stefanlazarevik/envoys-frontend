@@ -103,7 +103,7 @@
 
     <template v-if="items[0]?.exist">
 
-      <template v-if="items[0]?.agent_status === 'ACCESS'">
+      <template v-if="items[0]?.agent_status === 'access'">
 
         <v-card-text>
           <v-row>
@@ -114,7 +114,7 @@
                 </v-card-title>
                 <v-divider />
                 <v-card-subtitle>
-                  <template v-if="items[0]?.type === 'BROKER'">
+                  <template v-if="items[0]?.type === 'broker'">
                     Введите количество активов, которые вы хотите вывести. Ваш вывод не требует подтверждения в разделе "Запросы на вывод". Статус будет автоматически изменен с "PENDING" на "FILLED".
                   </template>
                   <template v-else>
@@ -132,7 +132,7 @@
                 </template>
               </v-card>
 
-              <v-card v-if="items[0].type === 'BROKER' && !items[0].tag" class="mb-4" elevation="0" outlined>
+              <v-card v-if="items[0].type === 'broker' && !items[0].tag" class="mb-4" elevation="0" outlined>
                 <v-card-title class="text-uppercase">
                   Ввести в оборот дополнительные активы
                 </v-card-title>
@@ -148,7 +148,7 @@
                 </template>
               </v-card>
 
-              <v-card v-if="items[0].type === 'BROKER' && !items[0].tag" class="mb-4" elevation="0" outlined>
+              <v-card v-if="items[0].type === 'broker' && !items[0].tag" class="mb-4" elevation="0" outlined>
                 <v-card-title class="text-uppercase">
                   Вывести с оборота активы
                 </v-card-title>
@@ -236,7 +236,7 @@
         </v-card-text>
 
       </template>
-      <template v-else-if="items[0]?.agent_status === 'BLOCKED'">
+      <template v-else-if="items[0]?.agent_status === 'blocked'">
         <v-card-text>
           <v-layout fill-height wrap>
             <v-flex/>

@@ -1,5 +1,5 @@
 <template>
-  <div :class="('v-shift-item ') + (this.assigning ? '--sell' : '--buy')" :style="`height:${this.height}px`">
+  <div :class="('v-shift-item ') + (this.assigning === 'sell' ? '--sell' : '--buy')" :style="`height:${this.height}px`">
     <div class="v-shift-content">
       <slot name="default"></slot>
     </div>
@@ -25,8 +25,8 @@
         default: 0
       },
       assigning: {
-        type: Number,
-        default: 0
+        type: String,
+        default: 'sell'
       }
     }
   }

@@ -21,10 +21,10 @@
 
     <v-divider />
 
-    <template v-if="chains.length">
+    <template v-if="items.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="chains" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer show-expand single-expand>
+      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="items" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer show-expand single-expand>
         <template v-slot:item.data-table-expand="{ item, expand, isExpanded }">
           <template v-if="isExpanded">
             <v-icon @click="expand(!isExpanded)">
@@ -95,7 +95,7 @@
         <template v-slot:expanded-item="{ headers, item }">
           <td :colspan="headers.length">
 
-            <template v-if="$platform.get(item.platform).type === 'CRYPTO'">
+            <template v-if="$platform.get(item.platform).group === 'crypto'">
 
               <v-row align="center">
                 <v-col cols="12" md="4">
@@ -214,7 +214,7 @@
     data() {
       return {
         chain_id: "",
-        chains: [],
+        items: [],
         overlay: true,
         limit: 12,
         count: 0,
@@ -246,7 +246,7 @@
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.chains = response.fields ?? [];
+          this.items = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -260,7 +260,7 @@
         this.$axios.$post(this.$api.admin.spot.deleteChain, {
           id: id
         }).then(() => {
-          this.chains.splice(this.chains.map((o) => o.id).indexOf(id), 1);
+          this.items.splice(this.items.map((o) => o.id).indexOf(id), 1);
           this.count -= 1;
           this.dialog = false;
         }).catch((error) => {

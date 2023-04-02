@@ -19,7 +19,7 @@
       <v-col cols="12" md="4">
         <v-text-field v-model="chain.fees" color="primary" :label="$vuetify.lang.t('$vuetify.lang_221')" :hint="$vuetify.lang.t('$vuetify.lang_353')" outlined></v-text-field>
         <v-text-field v-model="chain.network" color="primary" :label="$vuetify.lang.t('$vuetify.lang_112')" outlined></v-text-field>
-        <v-select v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.parent_symbol" :items="assets" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
+        <v-select v-if="$platform.get(chain.platform).group === 'crypto'" v-model="chain.parent_symbol" :items="assets" item-text="symbol" item-value="symbol" :label="$vuetify.lang.t('$vuetify.lang_286')" outlined>
           <template v-slot:item="{ item, attrs, on }">
             <v-list-item v-bind="attrs" v-on="on">
               <v-list-item-avatar>
@@ -34,7 +34,7 @@
             </v-list-item>
           </template>
         </v-select>
-        <v-text-field v-if="$platform.get(chain.platform).type === 'CRYPTO'" v-model="chain.block" :label="$vuetify.lang.t('$vuetify.lang_220')" outlined></v-text-field>
+        <v-text-field v-if="$platform.get(chain.platform).group === 'crypto'" v-model="chain.block" :label="$vuetify.lang.t('$vuetify.lang_220')" outlined></v-text-field>
       </v-col>
     </v-row>
     <!-- End: chain info form -->
@@ -137,8 +137,8 @@
           status: false,
           fees: 0,
           parent_symbol: "",
-          tag: "C_NONE",
-          platform: "ETHEREUM"
+          tag: "tag_none",
+          platform: "ethereum"
         }
       }
     },
@@ -157,12 +157,6 @@
           id: (this.$route.params.id !== "create" ? this.$route.params.id : 0)
         }).then((response) => {
           if (response.fields) {
-            if (!response.fields[0].platform) {
-              response.fields[0].platform = 'BITCOIN'
-            }
-            if (!response.fields[0].tag) {
-              response.fields[0].tag = 'C_NONE'
-            }
             this.chain = Object.assign(this.chain, response.fields[0]);
           }
         });

@@ -28,7 +28,7 @@
         </template>
         <template v-slot:item.status="{ item }">
           <v-icon @click="setBlocked(item.id)">
-            <template v-if="item.status === 'BLOCKED'">
+            <template v-if="item.status === 'blocked'">
               mdi-close-circle-outline
             </template>
             <template v-else>
@@ -100,12 +100,6 @@
         this.$axios.$post(this.$api.stock.setBlocked, {
           id: id,
         }).then((response) => {
-          //let index = this.items.map((o) => o.id).indexOf(id);
-          //if (response.success) {
-          //  this.items[index].blocked = true;
-          //} else {
-          //  this.items[index].blocked = false;
-          //}
           this.getAgents();
         });
       },

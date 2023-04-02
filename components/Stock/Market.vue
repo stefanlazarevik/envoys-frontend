@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" height="500" elevation="0">
+  <v-card class="ma-1 rounded-lg" height="500" elevation="0">
 
     <!-- Start: pair search element -->
     <template v-if="!overlay">

@@ -1,10 +1,10 @@
 <template>
   <div>
 
-    <template v-if="repayments.length">
+    <template v-if="items.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="repayments" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
+      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="items" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
         <template v-slot:item.symbol="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -16,10 +16,7 @@
           </v-tooltip>
         </template>
         <template v-slot:item.value="{ item }">
-          <template v-if="item.protocol">
-            {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
-          </template>
-          <template v-else>
+          <template v-if="item.protocol === 'mainnet'">
             <v-tooltip top>
               <template v-slot:activator="{ on, attrs }">
               <span v-bind="attrs" v-on="on">
@@ -31,13 +28,16 @@
             </span>
             </v-tooltip>
           </template>
+          <template v-else>
+            {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
+          </template>
         </template>
         <template v-slot:item.fees="{ item }">
-          {{ $decimal.format(item.fees ? item.fees : 0) }} <b>{{ item.protocol ? (item.parent_symbol).toUpperCase() : (item.symbol).toUpperCase() }}</b>
+          {{ $decimal.format(item.fees ? item.fees : 0) }} <b>{{ item.protocol === 'mainnet' ? (item.symbol).toUpperCase() : (item.parent_symbol).toUpperCase() }}</b>
         </template>
         <template v-slot:item.protocol="{ item }">
           <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
-            {{ item.protocol ?? 'Mainnet' }}
+            {{ item.protocol }}
           </v-chip>
         </template>
         <template v-slot:item.platform="{ item }">
@@ -53,7 +53,7 @@
           </template>
           <template v-else>
             <v-btn @click="setRepayment(item.id);" class="text-capitalize" color="red" elevation="0" outlined>
-              {{ $vuetify.lang.t('$vuetify.lang_354') }} ({{ item.protocol ? item.fees : $decimal.add(item.value, item.fees ?? 0) }} <b>{{ item.protocol ? (item.parent_symbol).toUpperCase() : (item.symbol).toUpperCase() }}</b>)
+              {{ $vuetify.lang.t('$vuetify.lang_354') }} ({{ item.protocol === 'mainnet' ? $decimal.add(item.value, item.fees ?? 0) : item.fees }} <b>{{ item.protocol === 'mainnet' ? (item.symbol).toUpperCase() : (item.parent_symbol).toUpperCase() }}</b>)
             </v-btn>
           </template>
         </template>
@@ -107,7 +107,7 @@
     name: "v-component-repayments",
     data() {
       return {
-        repayments: [],
+        items: [],
         overlay: true,
         limit: 15,
         count: 0,
@@ -130,7 +130,7 @@
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.repayments = response.fields ?? [];
+          this.items = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -142,10 +142,14 @@
        */
       setRepayment(id) {
         this.$axios.$post(this.$api.admin.spot.setRepayment, {id: id}).then((response) => {
-          console.log(response);
           if (response.success) {
             this.getRepayments();
           }
+        }).catch((error) => {
+          this.$snackbar.open({
+            content: `${error.response.data.code}: ${error.response.data.message}`,
+            color: 'red darken-2'
+          });
         });
       },
 

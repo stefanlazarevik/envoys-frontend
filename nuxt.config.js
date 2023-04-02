@@ -36,10 +36,10 @@ export default {
   },
 
   proxy: {
-    '/v2': {
+    '/': {
       target: process.env.BASE_API,
       pathRewrite: {
-        '^/v2': '/v2',
+        '^/': '/',
         changeOrigin: true
       }
     }
@@ -104,10 +104,10 @@ export default {
           tokenRequired: true
         },
         endpoints: {
-          login: { url: '/auth/action-signin', method: 'post' },
-          refresh: { url: '/auth/get-refresh', method: 'post' },
-          logout: { url: '/auth/set-logout', method: 'post', data: 'refresh'},
-          user: { url: '/account/get-user', method: 'post' }
+          login: { url: '/v2/auth/action-signin', method: 'post' },
+          refresh: { url: '/v2/auth/get-refresh', method: 'post' },
+          logout: { url: '/v2/auth/set-logout', method: 'post', data: 'refresh'},
+          user: { url: '/v2/account/get-user', method: 'post' }
         },
         autoLogout: true
       }

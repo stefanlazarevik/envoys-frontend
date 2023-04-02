@@ -23,10 +23,10 @@
 
     <v-divider />
 
-    <template v-if="pairs.length">
+    <template v-if="items.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="pairs" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
+      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="items" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
         <template v-slot:item.base_unit="{ item }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -143,7 +143,7 @@
       return {
         search: "",
         pair_id: 0,
-        pairs: [],
+        items: [],
         overlay: true,
         limit: 12,
         count: 0,
@@ -180,7 +180,7 @@
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.pairs = response.fields ?? [];
+          this.items = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -194,7 +194,7 @@
         this.$axios.$post(this.$api.admin.spot.deletePair, {
           id: pair_id
         }).then(() => {
-          this.pairs.splice(this.pairs.map((o) => o.id).indexOf(pair_id), 1);
+          this.items.splice(this.items.map((o) => o.id).indexOf(pair_id), 1);
           this.count -= 1;
           this.dialog = false;
         }).catch((error) => {

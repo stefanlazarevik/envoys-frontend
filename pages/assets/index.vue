@@ -1,15 +1,28 @@
 <template>
-  <v-component-analysis />
 </template>
 
 <script>
-  import Analysis from "../../components/Asset/Analysis";
 
   export default {
-    name: "index",
-    components: {
-      'v-component-analysis': Analysis
+
+    mounted() {
+      this.init();
     },
+
+    methods: {
+
+      /**
+       * Получаем список всех активов.
+       */
+      init() {
+        this.$axios.$post(this.$api.spot.getAssets).then((response) => {
+          let items = response.fields ?? [];
+          if (!this.$route.params.symbol && items.length) {
+            this.$router.push(`/assets/${items[0].symbol}/deposit`);
+          }
+        });
+      }
+    }
   }
 </script>
 

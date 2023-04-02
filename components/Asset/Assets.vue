@@ -12,35 +12,31 @@
     <!-- Start: list assets element -->
     <template v-if="assets.length">
       <template v-if="items.length">
-        <v-hover v-slot="{ hover }">
-          <v-virtual-scroll :class="hover ? '' : 'overflow-y-hidden'" :items="items" bench="0" max-height="900" item-height="50">
-            <template v-slot:default="{ item }">
-              <v-hover v-slot:default="{ hover }">
-                <v-list-item :color="$vuetify.theme.dark ? 'grey darken-3' : 'deep-purple lighten-5'" :key="item.id" :class="active(item.symbol) ? 'v-list-item--active ' + ($vuetify.theme.dark ? 'grey--text text--darken-3' : 'blue--text text--lighten-5') : ''" :to="'/assets/' + item.symbol + '/deposit'" dense>
-                  <v-list-item-avatar size="30">
+        <v-card-text>
+          <v-list class="pa-0 rounded-menu" rounded>
+            <template v-for="item in items">
+              <v-hover v-slot="{ hover }">
+                <v-list-item :color="$vuetify.theme.dark ? '' : 'deep-purple lighten-4'" :key="item.id" :to="'/assets/' + item.symbol + '/deposit'" exact link>
+                  <v-list-item-avatar size="40">
                     <v-img :src="$storages(['icon'], item.symbol)"/>
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title><span :class="($vuetify.theme.dark ? 'white' : 'black') + '--text'">{{ item.symbol.toUpperCase() }}</span></v-list-item-title>
                     <v-list-item-subtitle>{{ item.name }}</v-list-item-subtitle>
                   </v-list-item-content>
-                  <v-list-item-action class="d-block text-right">
+                  <v-list-item-action :class="($vuetify.theme.dark ? '' : 'brown--text') + ' d-block text-right'">
                     <template v-if="hover">
-                      <small v-if="$decimal.format(item.balance, 8)" class="teal--text text--darken-3">
-                        ≈ ${{ item.price ? $decimal.format($decimal.mul(item.balance, item.price), 8) : $decimal.format(item.balance, 8) }}
-                      </small>
+                      ≈ ${{ item.price ? $decimal.format($decimal.mul(item.balance, item.price), 8) : $decimal.format(item.balance, 8) }}
                     </template>
                     <template v-else>
-                      <small v-if="$decimal.format(item.balance, 8)" class="teal--text text--darken-3">
-                        {{ $decimal.format(item.balance, 8) }}
-                      </small>
+                      {{ $decimal.format(item.balance, 8) }}
                     </template>
                   </v-list-item-action>
                 </v-list-item>
               </v-hover>
             </template>
-          </v-virtual-scroll>
-        </v-hover>
+          </v-list>
+        </v-card-text>
       </template>
       <template v-else>
         <v-layout :style="'height: '+ (height) +'px'" wrap>

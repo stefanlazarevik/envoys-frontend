@@ -45,8 +45,8 @@
             <b>{{ item.symbol.toUpperCase() }}</b>
           </div>
         </template>
-        <template v-slot:item.type="{ item }">
-          <template v-if="item.type">
+        <template v-slot:item.group="{ item }">
+          <template v-if="item.group === 'fiat'">
             Fiat
           </template>
           <template v-else>
@@ -273,7 +273,7 @@
             text: this.$vuetify.lang.t('$vuetify.lang_208'),
             align: 'start',
             sortable: true,
-            value: 'type'
+            value: 'group'
           }, {
             text: this.$vuetify.lang.t('$vuetify.lang_189'),
             align: 'start',

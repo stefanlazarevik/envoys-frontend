@@ -36,16 +36,16 @@
           {{ $decimal.format(item.value ? item.value : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
         </template>
         <template v-slot:item.reverse="{ item }">
-          <template v-if="item.protocol">
-            <span class="red--text">OFF</span>
+          <template v-if="item.protocol === 'mainnet'">
+            {{ $decimal.format(item.reverse ? item.reverse : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
           </template>
           <template v-else>
-            {{ $decimal.format(item.reverse ? item.reverse : 0) }} <b>{{ (item.symbol).toUpperCase() }}</b>
+            <span class="red--text">OFF</span>
           </template>
         </template>
         <template v-slot:item.protocol="{ item }">
           <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
-            {{ item.protocol ?? 'Mainnet' }}
+            {{ item.protocol }}
           </v-chip>
         </template>
         <template v-slot:item.platform="{ item }">

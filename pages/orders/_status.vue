@@ -2,7 +2,7 @@
   <div>
 
     <!-- Start: tabs bar -->
-    <v-tabs color="primary">
+    <v-tabs class="rounded-lg" color="primary">
       <v-tab exact :to="'/orders/' + $route.params.status" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_64') }}</v-tab>
       <v-tab exact :to="'/orders/' + $route.params.status + '/sale'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_140') }}</v-tab>
       <v-tab exact :to="'/orders/' + $route.params.status + '/purchase'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_141') }}</v-tab>

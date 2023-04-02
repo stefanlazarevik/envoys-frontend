@@ -2,9 +2,9 @@
   <div>
 
     <!-- Start: tabs bar -->
-    <v-tabs v-model="eyelet" color="primary" show-arrows>
+    <v-tabs class="rounded-lg" v-model="eyelet" color="primary" show-arrows>
       <v-tab :to="'/assets/' + symbol + '/deposit'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_120') }}</v-tab>
-      <v-tab :to="'/assets/' + symbol + '/withdraw'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_92') }}</v-tab>
+      <v-tab :to="'/assets/' + symbol + '/withdrawal'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_92') }}</v-tab>
       <v-tab :to="'/assets/' + symbol + '/history'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_93') }}</v-tab>
       <v-tab :to="'/assets/' + symbol + '/fees'" class="text-capitalize">{{ $vuetify.lang.t('$vuetify.lang_151') }}</v-tab>
     </v-tabs>

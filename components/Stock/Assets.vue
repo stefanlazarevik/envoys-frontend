@@ -16,42 +16,45 @@
 
     <v-divider />
 
-    <v-hover v-slot="{ hover }">
-      <v-virtual-scroll :class="hover ? '' : 'overflow-y-hidden'" :items="items" bench="0" height="300" item-height="50">
-        <template v-slot:default="{ item }">
-        <v-list-item :color="$vuetify.theme.dark ? 'grey darken-3' : 'deep-purple lighten-5'" :to="`/stock/${item.symbol}`" exact link>
-          <v-list-item-action>
-            <template v-if="item.zone">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-chip v-bind="attrs" v-on="on" class="ml-0 mr-2 black--text text-uppercase d-block text-center chip-w" label small>
-                    {{ item.symbol }}
-                  </v-chip>
+    <v-card-text>
+      <v-list class="pa-0 rounded-menu" rounded>
+        <template v-for="item in items">
+          <v-hover v-slot="{ hover }">
+            <v-list-item :color="$vuetify.theme.dark ? '' : 'deep-purple lighten-4'" :key="item.id" :to="'/stock/' + item.symbol" exact link>
+              <v-list-item-action>
+                <template v-if="item.zone">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-chip v-bind="attrs" v-on="on" class="ml-0 mr-2 black--text text-uppercase d-block text-center chip-w" label>
+                        {{ item.symbol }}
+                      </v-chip>
+                    </template>
+                    <span>{{ item.name }} - {{ item.price }} <b>{{ (item.zone).toUpperCase() }}</b></span>
+                  </v-tooltip>
                 </template>
-                <span>{{ item.name }} - {{ item.price }} <b>{{ (item.zone).toUpperCase() }}</b></span>
-              </v-tooltip>
-            </template>
-            <template v-else>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <v-chip v-bind="attrs" v-on="on" class="ml-0 mr-2 black--text text-uppercase" label small>
-                    {{ item.symbol }}
-                  </v-chip>
+                <template v-else>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-chip v-bind="attrs" v-on="on" class="ml-0 mr-2 black--text text-uppercase" label>
+                        {{ item.symbol }}
+                      </v-chip>
+                    </template>
+                    <span>{{ item.name }}</span>
+                  </v-tooltip>
                 </template>
-                <span>{{ item.name }}</span>
-              </v-tooltip>
-            </template>
-          </v-list-item-action>
-          <v-list-item-content />
-          <v-list-item-action class="d-block text-right teal--text text--darken-3">
-            {{ $decimal.format(item.balance, 8) }}
-          </v-list-item-action>
-        </v-list-item>
+              </v-list-item-action>
+              <v-list-item-content />
+              <v-list-item-action :class="($vuetify.theme.dark ? '' : 'brown--text') + ' d-block text-right'">
+                {{ $decimal.format(item.balance, 8) }}
+              </v-list-item-action>
+            </v-list-item>
+          </v-hover>
         </template>
-      </v-virtual-scroll>
-    </v-hover>
+      </v-list>
+    </v-card-text>
 
     <v-divider />
+
     <v-card-actions v-if="items.length">
       <v-btn :to="`/trade/${items[0].symbol}-${items[0].zone}?type=stock`" color="text-capitalize" large block elevation="0">Перейти к торгам</v-btn>
     </v-card-actions>
@@ -78,28 +81,10 @@
     mounted() {
 
       this.$nuxt.$on('stock/sub/asset', (data) => {
-        //this.items.map(item => {
-        //  if(item.symbol === data.symbol) {
-        //    if (!item.balance) {
-        //      item.balance = 0;
-        //    }
-        //    item.balance -= Number(data.value);
-        //    console.log(item.balance, Number(data.value));
-        //  }
-        //});
         this.getAssets();
       });
 
       this.$nuxt.$on('stock/add/asset', (data) => {
-        //this.items.map(item => {
-        //  if(item.symbol === data.symbol) {
-        //    if (!item.balance) {
-        //      item.balance = 0;
-        //    }
-        //    item.balance += Number(data.value);
-        //    console.log(item.balance, Number(data.value));
-        //  }
-        //});
         this.getAssets();
       });
 

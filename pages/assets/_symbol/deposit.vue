@@ -2,7 +2,7 @@
   <div class="ma-4">
 
     <template v-if="asset.chains && (!empty || empty === 1)">
-      <template v-if="!asset.type">
+      <template v-if="asset.group === 'crypto'">
 
         <!-- Start: tabs bar -->
         <v-tabs v-model="eyelet" color="primary">
@@ -13,12 +13,9 @@
         <!-- Start: tabs items -->
         <v-tabs-items v-model="eyelet" class="mt-3">
           <v-tab-item v-for="(item, index) in asset.chains" :key="item.id" :transition="false" class="mt-1">
-
-            <template v-if="item.address && item.exist">
-
+            <template v-if="item.exist">
               <v-row>
                 <v-col cols="12" md="6">
-
                   <template v-if="!item.status">
                     <v-card class="mb-4" elevation="0" outlined>
                       <v-card-subtitle class="text-uppercase">
@@ -31,18 +28,16 @@
                     </v-card>
                   </template>
                   <template v-else>
-
                     <v-card class="mb-4" elevation="0" outlined>
                       <v-card-text :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
                         {{ $vuetify.lang.t('$vuetify.lang_110') }}
                       </v-card-text>
                     </v-card>
-
                     <v-card class="mb-4" elevation="0" outlined>
                       <v-card-text>
                         <v-row align="center">
                           <v-col md="4">
-                            <v-component-qrcode :content="item.address.toString()" :width="200" />
+                            <v-component-qrcode :content="item.address" :width="200" />
                           </v-col>
                           <v-col md="8" :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
                             {{ $vuetify.lang.t('$vuetify.lang_85') }}
@@ -57,7 +52,6 @@
                         </v-icon>
                       </template>
                     </v-text-field>
-
                   </template>
                 </v-col>
                 <v-col cols="12" md="6">
@@ -104,7 +98,7 @@
               <v-layout fill-height style="height:200px;" wrap>
                 <v-flex/>
                 <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
-                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 0), asset.type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 'mainnet'), index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
                 </v-flex>
                 <v-flex/>
               </v-layout>
@@ -136,7 +130,7 @@
               <v-layout fill-height style="height:200px;" wrap>
                 <v-flex/>
                 <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
-                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, 0, asset.type, index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, 'mainnet', index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
                 </v-flex>
                 <v-flex/>
               </v-layout>
@@ -144,6 +138,7 @@
 
           </v-tab-item>
         </v-tabs-items>
+        <!-- End: tabs items -->
 
       </template>
     </template>
@@ -188,21 +183,6 @@
       this.getAsset();
     },
     methods: {
-      decimal,
-
-      round(number, precision, isDown) {
-        const factor = Math.pow(10, precision);
-        let tempNumber = number * factor;
-        let roundedTempNumber = 0;
-        if (isDown) {
-          tempNumber = -tempNumber;
-          roundedTempNumber = Math.round(tempNumber) * -1;
-        } else {
-          roundedTempNumber = Math.round(tempNumber);
-        }
-        return roundedTempNumber / factor;
-      },
-
 
       /**
        *
@@ -214,10 +194,13 @@
         this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
 
-          if (!this.asset.type) {
+          if (this.asset.group === 'crypto') {
             this.asset.chains.map((item) => {
               if (!item.contract) {
                 this.empty += 1;
+              }
+              if (!item.status) {
+                item.status = false
               }
             });
           }
@@ -231,12 +214,11 @@
       /**
        * @param platform
        * @param protocol
-       * @param type
        * @param index
        */
-      setAsset(platform, protocol, type, index) {
-        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, type: type}).then((response) => {
-          if (type) {
+      setAsset(platform, protocol, index) {
+        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, group: this.asset.group}).then((response) => {
+          if (this.asset.group === 'fiat') {
             for (let i = 0; i < this.asset.chains.length; i++) {
               this.asset.chains[i].exist = true;
             }

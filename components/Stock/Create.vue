@@ -14,13 +14,13 @@
         </div>
       </div>
 
-      <template v-if="agent.item.status === 'PENDING'">
+      <template v-if="agent.item.status === 'pending'">
         <v-alert icon="mdi-information-outline">
           Ожидайте вашу заявку отправлено на рассмотрения брокеру <b>№{{ agent.item.id }} - {{ agent.item.name }}</b>, после того как заявка будет одобрена, вам будет доступно торговая площадка ценными бумагами.
         </v-alert>
       </template>
 
-      <template v-else-if="agent.item.status === 'ACCESS'">
+      <template v-else-if="agent.item.status === 'access'">
 
         <template v-if="agent.item.type === 0">
           <v-alert text type="success" icon="mdi-check-circle-outline">
@@ -140,7 +140,7 @@
                 <small>Завершение процедуры открытия торгового счета</small>
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-btn style="text-transform: none !important;" color="black--text yellow darken-1 text-capitalize" @click="setAgent(0)" large elevation="0">
+                <v-btn style="text-transform: none !important;" color="black--text yellow darken-1 text-capitalize" @click="setAgent('agent')" large elevation="0">
                   Открыть торговый счет
                 </v-btn>
               </v-stepper-content>
@@ -189,7 +189,7 @@
                 <small>Завершение процедуры открытия торгового счета</small>
               </v-stepper-step>
               <v-stepper-content step="3">
-                <v-btn style="text-transform: none !important;" color="black--text yellow darken-1 text-capitalize" @click="setAgent(1)" large elevation="0">
+                <v-btn style="text-transform: none !important;" color="black--text yellow darken-1 text-capitalize" @click="setAgent('broker')" large elevation="0">
                   Открыть торговый счет
                 </v-btn>
               </v-stepper-content>
@@ -254,14 +254,14 @@
        * @param type
        */
       setAgent(type) {
-        this.$axios.$post(this.$api.stock.setAgent, {name: this.name, type: type, broker_id: this.agent.items[this.broker].id}).then((response) => {
+        this.$axios.$post(this.$api.stock.setAgent, {name: this.name, type: type, broker_id: this.broker ? this.agent.items[this.broker].id : 0}).then((response) => {
           let fields = response.fields ?? [];
           if (fields.length > 0) {
             this.agent.item.id = fields[0].id;
             this.agent.item.user_id = fields[0].user_id;
             this.agent.item.broker_id = fields[0].broker_id ?? 0;
             this.agent.item.name = fields[0].name ?? null;
-            this.agent.item.type = fields[0].type ?? 0;
+            this.agent.item.type = fields[0].type;
             this.agent.item.status = fields[0].status;
           }
         }).catch((error) => {

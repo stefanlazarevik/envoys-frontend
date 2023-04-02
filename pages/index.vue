@@ -39,11 +39,11 @@
       <div :class="'py-3 ' + ($vuetify.theme.dark ? 'blue-grey-darken-3' : '')">
         <section :class="(this.$vuetify.breakpoint.mobile ? 'px-3' : 'px-15') + ' main-role'">
 
-          <v-card elevation="0">
+          <v-card class="rounded-lg" elevation="0">
 
             <template v-if="this.$vuetify.breakpoint.mobile">
 
-              <v-data-table :headers="headlines" :items="pairs" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
+              <v-data-table :headers="headlines" :items="markets" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
                 <template v-slot:item.symbol="{ item }">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -95,7 +95,7 @@
               <v-app-bar v-if="!header" color="transparent" height="65" flat>
                 <v-layout wrap>
                   <v-flex>
-                    <v-text-field style="width: 300px;margin-top: 3px;" color="primary" v-model="search" v-on:keyup="getPairs" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_50')" prepend-inner-icon="mdi-layers-search-outline" />
+                    <v-text-field style="width: 300px;margin-top: 3px;" color="primary" v-model="search" v-on:keyup="getMarkets" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_50')" prepend-inner-icon="mdi-layers-search-outline" />
                   </v-flex>
                   <v-flex></v-flex>
                   <v-flex>
@@ -109,7 +109,7 @@
 
               <v-divider />
 
-              <template v-if="pairs.length">
+              <template v-if="markets.length">
                 <v-simple-table>
                   <template v-slot:default>
                     <thead v-if="header" style="height: 65px">
@@ -142,7 +142,7 @@
                     </tr>
                     </thead>
                     <tbody @mouseover="header = true" @mouseleave="header = false">
-                    <tr v-for="item in pairs" :key="item.id">
+                    <tr v-for="item in markets" :key="item.id">
                       <td width="100">
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
@@ -154,7 +154,7 @@
                         </v-tooltip>
                         <v-tooltip bottom>
                           <template v-slot:activator="{ on, attrs }">
-                            <v-avatar class="my-2 ml-n7" size="40">
+                            <v-avatar class="position my-3 ml-n7" size="40">
                               <v-img :src="$storages(['icon'], item.quote_unit)" v-bind="attrs" v-on="on" />
                             </v-avatar>
                           </template>
@@ -270,7 +270,7 @@
         header: false,
         loader: false,
         overlay: false,
-        pairs: [],
+        markets: [],
         limit: 10,
         count: 0,
         length: 0,
@@ -293,7 +293,7 @@
        */
       this.$publish.bind('trade/ticker:0', (data) => {
         if (data.fields && data.fields.length > 1) {
-          this.pairs.filter((item) => {
+          this.markets.filter((item) => {
             if (
 
                 // Сверяем принадлежат ли новые события к данному активу,
@@ -332,7 +332,7 @@
         }
       }, 1000);
       this.getAdvertisements();
-      this.getPairs();
+      this.getMarkets();
     },
     methods: {
 
@@ -340,20 +340,20 @@
        *
        */
       getMore() {
-        this.getPairs()
+        this.getMarkets()
       },
 
       /**
        *
        */
-      getPairs() {
+      getMarkets() {
         this.overlay = true;
-        this.$axios.$post(this.$api.index.getPairs, {
+        this.$axios.$post(this.$api.index.getMarkets, {
           search: this.search,
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.pairs = response.fields ?? [];
+          this.markets = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -365,7 +365,7 @@
        */
       getAdvertisements() {
         this.$axios.$post(this.$api.ads.getAdvertisements, {
-          type: 1,
+          class: 1,
           random: true
         }).then((response) => {
           this.advertisements = response.fields ?? [];
@@ -400,6 +400,9 @@
 </script>
 
 <style lang="scss">
+  .position {
+    position: absolute !important;
+  }
   .slide {
     margin: 7.5px 0;
 

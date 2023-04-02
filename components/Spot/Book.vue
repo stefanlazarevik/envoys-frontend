@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" height="1008" elevation="0">
+  <v-card class="ma-1 rounded-lg" height="1008" elevation="0">
 
     <!-- Start: filter assigning tab element -->
     <v-app-bar color="transparent" height="50" flat>
@@ -47,10 +47,10 @@
       <template v-if="orders.bid().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" height="410" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="0" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="buy" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span class="teal--text">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -126,10 +126,10 @@
       <template v-if="orders.ask().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.ask()" height="410" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="1" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="sell" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span class="red--text">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -165,10 +165,10 @@
       <template v-if="orders.assigning().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders.assigning()" height="900" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning ? 1 : 0" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span :class="(item.assigning === 'sell' ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -251,15 +251,24 @@
     },
     watch: {
       $route() {
-        this.getOrders(2);
+        this.getOrders(null);
       },
       eyelet(e) {
-        this.getOrders(e)
+        let assigning = null;
+        switch (e) {
+          case 0:
+            assigning = "buy";
+            break
+          case 1:
+            assigning = "sell";
+            break
+        }
+        this.getOrders(assigning)
       }
     },
 
     mounted() {
-      this.getOrders(2);
+      this.getOrders(null);
 
       /**
        * Отслеживаем события нового ордера.
@@ -275,18 +284,17 @@
        * @object {value: float}
        */
       this.$publish.bind('order/create', (data) => {
-        data.assigning = data.assigning ?? 0;
-
+        let assigning = (this.eyelet ? 'sell' : 'buy');
         if (
 
-            // Сверяем принадлежат ли новые события к данному активу,
-            // если аргументы совпадают то привязываем полученные данные из события к данному активу.
-            data.base_unit === this.parse.base() &&
-            data.quote_unit === this.parse.quote() &&
+          // Сверяем принадлежат ли новые события к данному активу,
+          // если аргументы совпадают то привязываем полученные данные из события к данному активу.
+          data.base_unit === this.parse.base() &&
+          data.quote_unit === this.parse.quote() &&
 
-            // Добавляем елемент у видимую область.
-            this.eyelet === data.assigning ||
-            this.eyelet === 2
+          // Добавляем елемент у видимую область.
+          assigning === data.assigning ||
+          this.eyelet === 2
 
         ) {
 
@@ -297,7 +305,7 @@
           }
 
           // Получаем текущий объем в ордерах.
-          this.getVolume(this.eyelet);
+          this.getVolume(assigning);
         }
       });
 
@@ -321,19 +329,19 @@
 
         if (
 
-            // Проверяем есть ли в массиве объект по идентификатору.
-            matching
+          // Проверяем есть ли в массиве объект по идентификатору.
+          matching
 
         ) {
 
           switch (data.status) {
-            case 1:
+            case "filled":
 
               // Удаляем ордер с массива по идентификатору.
               this.order.items.splice(index, 1);
 
               break;
-            case 2:
+            case "pending":
 
               // Обновляем количество монет ордера.
               this.order.items[index].value = data.value;
@@ -341,9 +349,10 @@
               break
 
           }
+          let assigning = (this.eyelet ? 'sell' : 'buy');
 
           // Получаем текущий объем в ордерах.
-          this.getVolume(this.eyelet);
+          this.getVolume(assigning);
 
         }
       });
@@ -367,9 +376,10 @@
         if (index !== -1) {
           this.order.items.splice(index, 1);
         }
+        let assigning = (this.eyelet ? 'sell' : 'buy');
 
         // Получаем текущий объем в ордерах.
-        this.getVolume(this.eyelet);
+        this.getVolume(assigning);
       });
     },
 
@@ -401,14 +411,12 @@
           // Имя актива (symbol-quote).
           quote_unit: this.parse.quote(),
           // Показывать записи если они со статусом в ожидании.
-          status: 2,
+          status: "pending",
           // Count item.
           limit: 200
         }).then((response) => {
-
           this.order.volume = response.volume ?? 0;
           this.order.items = response.fields ?? [];
-
           this.overlay = false;
         });
       },
@@ -425,7 +433,7 @@
           // Имя актива (symbol-quote).
           quote_unit: this.parse.quote(),
           // Показывать записи если они со статусом в ожидании.
-          status: 2,
+          status: "pending",
           // Количество объектов для вывода.
           limit: 1
         }).then((response) => {
@@ -449,13 +457,13 @@
       orders() {
         return {
           assigning: () => {
-            return this.order.items.filter((item) => (item.assigning ? 1 : 0) === this.eyelet).sort((a, b) => this.order.range ? b.price - a.price : null);
+            return this.order.items.filter((item) => item.assigning === (this.eyelet ? 'sell' : 'buy')).sort((a, b) => this.order.range ? b.price - a.price : null);
           },
           bid: () => {
-            return this.order.items.filter((item) => !item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
+            return this.order.items.filter((item) => item.assigning === 'buy').sort((a, b) => this.order.range ? b.price - a.price : null);
           },
           ask: () => {
-            return this.order.items.filter((item) => item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
+            return this.order.items.filter((item) => item.assigning === 'sell').sort((a, b) => this.order.range ? b.price - a.price : null);
           }
         }
       },
@@ -498,18 +506,14 @@
        * @returns {string|string}
        */
       priceConcurrency() {
-
         if (this.order.items.length !== 1) {
-
           if (this.priceCurrent > this.pricePrevious) {
             return 'teal'
           }
           if (this.priceCurrent < this.pricePrevious) {
             return 'red'
           }
-
         }
-
         return this.$vuetify.theme.dark ? 'grey' : 'brown'
       }
     }

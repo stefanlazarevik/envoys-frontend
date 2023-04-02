@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" height="500" elevation="0">
+  <v-card class="ma-1 rounded-lg" height="500" elevation="0">
 
     <!-- Start: app bar element -->
     <v-app-bar v-if="!header" color="transparent" height="50" flat>
@@ -29,7 +29,7 @@
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                           <span v-bind="attrs" v-on="on">
-                            <template v-if="item.assigning">
+                            <template v-if="item.assigning === 'sell'">
                               <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'red lighten-5 red--text') + ' ml-0 mr-2'" label small>
                                 <v-icon color="red" size="15">
                                   mdi-arrow-top-left
@@ -99,17 +99,17 @@
                   <tr>
                     <td>{{ $vuetify.lang.t("$vuetify.lang_81") }}</td>
                     <td class="text-right">
-                      <template v-if="item.status === 'PENDING'">
+                      <template v-if="item.status === 'pending'">
                         <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                           {{ $vuetify.lang.t('$vuetify.lang_131') }}
                         </v-chip>
                       </template>
-                      <template v-if="item.status === 'FILLED'">
+                      <template v-if="item.status === 'filled'">
                         <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                           {{ $vuetify.lang.t('$vuetify.lang_129') }}
                         </v-chip>
                       </template>
-                      <template v-if="item.status === undefined">
+                      <template v-if="item.status === 'cancel'">
                         <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                           {{ $vuetify.lang.t('$vuetify.lang_130') }}
                         </v-chip>
@@ -154,7 +154,7 @@
                 <th class="text-left">
                   {{ $vuetify.lang.t('$vuetify.lang_56') }}
                 </th>
-                <th class="text-left">
+                <th class="text-center">
                   {{ $vuetify.lang.t('$vuetify.lang_81') }}
                 </th>
                 <th v-if="eyelet === 0" class="text-center">
@@ -168,7 +168,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                       <span v-bind="attrs" v-on="on">
-                        <template v-if="item.assigning">
+                        <template v-if="item.assigning === 'sell'">
                           <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'red lighten-5 red--text') + ' ml-0 mr-2'" label small>
                             <v-icon color="red" size="15">
                               mdi-arrow-top-left
@@ -222,24 +222,24 @@
                 <td>
                   {{ $decimal.format($decimal.mul(item.quantity, item.price), order.quote_decimal) }} {{ item.quote_unit.toUpperCase() }}
                 </td>
-                <td>
-                  <template v-if="item.status === 'PENDING'">
+                <td class="text-center">
+                  <template v-if="item.status === 'pending'">
                     <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                       {{ $vuetify.lang.t('$vuetify.lang_131') }}
                     </v-chip>
                   </template>
-                  <template v-if="item.status === 'FILLED'">
+                  <template v-if="item.status === 'filled'">
                     <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                       {{ $vuetify.lang.t('$vuetify.lang_129') }}
                     </v-chip>
                   </template>
-                  <template v-if="item.status === undefined">
+                  <template v-if="item.status === 'cancel'">
                     <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
                       {{ $vuetify.lang.t('$vuetify.lang_130') }}
                     </v-chip>
                   </template>
                 </td>
-                <td class="text-center" v-if="item.status === 'PENDING'">
+                <td class="text-center" v-if="item.status === 'pending'">
                   <v-icon color="red" @click="cancelOrder(item.id)">
                     mdi-trash-can-outline
                   </v-icon>
@@ -300,7 +300,7 @@
     data() {
       return {
         eyelet: 0,
-        status: 0,
+        status: null,
         overlay: true,
         header: false,
         hover: false,
@@ -319,26 +319,26 @@
     watch: {
       $route() {
         this.eyelet = 0;
-        this.getOrders(2);
+        this.getOrders("pending");
       },
       eyelet(e) {
-        let index = 0;
+        let index = null;
         switch (e) {
           case 0:
-            index = 2;
+            index = "pending";
             break
           case 1:
-            index = 1;
+            index = "filled";
             break
           case 2:
-            index = 0;
+            index = "cancel";
             break
         }
         this.getOrders(index)
       }
     },
     mounted() {
-      this.getOrders(2);
+      this.getOrders("pending");
 
       /**
        * Отслеживаем события нового ордера.
@@ -369,8 +369,6 @@
             data.quote_unit === this.parse.quote()
 
         ) {
-
-          data.status = 'PENDING';
 
           this.count += 1;
           this.length = Math.ceil(this.count / this.limit);
@@ -411,11 +409,11 @@
           let matching = this.order.items.some((o) => Number(o.id) === data.id);
           if (matching) {
             switch (data.status) {
-              case 1:
+              case "filled":
                 // Удаляем ордер с массива по идентификатору.
                 this.order.items.splice(index, 1);
                 break;
-              case 2:
+                case "pending":
                 // Обновляем количество монет ордера.
                 this.order.items[index].value = data.value;
                 break
@@ -454,8 +452,8 @@
           this.overlay = true;
 
           this.$axios.$post(this.$api.spot.getOrders, {
-            // Назначение [sell:1] - [buy:0] - [default:3].
-            assigning: 3,
+            // Назначение [sell:1] - [buy:0] - [default:null].
+            assigning: null,
             // Имя актива (symbol-base).
             base_unit: this.parse.base(),
             // Имя актива (symbol-quote).

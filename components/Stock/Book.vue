@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-1" height="1008" elevation="0">
+  <v-card class="ma-1 rounded-lg" height="1008" elevation="0">
 
     <!-- Start: filter assigning tab element -->
     <v-app-bar color="transparent" height="50" flat>
@@ -47,10 +47,10 @@
       <template v-if="orders.bid().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" height="410" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="0" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="buy" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span class="teal--text">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -126,10 +126,10 @@
       <template v-if="orders.ask().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.ask()" height="410" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="1" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="sell" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span class="red--text">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -165,10 +165,10 @@
       <template v-if="orders.assigning().length">
         <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders.assigning()" height="900" item-height="29">
           <template v-slot:default="{ item }">
-            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning ? 1 : 0" :key="item.id">
+            <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
                 <v-col cols="4">
-                  <span :class="(item.assigning ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
+                  <span :class="(item.assigning === 'sell' ? 'red' : 'teal') + '--text'">{{ $decimal.format(item.price, order.quote_decimal) }}</span>
                 </v-col>
                 <v-col :class="'text-right ' + ($vuetify.theme.dark ? 'grey--text' : '')" cols="4">
                   {{ $decimal.format(item.value, order.base_decimal) }}
@@ -228,300 +228,304 @@
 </template>
 
 <script>
-  import ShiftItem from "../Default/ShiftItem.vue";
+import ShiftItem from "../Default/ShiftItem.vue";
 
-  export default {
-    name: "v-component-spot-book",
-    components: {
-      'v-component-shift-item': ShiftItem
-    },
-    data() {
-      return {
-        hover: false,
-        overlay: true,
-        eyelet: 2,
-        order: {
-          range: false,
-          base_decimal: 2,
-          quote_decimal: 8,
-          items: [],
-          volume: 0
-        }
+export default {
+  name: "v-component-spot-book",
+  components: {
+    'v-component-shift-item': ShiftItem
+  },
+  data() {
+    return {
+      hover: false,
+      overlay: true,
+      eyelet: 2,
+      order: {
+        range: false,
+        base_decimal: 2,
+        quote_decimal: 8,
+        items: [],
+        volume: 0
       }
+    }
+  },
+  watch: {
+    $route() {
+      this.getOrders(null);
     },
-    watch: {
-      $route() {
-        this.getOrders(2);
-      },
-      eyelet(e) {
-        this.getOrders(e)
+    eyelet(e) {
+      let assigning = null;
+      switch (e) {
+        case 0:
+          assigning = "buy";
+          break
+        case 1:
+          assigning = "sell";
+          break
       }
-    },
+      this.getOrders(assigning)
+    }
+  },
 
-    mounted() {
-      this.getOrders(2);
+  mounted() {
+    this.getOrders(null);
 
-      /**
-       * Отслеживаем события нового ордера.
-       * @return {callback}:
-       * @object {base_unit: string},
-       * @object {id: int},
-       * @object {assigning: string}
-       * @object {price: float},
-       * @object {quantity: float},
-       * @object {quote_unit: string},
-       * @object {create_at: int},
-       * @object {user_id: int},
-       * @object {value: float}
-       */
-      this.$publish.bind('order/create', (data) => {
-        data.assigning = data.assigning ?? 0;
+    /**
+     * Отслеживаем события нового ордера.
+     * @return {callback}:
+     * @object {base_unit: string},
+     * @object {id: int},
+     * @object {assigning: string}
+     * @object {price: float},
+     * @object {quantity: float},
+     * @object {quote_unit: string},
+     * @object {create_at: int},
+     * @object {user_id: int},
+     * @object {value: float}
+     */
+    this.$publish.bind('order/create', (data) => {
+      let assigning = (this.eyelet ? 'sell' : 'buy');
+      if (
 
-        if (
+        // Сверяем принадлежат ли новые события к данному активу,
+        // если аргументы совпадают то привязываем полученные данные из события к данному активу.
+        data.base_unit === this.parse.base() &&
+        data.quote_unit === this.parse.quote() &&
 
-            // Сверяем принадлежат ли новые события к данному активу,
-            // если аргументы совпадают то привязываем полученные данные из события к данному активу.
-            data.base_unit === this.parse.base() &&
-            data.quote_unit === this.parse.quote() &&
+        // Добавляем елемент у видимую область.
+        assigning === data.assigning ||
+        this.eyelet === 2
 
-            // Добавляем елемент у видимую область.
-            this.eyelet === data.assigning ||
-            this.eyelet === 2
+      ) {
 
-        ) {
+        this.order.items.unshift(Object.assign({}, data));
 
-          this.order.items.unshift(Object.assign({}, data));
-
-          if (this.order.items.length > 200) {
-            this.order.items.splice(-1)
-          }
-
-          // Получаем текущий объем в ордерах.
-          this.getVolume(this.eyelet);
-        }
-      });
-
-      /**
-       * Отслеживаем статус ордера.
-       * @return {callback}:
-       * @object {base_unit: string},
-       * @object {id: int},
-       * @object {assigning: string}
-       * @object {price: float},
-       * @object {quantity: float},
-       * @object {quote_unit: string},
-       * @object {create_at: int},
-       * @object {user_id: int},
-       * @object {value: float}
-       */
-      this.$publish.bind('order/status', (data) => {
-
-        let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
-        let matching = this.order.items.some((o) => Number(o.id) === data.id);
-
-        if (
-
-            // Проверяем есть ли в массиве объект по идентификатору.
-            matching
-
-        ) {
-
-          switch (data.status) {
-            case 1:
-
-              // Удаляем ордер с массива по идентификатору.
-              this.order.items.splice(index, 1);
-
-              break;
-            case 2:
-
-              // Обновляем количество монет ордера.
-              this.order.items[index].value = data.value;
-
-              break
-
-          }
-
-          // Получаем текущий объем в ордерах.
-          this.getVolume(this.eyelet);
-
-        }
-      });
-
-      /**
-       * Отслеживаем события удаленного ордера.
-       * @return {callback}:
-       * @object {base_unit: string},
-       * @object {id: int},
-       * @object {price: float},
-       * @object {quantity: float},
-       * @object {quote_unit: string},
-       * @object {create_at: int},
-       * @object {user_id: int},
-       * @object {value: float},
-       */
-      this.$publish.bind('order/cancel', (data) => {
-
-        // Удаляем ордер с массива по идентификатору.
-        let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
-        if (index !== -1) {
-          this.order.items.splice(index, 1);
+        if (this.order.items.length > 200) {
+          this.order.items.splice(-1)
         }
 
         // Получаем текущий объем в ордерах.
-        this.getVolume(this.eyelet);
+        this.getVolume(assigning);
+      }
+    });
+
+    /**
+     * Отслеживаем статус ордера.
+     * @return {callback}:
+     * @object {base_unit: string},
+     * @object {id: int},
+     * @object {assigning: string}
+     * @object {price: float},
+     * @object {quantity: float},
+     * @object {quote_unit: string},
+     * @object {create_at: int},
+     * @object {user_id: int},
+     * @object {value: float}
+     */
+    this.$publish.bind('order/status', (data) => {
+
+      let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
+      let matching = this.order.items.some((o) => Number(o.id) === data.id);
+
+      if (
+
+        // Проверяем есть ли в массиве объект по идентификатору.
+        matching
+
+      ) {
+
+        switch (data.status) {
+          case "filled":
+
+            // Удаляем ордер с массива по идентификатору.
+            this.order.items.splice(index, 1);
+
+            break;
+          case "pending":
+
+            // Обновляем количество монет ордера.
+            this.order.items[index].value = data.value;
+
+            break
+
+        }
+        let assigning = (this.eyelet ? 'sell' : 'buy');
+
+        // Получаем текущий объем в ордерах.
+        this.getVolume(assigning);
+
+      }
+    });
+
+    /**
+     * Отслеживаем события удаленного ордера.
+     * @return {callback}:
+     * @object {base_unit: string},
+     * @object {id: int},
+     * @object {price: float},
+     * @object {quantity: float},
+     * @object {quote_unit: string},
+     * @object {create_at: int},
+     * @object {user_id: int},
+     * @object {value: float},
+     */
+    this.$publish.bind('order/cancel', (data) => {
+
+      // Удаляем ордер с массива по идентификатору.
+      let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
+      if (index !== -1) {
+        this.order.items.splice(index, 1);
+      }
+      let assigning = (this.eyelet ? 'sell' : 'buy');
+
+      // Получаем текущий объем в ордерах.
+      this.getVolume(assigning);
+    });
+  },
+
+  methods: {
+
+    /**
+     *
+     */
+    getPair() {
+      this.$axios.$post(this.$api.stock.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+        this.order.base_decimal = response.fields[0].base_decimal ?? 2;
+        this.order.quote_decimal = response.fields[0].quote_decimal ?? 8;
       });
     },
 
-    methods: {
+    /**
+     * @param assigning
+     */
+    getOrders(assigning) {
+      this.overlay = true;
 
-      /**
-       *
-       */
-      getPair() {
-        this.$axios.$post(this.$api.stock.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
-          this.order.base_decimal = response.fields[0].base_decimal ?? 2;
-          this.order.quote_decimal = response.fields[0].quote_decimal ?? 8;
-        });
-      },
+      this.getPair();
 
-      /**
-       * @param assigning
-       */
-      getOrders(assigning) {
-        this.overlay = true;
+      this.$axios.$post(this.$api.stock.getOrders, {
+        // Назначение [sell:1] - [buy:0].
+        assigning: assigning,
+        // Имя актива (symbol-base).
+        base_unit: this.parse.base(),
+        // Имя актива (symbol-quote).
+        quote_unit: this.parse.quote(),
+        // Показывать записи если они со статусом в ожидании.
+        status: "pending",
+        // Count item.
+        limit: 200
+      }).then((response) => {
+        this.order.volume = response.volume ?? 0;
+        this.order.items = response.fields ?? [];
+        this.overlay = false;
+      });
+    },
 
-        this.getPair();
+    /**
+     * @param assigning
+     */
+    getVolume(assigning) {
+      this.$axios.$post(this.$api.stock.getOrders, {
+        // Назначение [sell:1] - [buy:0].
+        assigning: assigning,
+        // Имя актива (symbol-base).
+        base_unit: this.parse.base(),
+        // Имя актива (symbol-quote).
+        quote_unit: this.parse.quote(),
+        // Показывать записи если они со статусом в ожидании.
+        status: "pending",
+        // Количество объектов для вывода.
+        limit: 1
+      }).then((response) => {
+        this.order.volume = response.volume ?? 0;
+      });
+    },
 
-        this.$axios.$post(this.$api.stock.getOrders, {
-          // Назначение [sell:1] - [buy:0].
-          assigning: assigning,
-          // Имя актива (symbol-base).
-          base_unit: this.parse.base(),
-          // Имя актива (symbol-quote).
-          quote_unit: this.parse.quote(),
-          // Показывать записи если они со статусом в ожидании.
-          status: 2,
-          // Count item.
-          limit: 200
-        }).then((response) => {
+    /**
+     * @param price
+     */
+    addPriceToForm(price) {
+      this.$nuxt.$emit("price/update", price)
+    }
+  },
 
-          this.order.volume = response.volume ?? 0;
-          this.order.items = response.fields ?? [];
+  computed: {
 
-          this.overlay = false;
-        });
-      },
-
-      /**
-       * @param assigning
-       */
-      getVolume(assigning) {
-        this.$axios.$post(this.$api.stock.getOrders, {
-          // Назначение [sell:1] - [buy:0].
-          assigning: assigning,
-          // Имя актива (symbol-base).
-          base_unit: this.parse.base(),
-          // Имя актива (symbol-quote).
-          quote_unit: this.parse.quote(),
-          // Показывать записи если они со статусом в ожидании.
-          status: 2,
-          // Количество объектов для вывода.
-          limit: 1
-        }).then((response) => {
-          this.order.volume = response.volume ?? 0;
-        });
-      },
-
-      /**
-       * @param price
-       */
-      addPriceToForm(price) {
-        this.$nuxt.$emit("price/update", price)
+    /**
+     * @returns {{ask: (function(): *[]), bid: (function(): *[]), assigning: (function(): *[])}}
+     */
+    orders() {
+      return {
+        assigning: () => {
+          return this.order.items.filter((item) => item.assigning === (this.eyelet ? 'sell' : 'buy')).sort((a, b) => this.order.range ? b.price - a.price : null);
+        },
+        bid: () => {
+          return this.order.items.filter((item) => item.assigning === 'buy').sort((a, b) => this.order.range ? b.price - a.price : null);
+        },
+        ask: () => {
+          return this.order.items.filter((item) => item.assigning === 'sell').sort((a, b) => this.order.range ? b.price - a.price : null);
+        }
       }
     },
 
-    computed: {
-
-      /**
-       * @returns {{ask: (function(): *[]), bid: (function(): *[]), assigning: (function(): *[])}}
-       */
-      orders() {
-        return {
-          assigning: () => {
-            return this.order.items.filter((item) => (item.assigning ? 1 : 0) === this.eyelet).sort((a, b) => this.order.range ? b.price - a.price : null);
-          },
-          bid: () => {
-            return this.order.items.filter((item) => !item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
-          },
-          ask: () => {
-            return this.order.items.filter((item) => item.assigning).sort((a, b) => this.order.range ? b.price - a.price : null);
-          }
+    /**
+     * @returns {{quote: (function(): string), base: (function(): string)}}
+     */
+    parse() {
+      return {
+        base: () => {
+          return this.$route.params.unit.split('-')[0]
+        },
+        quote: () => {
+          return this.$route.params.unit.split('-')[1]
         }
-      },
-
-      /**
-       * @returns {{quote: (function(): string), base: (function(): string)}}
-       */
-      parse() {
-        return {
-          base: () => {
-            return this.$route.params.unit.split('-')[0]
-          },
-          quote: () => {
-            return this.$route.params.unit.split('-')[1]
-          }
-        }
-      },
-
-      /**
-       * @returns {number|*}
-       */
-      priceCurrent() {
-        if (this.order.items.length) {
-          return this.order.items[0].price;
-        }
-        return 0;
-      },
-
-      /**
-       * @returns {number|*}
-       */
-      pricePrevious() {
-        if (this.order.items.length > 1) {
-          return this.order.items[1].price;
-        }
-        return 0;
-      },
-
-      /**
-       * @returns {string|string}
-       */
-      priceConcurrency() {
-
-        if (this.order.items.length !== 1) {
-
-          if (this.priceCurrent > this.pricePrevious) {
-            return 'teal'
-          }
-          if (this.priceCurrent < this.pricePrevious) {
-            return 'red'
-          }
-
-        }
-
-        return this.$vuetify.theme.dark ? 'grey' : 'brown'
       }
+    },
+
+    /**
+     * @returns {number|*}
+     */
+    priceCurrent() {
+      if (this.order.items.length) {
+        return this.order.items[0].price;
+      }
+      return 0;
+    },
+
+    /**
+     * @returns {number|*}
+     */
+    pricePrevious() {
+      if (this.order.items.length > 1) {
+        return this.order.items[1].price;
+      }
+      return 0;
+    },
+
+    /**
+     * @returns {string|string}
+     */
+    priceConcurrency() {
+      if (this.order.items.length !== 1) {
+        if (this.priceCurrent > this.pricePrevious) {
+          return 'teal'
+        }
+        if (this.priceCurrent < this.pricePrevious) {
+          return 'red'
+        }
+      }
+      return this.$vuetify.theme.dark ? 'grey' : 'brown'
     }
   }
+}
 </script>
 
 <style scoped>
 
 .chip-marker {
-  list-style: none;
-  padding: 0;
-  text-align: center;
+    list-style: none;
+    padding: 0;
+    text-align: center;
 }
 
 </style>

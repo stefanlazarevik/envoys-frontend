@@ -2,12 +2,12 @@
   <div>
     <v-data-table :class="count > limit ? 'none-radius ' : ''" :items="items" :headers="headlines" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
       <template v-slot:item.status="{ item }">
-        <template v-if="item.status === 'PENDING'">
+        <template v-if="item.status === 'pending'">
           <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
             {{ $vuetify.lang.t('$vuetify.lang_131') }}
           </v-chip>
         </template>
-        <template v-else-if="item.status === 'FILLED'">
+        <template v-else-if="item.status === 'filled'">
           <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
             {{ $vuetify.lang.t('$vuetify.lang_129') }}
           </v-chip>
@@ -30,7 +30,7 @@
         </div>
       </template>
       <template v-slot:item.setting="{ item }">
-        <template v-if="item.status === 'PENDING'">
+        <template v-if="item.status === 'pending'">
           <v-menu offset-x offset-y bottom center :nudge-left="80" content-class="elevation-1" transition="slide-y-transition">
             <template v-slot:activator="{ on, attrs }">
               <v-icon v-bind="attrs" v-on="on">
@@ -47,7 +47,7 @@
             </v-list>
           </v-menu>
         </template>
-        <template v-else-if="item.status === 'FILLED'">
+        <template v-else-if="item.status === 'filled'">
           <v-icon>
             mdi-check-circle-outline
           </v-icon>

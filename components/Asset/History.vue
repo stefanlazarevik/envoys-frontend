@@ -1,9 +1,9 @@
 <template>
   <div>
-    <template v-if="transactions.length">
+    <template v-if="items.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines.top" :items="transactions" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer show-expand single-expand>
+      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines.top" :items="items" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer show-expand single-expand>
         <template v-slot:item.data-table-expand="{ item, expand, isExpanded }">
           <template v-if="isExpanded">
             <v-icon @click="expand(!isExpanded)">
@@ -17,9 +17,9 @@
           </template>
         </template>
         <template v-slot:item.type="{ item }">
-          <template v-if="item.assignment === 'WITHDRAWS'">
+          <template v-if="item.assignment === 'withdrawal'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'red lighten-5 red--text') + ' ml-0 mr-2'" label small>
-              <v-icon :color="item.status === 'PENDING' ? 'light-blue' : 'green'" size="15">
+              <v-icon :color="item.status === 'pending' ? 'light-blue' : 'green'" size="15">
                 mdi-arrow-top-left
               </v-icon>
               {{ $vuetify.lang.t('$vuetify.lang_92') }}
@@ -27,7 +27,7 @@
           </template>
           <template v-else>
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'blue lighten-5 blue--text') + ' ml-0 mr-2'" label small>
-              <v-icon :color="item.status === 'PENDING' ? 'light-blue' : 'green'" size="15">
+              <v-icon :color="item.status === 'pending' ? 'light-blue' : 'green'" size="15">
                 mdi-arrow-bottom-left
               </v-icon>
               {{ $vuetify.lang.t('$vuetify.lang_120') }}
@@ -35,35 +35,35 @@
           </template>
         </template>
         <template v-slot:item.protocol="{ item }">
-          <v-chip :color="item.protoco ? $protocol.get(item.protocol).color : 'blue lighten-5'" class="ml-0 mr-2 black--text" label small>
-            {{ item.protocol ? item.protocol : "MAINNET" }}
+          <v-chip :color="$protocol.get(item.protocol).color" class="ml-0 mr-2 black--text" label small>
+            {{ item.protocol }}
           </v-chip>
         </template>
         <template v-slot:item.value="{ item }">
-          {{ item.assignment ? '-' : '+' }}{{ $decimal.format(item.value, 8) }} <b>{{ item.symbol.toUpperCase() }}</b>
+          {{ item.assignment === 'deposit' ? '+' : '-' }}{{ $decimal.format(item.value, 8) }} <b>{{ item.symbol.toUpperCase() }}</b>
         </template>
         <template v-slot:item.status="{ item }">
-          <template v-if="item.status === 'PENDING' || item.status === 'LOCK'">
+          <template v-if="item.status === 'pending'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_131') }}
             </v-chip>
           </template>
-          <template v-if="item.status === 'FILLED'">
+          <template v-if="item.status === 'filled'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_129') }}
             </v-chip>
           </template>
-          <template v-if="item.status === 'FAILED'">
+          <template v-if="item.status === 'failed'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_295') }}
             </v-chip>
           </template>
-          <template v-if="item.status === 'PROCESSING'">
+          <template v-if="item.status === 'processing' || item.status === 'lock'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_291') }}
             </v-chip>
           </template>
-          <template v-if="item.status === undefined">
+          <template v-if="item.status === 'cancel'">
             <v-chip :class="($vuetify.theme.dark ? 'grey darken-3' : 'grey lighten-3 brown--text') + ' ml-0 mr-2'" label small>
               {{ $vuetify.lang.t('$vuetify.lang_130') }}
             </v-chip>
@@ -97,23 +97,28 @@
                       {{ $vuetify.lang.t('$vuetify.lang_284') }}
                     </v-list-item-subtitle>
                     <v-list-item-title v-if="item.chain.explorer_link">
-                      <a :href="`${item.chain.explorer_link}/${item.hash}`" target="_blank">
-                        <i>{{ item.hash }}</i>
-                      </a>
+                      <template v-if="item.hash.split('-').length === 5">
+                        <i>INTERNAL:{{ item.hash }}</i>
+                      </template>
+                      <template v-else>
+                        <a :href="`${item.chain.explorer_link}/${item.hash}`" target="_blank">
+                          <i>{{ item.hash }}</i>
+                        </a>
+                      </template>
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
                 <v-list-item>
                   <v-item-group>
                     <v-list-item-subtitle>
-                      {{ item.assignment ? $vuetify.lang.t('$vuetify.lang_105') : $vuetify.lang.t('$vuetify.lang_287') }}
+                      {{ item.assignment === 'deposit' ? $vuetify.lang.t('$vuetify.lang_287') : $vuetify.lang.t('$vuetify.lang_105') }}
                     </v-list-item-subtitle>
                     <v-list-item-title>
-                      {{ item.assignment ? '-' : '+' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
+                      {{ item.assignment === 'deposit' ? '+' : '-' }}{{ item.value }} {{ item.symbol.toUpperCase() }}
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.assignment && item.status === 'FILLED'">
+                <v-list-item v-if="item.assignment === 'withdrawal' && item.status === 'filled'">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_20') }}
@@ -123,7 +128,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.assignment && item.status === 'FILLED'">
+                <v-list-item v-if="item.assignment === 'withdrawal' && item.status === 'filled'">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_107') }}
@@ -151,7 +156,7 @@
                           {{ $vuetify.lang.t('$vuetify.lang_113') }}: {{ item.platform }}({{ item.symbol.toUpperCase() }})
                         </v-btn>
                         <v-btn color="amber white--text">
-                          {{ $vuetify.lang.t('$vuetify.lang_125') }}: {{ item.protocol ? item.protocol : 'MAINNET' }}
+                          {{ $vuetify.lang.t('$vuetify.lang_125') }}: {{ item.protocol }}
                         </v-btn>
                       </v-btn-toggle>
                     </v-list-item-title>
@@ -167,7 +172,7 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.chain.confirmation && !item.assignment">
+                <v-list-item v-if="item.chain.confirmation && item.assignment === 'deposit'">
                   <v-item-group>
                     <v-list-item-subtitle>
                       {{ $vuetify.lang.t('$vuetify.lang_153') }}
@@ -187,8 +192,8 @@
                     </v-list-item-title>
                   </v-item-group>
                 </v-list-item>
-                <v-list-item v-if="item.status === 'PENDING' && item.assignment === 'WITHDRAWS'">
-                  <v-btn color="white--text red text-capitalize" @click="cancelWithdraw(item.id)" large block elevation="0">{{ $vuetify.lang.t('$vuetify.lang_124') }}</v-btn>
+                <v-list-item v-if="item.status === 'pending' && item.assignment === 'withdrawal' || item.status === 'failed'">
+                  <v-btn color="white--text red text-capitalize" @click="cancelWithdraw(item.id)" large block elevation="0">{{ item.status === 'failed' ? $vuetify.lang.t('$vuetify.lang_124') + ` - Error: (${item.error})` : $vuetify.lang.t('$vuetify.lang_124') }}</v-btn>
                 </v-list-item>
               </v-list>
             </v-card>
@@ -239,7 +244,7 @@
     name: "v-component-history",
     data() {
       return {
-        transactions: [],
+        items: [],
         overlay: true,
         limit: 10,
         count: 0,
@@ -260,11 +265,12 @@
        * @return {callback}:
        */
       this.$publish.bind('withdraw/status', (data) => {
-        this.transactions.map(item => {
+        this.items.map((item) => {
           if(Number(item.id) === data.id) {
-            item.status = "FILLED";
+            item.status = data.status;
             item.hash = data.hash;
             item.fees = data.fees;
+            item.error = data.error ?? null
           }
         });
       });
@@ -293,21 +299,18 @@
 
           if (data.hook) {
 
-            this.transactions.map(item => {
+            this.items.map(item => {
               if(Number(item.id) === data.id) {
-                item.status = "FILLED";
+                item.status = "filled";
                 item.confirmation = data.confirmation;
               }
             });
 
           } else {
-
-            // New status formatting.
-            data.status = "PENDING";
-            data.protocol = data.protocol ? this.$protocol.getNameById(data.protocol) : 0;
+            data.status = "pending";
 
             // Unshift append transaction to list.
-            this.transactions.unshift(data);
+            this.items.unshift(data);
             this.count += 1;
             this.length = Math.ceil(this.count/this.limit);
 
@@ -332,7 +335,7 @@
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.transactions = response.fields ?? [];
+          this.items = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -353,14 +356,20 @@
         this.$axios.$post(this.$api.spot.cancelWithdraw, {
           // Идентификатор вывода для удаления.
           id: id
-        }).then(() => {
-          this.$nuxt.$emit('withdraw/cancel', this.transactions.filter(item => item.id === id).map(item => item));
+        }).then((response) => {
 
-          this.transactions.map(item => {
-            if(item.id === id) {
-              item.status = undefined;
-            }
-          });
+          console.log(response);
+          if (response.success) {
+            this.$nuxt.$emit('withdraw/cancel', this.items.filter(item => item.id === id).map(item => item));
+
+            this.items.map(item => {
+              if(item.id === id) {
+                item.status = 'cancel';
+              }
+            });
+          } else {
+            this.$snackbar.open({content: `Withdrawals in processed`, color: 'red darken-2'});
+          }
 
         }).catch((error) => {
           this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
@@ -371,17 +380,10 @@
     computed: {
 
       /**
-       * @returns {number}
+       * @returns {string}
        */
       type() {
-        switch (this.$route.params.type) {
-          case 'deposit':
-            return 0
-          case 'withdraw':
-            return 1
-          default:
-            return 2
-        }
+        return this.$route.params.type
       },
 
       /**

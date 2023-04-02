@@ -3,7 +3,7 @@
 
     <!-- Start: app bar element -->
     <v-app-bar color="transparent" height="50" flat>
-      <v-tabs v-model="type">
+      <v-tabs v-model="pattern">
         <v-tab>
           {{ $vuetify.lang.t('$vuetify.lang_91') }}
         </v-tab>
@@ -35,12 +35,12 @@
 
     <v-divider />
 
-    <template v-if="advertisements.length">
+    <template v-if="items.length">
 
       <!-- Start: data table -->
-      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="advertisements" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
+      <v-data-table :class="count > limit ? 'none-radius ' : ''" :headers="headlines" :items="items" :page.sync="page" item-key="id" :server-items-length="length" :items-per-page="limit" hide-default-footer>
         <template v-slot:item.image="{ item }">
-          <template v-if="item.type === 'STICKER'">
+          <template v-if="item.pattern === 'sticker'">
             <v-img class="my-3" width="100" :src="$storages(['ads'], item.id)"></v-img>
           </template>
           <template v-else>
@@ -145,22 +145,22 @@
     name: "v-component-advertising",
     data() {
       return {
-        advertisements: [],
+        items: [],
         overlay: true,
         count: 0,
         limit: 5,
         length: 0,
         page: 1,
-        type: 0
+        pattern: 0
       }
     },
     watch: {
-      type() {
-        this.getAdvertisements();
+      pattern(e) {
+        this.getAdvertisements(e ? 'sticker' : 'text');
       }
     },
     mounted() {
-      this.getAdvertisements();
+      this.getAdvertisements("text");
     },
     methods: {
 
@@ -168,22 +168,20 @@
        *
        */
       getMore() {
-        this.getAdvertisements();
+        this.getAdvertisements(this.pattern ? 'sticker' : 'text');
       },
-
 
       /**
        *
        */
-      getAdvertisements() {
+      getAdvertisements(pattern) {
         this.overlay = true;
-
         this.$axios.$post(this.$api.ads.getAdvertisements, {
-          type: this.type,
+          pattern: pattern,
           limit: this.limit,
           page: this.page
         }).then((response) => {
-          this.advertisements = response.fields ?? [];
+          this.items = response.fields ?? [];
           this.count = response.count ?? 0;
           this.length = Math.ceil(this.count/this.limit);
           this.overlay = false;
@@ -200,10 +198,8 @@
 
           this.count -= 1;
           this.length = Math.ceil(this.count / this.limit);
-
-          this.advertisements.splice(this.advertisements.map((o) => o.id).indexOf(id), 1);
-
-          if (!this.advertisements.length && this.count > 0) {
+          this.items.splice(this.items.map((o) => o.id).indexOf(id), 1);
+          if (!this.items.length && this.count > 0) {
             this.getMore();
           }
 

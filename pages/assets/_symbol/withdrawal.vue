@@ -1,8 +1,8 @@
 <template>
   <div class="ma-4">
 
-    <template v-if="asset.chains">
-      <template v-if="!asset.type">
+    <template v-if="asset.chains && (!empty || empty === 1)">
+      <template v-if="asset.group === 'crypto'">
 
         <!-- Start: tabs bar -->
         <v-tabs v-model="eyelet" color="primary">
@@ -14,7 +14,7 @@
         <v-tabs-items v-model="eyelet" class="mt-3">
           <v-tab-item v-for="(item, index) in asset.chains" :key="item.id" :transition="false" class="mt-1">
 
-            <template v-if="item.address">
+            <template v-if="item.exist">
 
               <v-row>
                 <v-col cols="12" md="6">
@@ -33,7 +33,7 @@
                     </v-card-subtitle>
                     <v-divider />
                     <v-card-subtitle>
-                      {{ $vuetify.lang.t('$vuetify.lang_113') }}: <b>{{ item.platform ? item.platform : 'BITCOIN' }}</b>
+                      {{ $vuetify.lang.t('$vuetify.lang_113') }}: <b>{{ item.platform }}</b>
                     </v-card-subtitle>
                     <v-divider v-if="item.contract" />
                     <v-card-subtitle v-if="item.contract">
@@ -193,7 +193,7 @@
               <v-layout fill-height style="height:200px;" wrap>
                 <v-flex/>
                 <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
-                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 0), index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, (item.contract ? item.contract.protocol : 'mainnet'), index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
                 </v-flex>
                 <v-flex/>
               </v-layout>
@@ -215,11 +215,25 @@
         <!-- Start: tabs items -->
         <v-tabs-items v-model="eyelet" class="mt-3">
           <v-tab-item v-for="(item, index) in asset.chains" :key="item.id" :transition="false" class="mt-1">
-            <v-alert icon="mdi-shield-lock-outline" prominent text type="info">
-              {{ item }}, Index: {{ index }}
-            </v-alert>
+
+            <template v-if="item.exist">
+              <v-alert icon="mdi-shield-lock-outline" prominent text type="info">
+                {{ item }}, Index: {{ index }}
+              </v-alert>
+            </template>
+            <template v-else-if="!overlay">
+              <v-layout fill-height style="height:200px;" wrap>
+                <v-flex/>
+                <v-flex align-self-center class="text-center" md4 mx5 sm6 xl3>
+                  <v-btn block color="black--text yellow darken-1 text-capitalize" elevation="0" large @click="setAsset(item.platform, 'mainnet', index)">{{ $vuetify.lang.t('$vuetify.lang_288') }}</v-btn>
+                </v-flex>
+                <v-flex/>
+              </v-layout>
+            </template>
+
           </v-tab-item>
         </v-tabs-items>
+        <!-- End: tabs items -->
 
       </template>
 
@@ -242,6 +256,7 @@
   export default {
     data() {
       return {
+        empty: 0,
         next: 1,
         asset: {
           chains: []
@@ -289,6 +304,15 @@
 
         this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
+
+          if (this.asset.group === 'crypto') {
+            this.asset.chains.map((item) => {
+              if (!item.contract) {
+                this.empty += 1;
+              }
+            });
+          }
+
           this.overlay = false;
           this.getPrice(this.asset.symbol);
         }).catch(e => {
@@ -302,8 +326,16 @@
        * @param index
        */
       setAsset(platform, protocol, index) {
-        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol}).then((response) => {
-          this.asset.chains[index].address = response.address;
+        this.$axios.$post(this.$api.spot.setAsset, {symbol: this.$route.params.symbol, platform: platform, protocol: protocol, group: this.asset.group}).then((response) => {
+          if (this.asset.group === 'fiat') {
+            for (let i = 0; i < this.asset.chains.length; i++) {
+              this.asset.chains[i].exist = true;
+            }
+          } else {
+            this.asset.chains[index].exist = true;
+            this.asset.chains[index].address = response.address;
+          }
+
           this.$forceUpdate();
         });
       },
@@ -369,6 +401,7 @@
        */
       setWithdraw(item) {
         this.disabled = true;
+
         this.$axios.$post(this.$api.spot.setWithdraw, {
           id: item.id,
           symbol: this.$route.params.symbol,

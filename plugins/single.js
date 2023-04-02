@@ -12,7 +12,7 @@ export default ({ app, store }, inject) => {
      */
     play(name) {
       const player = new Howl({
-        src: `${app.$axios.defaults.baseURL}/storage/media/${name}.ogg`,
+        src: `${app.$axios.defaults.baseURL}/v2/storage/media/${name}.ogg`,
         html5: true,
         autoplay: false,
         loop: false,
