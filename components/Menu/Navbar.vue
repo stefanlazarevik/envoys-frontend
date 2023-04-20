@@ -1,9 +1,9 @@
 <template>
-    <v-row>
-        <v-col v-for="(item, index) in navs" :key="index">
+    <v-container class="d-flex px-2">
+        <div class="px-1" v-for="(item, index) in navs" :key="index">
             <v-component-submenu :item="item"></v-component-submenu>
-        </v-col>
-    </v-row>
+        </div>
+    </v-container>
 </template>
 
 <script>
