@@ -93,6 +93,7 @@
       return {
         items: {
           left: [
+            {icon: 'mdi-rhombus-split-outline', title: 'lang_365', to: '/trade/eth-usd?type=future', status: 1, disable: false},
             {icon: 'mdi-rhombus-split-outline', title: 'lang_31', to: '/trade/eth-usd?type=spot', status: 1, disable: false},
             {icon: 'mdi-format-rotate-90', title: 'lang_361', to: '/trade/goog-usd?type=stock', status: 1, disable: false}
           ],

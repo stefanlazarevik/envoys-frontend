@@ -168,8 +168,8 @@
         // Инициализируем шапку со статическими данными.
         this.getHeader();
 
-        // Проверяем есть ли такая пара.
-        this.$axios.$post(this.$api[this.$route.query.type === 'spot' ? 'spot' : 'stock'].getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+        // Проверяем есть ли такая пара
+        this.$axios.$post(this.$api[this.$route.query.type === 'stock' ? 'stock' : 'spot'].getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
 
           // Если статус пары false, то мы не инициализируем график.
           this.status = response.fields[0].status ?? false;

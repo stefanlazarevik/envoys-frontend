@@ -16,6 +16,7 @@
       </v-toolbar-title>
       <v-divider class="mx-4" inset vertical />
       <v-component-menu-default />
+      <v-component-navbar-future />
       <v-spacer />
       <v-toolbar-items v-show="!$auth.loggedIn" class="hidden-sm-and-down">
         <v-btn class="text-capitalize" to="/signin" text>{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
@@ -61,6 +62,7 @@
   import MenuDefault from '@/components/Menu/Default';
   import MenuPrivate from '@/components/Menu/Private';
   import Footer from '@/components/Footer';
+  import Navbar from '@/components/Menu/Navbar'
 
   export default {
     name: 'layouts-default',
@@ -71,7 +73,8 @@
       'v-component-snackbar': Snackbar,
       'v-component-menu-default': MenuDefault,
       'v-component-menu-private': MenuPrivate,
-      'v-component-footer': Footer
+      'v-component-footer': Footer,
+      'v-component-navbar-future': Navbar,
     },
     data() {
       return {

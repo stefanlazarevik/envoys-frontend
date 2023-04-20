@@ -33,6 +33,36 @@
 
       </v-row>
 
+      <v-row v-if="$route.query.type === 'future'" class="ma-1" no-gutters>
+
+        <v-col :order-xl="$store.state.localStorage.screen ? 2 : 0" cols="12" :xl="$store.state.localStorage.screen ? 2 : 3" lg="3" md="12" sm="12" class="hidden-md-and-down hidden-sm-and-down">
+          <!-- Start: order book component -->
+          <v-component-spot-book />
+          <!-- End: order book component -->
+        </v-col>
+
+        <v-col :order-xl="$store.state.localStorage.screen ? 0 : 1" cols="12" :xl="$store.state.localStorage.screen ? 8 : 6" lg="6" md="12" sm="12">
+          <!-- Start: pair trade chart component -->
+          <nuxt-child />
+          <!-- End: pair trade chart component -->
+
+          <!-- Start: my trade history component -->
+          <v-component-spot-history class="mt-2" />
+          <!-- End:  my trade history component -->
+        </v-col>
+
+        <v-col :order-xl="$store.state.localStorage.screen ? 2 : 2" cols="12" :xl="$store.state.localStorage.screen ? 2 : 3" lg="3" md="12" sm="12">
+          <!-- Start: trade form component -->
+          <v-component-spot-form />
+          <!-- End: trade form component -->
+
+          <!-- Start: list of trading pairs market component -->
+          <v-component-spot-market class="mt-2" />
+          <!-- End: list of trading pairs market component -->
+        </v-col>
+
+      </v-row>
+
       <v-row v-if="$route.query.type === 'stock'" class="ma-1" no-gutters>
 
         <v-col cols="12" xl="8" lg="6" md="12" sm="12">
@@ -110,7 +140,7 @@
     methods: {
       getSymbol(loader) {
 
-        if (this.$route.query.type !== 'spot' && this.$route.query.type !== 'stock') {
+        if (this.$route.query.type !== 'spot' && this.$route.query.type !== 'stock' && this.$route.query.type !== 'future') {
           this.$nuxt.error({ statusCode: 404, message: 'Type trade not found!.' });
           return false
         }
