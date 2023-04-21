@@ -2,7 +2,8 @@ export const state = () => ({
   dark: false,
   i18n: null,
   screen: false,
-  url: null
+  url: null,
+  drawer: false,
 })
 
 export const mutations = {
@@ -17,5 +18,9 @@ export const mutations = {
   },
   setUrl(state, payload) {
     state.url = payload;
-  }
+  },
+  setDrawer(state, payload) {
+    console.log('set drawer', payload)
+    state.drawer = payload;
+  },
 }

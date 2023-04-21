@@ -1,7 +1,14 @@
 <template>
-    <v-container class="d-flex px-2">
-        <div class="px-1" v-for="(item, index) in navs" :key="index">
-            <v-component-submenu :item="item"></v-component-submenu>
+    <v-container>
+        <div class="hidden-md-and-down">
+            <div class="d-flex px-2">
+                <div class="px-1" v-for="(item, index) in navs" :key="index">
+                    <v-component-submenu :item="item"></v-component-submenu>
+                </div>
+            </div>
+        </div>
+        <div class="hidden-md-and-up">
+            <v-app-bar-nav-icon @click="toogleDrawer()"></v-app-bar-nav-icon>
         </div>
     </v-container>
 </template>
@@ -42,6 +49,12 @@
                         {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
                     ]},
                 ]
+            }
+        },
+        methods: {
+            toogleDrawer () {
+                console.log('toogle')
+                this.$emit('toogleDrawer')
             }
         }
     }

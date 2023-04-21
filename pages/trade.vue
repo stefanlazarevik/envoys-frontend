@@ -90,8 +90,8 @@
     <v-overlay absolute :color="$vuetify.theme.dark ? 'grey darken-4' : 'white'" opacity="1" :value="!loader">
       <v-progress-circular color="yellow darken-3" indeterminate size="100" />
     </v-overlay>
-
   </section>
+
 </template>
 
 <script>

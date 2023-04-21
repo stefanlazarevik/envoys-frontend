@@ -16,7 +16,7 @@
       </v-toolbar-title>
       <v-divider class="mx-4" inset vertical />
       <v-component-menu-default />
-      <v-component-navbar-future />
+      <v-component-navbar-future @toogleDrawer="drawer=!drawer"/>
       <v-spacer />
       <v-toolbar-items v-show="!$auth.loggedIn" class="hidden-sm-and-down">
         <v-btn class="text-capitalize" to="/signin" text>{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
@@ -50,6 +50,35 @@
       <v-component-footer />
     </v-main>
     <v-component-snackbar />
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporarity
+    >
+      <v-list
+        nav
+        dense
+      >
+        <v-list-item-group
+          v-model="group"
+          active-class="deep-purple--text text--accent-4"
+        >
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Account</v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
   </v-app>
 </template>
 
@@ -80,7 +109,8 @@
       return {
         channels: ['order/create', 'order/status', 'order/cancel', 'deposit/open', 'deposit/status', 'withdraw/status', 'broker/depth', 'account/kyc-verify', 'create/agent', 'status/agent'],
         interval: [0, 60, 300, 900, 1800, 3600, 86400],
-        admin: false
+        admin: false,
+        drawer: false,
       }
     },
     mounted() {
