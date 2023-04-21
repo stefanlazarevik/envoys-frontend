@@ -21,39 +21,20 @@
         components: {
             'v-component-submenu': Submenu,
         },
+        props: [
+            'navs',
+        ],
         data () {
             return {
-                navs: [
-                    {label: 'USDT-M Futures', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                    {label: 'Coin-M Futures', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                    {label: 'USDC-M Futurs', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                    {label: 'Strategic Trading', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                    {label: 'Futures Info', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                    {label: 'CopyTrading', items: [
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                        {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-                    ]},
-                ]
+                // navItems: []
+                // navs: [],
             }
+        },
+        created() {
+            // this.navItems = this.navs;
         },
         methods: {
             toogleDrawer () {
-                console.log('toogle')
                 this.$emit('toogleDrawer')
             }
         }

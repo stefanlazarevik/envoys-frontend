@@ -16,7 +16,7 @@
       </v-toolbar-title>
       <v-divider class="mx-4" inset vertical />
       <v-component-menu-default />
-      <v-component-navbar-future @toogleDrawer="drawer=!drawer"/>
+      <v-component-navbar-future @toogleDrawer="drawer=!drawer" :navs="navs"/>
       <v-spacer />
       <v-toolbar-items v-show="!$auth.loggedIn" class="hidden-sm-and-down">
         <v-btn class="text-capitalize" to="/signin" text>{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
@@ -54,27 +54,22 @@
       v-model="drawer"
       absolute
       temporarity
+      class="pt-16"
     >
       <v-list
         nav
         dense
+        class="pt-n16"
       >
         <v-list-item-group
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item>
+          <v-list-item v-for="(item, index) in navs" :key="index">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Home</v-list-item-title>
-          </v-list-item>
-
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Account</v-list-item-title>
+            <v-list-item-title>{{item.label}}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -111,6 +106,33 @@
         interval: [0, 60, 300, 900, 1800, 3600, 86400],
         admin: false,
         drawer: false,
+        group: null,
+        navs: [
+            {label: 'USDT-M Futures', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+            {label: 'Coin-M Futures', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+            {label: 'USDC-M Futurs', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+            {label: 'Strategic Trading', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+            {label: 'Futures Info', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+            {label: 'CopyTrading', items: [
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            ]},
+        ],
       }
     },
     mounted() {
