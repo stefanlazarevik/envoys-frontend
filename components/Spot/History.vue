@@ -431,7 +431,7 @@
        *
        */
       getPair() {
-        this.$axios.$post(this.$api.spot.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+        this.$axios.$post(this.$api.provider.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
           this.order.base_decimal = response.fields[0].base_decimal ?? 2;
           this.order.quote_decimal = response.fields[0].quote_decimal ?? 8;
         });
@@ -451,7 +451,7 @@
         } else {
           this.overlay = true;
 
-          this.$axios.$post(this.$api.spot.getOrders, {
+          this.$axios.$post(this.$api.provider.getOrders, {
             // Назначение [sell:1] - [buy:0] - [default:null].
             assigning: null,
             // Имя актива (symbol-base).

@@ -169,7 +169,7 @@
         this.getHeader();
 
         // Проверяем есть ли такая пара
-        this.$axios.$post(this.$api[this.$route.query.type === 'stock' ? 'stock' : 'spot'].getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+        this.$axios.$post(this.$api[this.$route.query.type === 'stock' ? 'stock' : 'provider'].getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
 
           // Если статус пары false, то мы не инициализируем график.
           this.status = response.fields[0].status ?? false;
@@ -225,7 +225,7 @@
        *
        */
       getHeader() {
-        this.$axios.$get(this.$api.ohlcv.getTicker + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
+        this.$axios.$get(this.$api.provider.getTicker + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote() + '&limit=2').then((response) => {
           this.header = response.stats;
         })
       }

@@ -330,7 +330,7 @@
             // значит налаживаем вето на эту форму в целом.
             this.status = response.fields[0].status ?? 0;
             if (this.status) {
-              this.$axios.$post(this.$api.spot.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
+              this.$axios.$post(this.$api.provider.getPair, {base_unit: this.parse.base(), quote_unit: this.parse.quote()}).then((response) => {
                 this.status = response.fields[0].status ?? 0;
               }).catch(e => {
                 console.log(e)

@@ -194,7 +194,7 @@
         this.getMarkers();
 
         let markers = this.markers.length;
-        this.$axios.$post(this.$api.spot.getPairs, { symbol: (symbol ?? this.parse.base())}).then((response) => {
+        this.$axios.$post(this.$api.provider.getPairs, { symbol: (symbol ?? this.parse.base())}).then((response) => {
 
           if (!markers) {
             this.eyelet = this.markers.indexOf(symbol ?? this.parse.base());
@@ -212,7 +212,7 @@
        *
        */
       getMarkers() {
-        this.$axios.$post(this.$api.spot.getMarkers).then((response) => {
+        this.$axios.$post(this.$api.provider.getMarkers).then((response) => {
           this.markers = response.fields ?? [];
 
           // Sort by symbol.

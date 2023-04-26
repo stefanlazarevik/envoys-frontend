@@ -44,7 +44,8 @@ export default ({ app }, inject) => {
       cancelOrder: '/v2/provider/cancel-order',
       setWithdraw: '/v2/provider/set-withdraw',
       cancelWithdraw: '/v2/provider/cancel-withdraw',
-      getTransactions: '/v2/provider/get-transactions'
+      getTransactions: '/v2/provider/get-transactions',
+      getTicker: '/v2/provider/get-ticker'
     },
     spot: {
       getPrice: '/v2/spot/get-price',

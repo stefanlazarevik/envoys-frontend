@@ -179,7 +179,7 @@
        *
        */
       getOrders() {
-        this.$axios.$post(this.$api.spot.getOrders, {
+        this.$axios.$post(this.$api.provider.getOrders, {
           owner: true,
           assigning: this.assigning,
           status: this.status,
