@@ -302,7 +302,7 @@
       getAsset() {
         this.overlay = true;
 
-        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
+        this.$axios.$post(this.$api.provider.getAsset, {symbol: this.$route.params.symbol, type: 'spot'}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
 
           if (this.asset.group === 'crypto') {
@@ -391,7 +391,7 @@
        * @param symbol
        */
       getPrice(symbol) {
-        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
+        this.$axios.$get(this.$api.provider.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
           this.price = response.price ?? 0;
         });
       },

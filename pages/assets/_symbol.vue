@@ -48,7 +48,7 @@
     async asyncData({ $axios, $api, params, error }) {
       let symbol = params.symbol;
       if (symbol) {
-        return $axios.$post($api.spot.getAsset, {symbol: symbol}).then((response) => {
+        return $axios.$post($api.provider.getAsset, {symbol: symbol, type: 'spot'}).then((response) => {
           let asset = response.fields.lastItem
           asset.volume = asset.volume ?? 0;
           asset.balance = asset.balance ?? 0;

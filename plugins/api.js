@@ -29,6 +29,23 @@ export default ({ app }, inject) => {
     ohlcv: {
       getTicker: '/v2/ohlcv/get-ticker'
     },
+    provider: {
+      getPrice: '/v2/provider/get-price',
+      getSymbol: '/v2/provider/get-symbol',
+      getMarkers: '/v2/provider/get-markers',
+      getTrades: '/v2/provider/get-trades',
+      getPairs: '/v2/provider/get-pairs',
+      getPair: '/v2/provider/get-pair',
+      getOrders: '/v2/provider/get-orders',
+      getAsset: '/v2/provider/get-asset',
+      getAssets: '/v2/provider/get-assets',
+      setAsset: '/v2/provider/set-asset',
+      setOrder: '/v2/provider/set-order',
+      cancelOrder: '/v2/provider/cancel-order',
+      setWithdraw: '/v2/provider/set-withdraw',
+      cancelWithdraw: '/v2/provider/cancel-withdraw',
+      getTransactions: '/v2/provider/get-transactions'
+    },
     spot: {
       getPrice: '/v2/spot/get-price',
       getSymbol: '/v2/spot/get-symbol',

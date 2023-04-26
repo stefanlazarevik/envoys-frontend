@@ -191,7 +191,7 @@
         this.overlay = true;
         this.empty = 0;
 
-        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.$route.params.symbol}).then((response) => {
+        this.$axios.$post(this.$api.provider.getAsset, {symbol: this.$route.params.symbol, type: 'spot'}).then((response) => {
           this.asset = response.fields.lastItem ?? {};
 
           if (this.asset.group === 'crypto') {

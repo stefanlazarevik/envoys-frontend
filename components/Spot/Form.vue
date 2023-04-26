@@ -292,7 +292,7 @@
        * Получаем новые данные бегущей строки, данные об торгах.
        */
       getPrice() {
-        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote()).then((response) => {
+        this.$axios.$get(this.$api.provider.getPrice + '?base_unit=' + this.parse.base() + '&quote_unit=' + this.parse.quote()).then((response) => {
           this.price = response.price ?? 0;
         })
       },
@@ -314,8 +314,7 @@
           return false;
         }
 
-        this.$axios.$post(this.$api.spot.getAsset, {symbol: this.symbol}).then((response) => {
-
+        this.$axios.$post(this.$api.provider.getAsset, {symbol: this.symbol, type: 'spot'}).then((response) => {
           // После перехода на новый актив обнуляем все параметры.
           this.balance = 0;
           this.value = 0;

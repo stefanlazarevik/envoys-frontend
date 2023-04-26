@@ -146,7 +146,7 @@
        * @param symbol
        */
       getPrice(symbol) {
-        this.$axios.$get(this.$api.spot.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
+        this.$axios.$get(this.$api.provider.getPrice + '?base_unit=' + symbol + '&quote_unit=usd').then((response) => {
           this.price = response.price ?? 0;
         });
       }
