@@ -7,23 +7,29 @@
       <v-app-bar class="toolbar-px-zero rounded-lg" color="transparent" flat height="50">
         <v-slide-group multiple show-arrows>
           <v-slide-item>
-            <ul class="header-line">
-              <li>{{ parse.symbol().toUpperCase() }}</li>
-              <li v-if="header.last">
-                <small :class="priceConcurrency + '--text'">
-                  <v-icon v-if="priceConcurrency === 'red'" :class="priceConcurrency + '--text'" small>
-                    mdi-call-received
-                  </v-icon>
-                  <v-icon v-else-if="priceConcurrency === 'teal'" :class="priceConcurrency + '--text'" small>
-                    mdi-call-made
-                  </v-icon>
-                  <v-icon v-else small>
-                    mdi-keyboard-tab
-                  </v-icon>
-                  {{ $decimal.format(priceLast) }}
-                </small>
-              </li>
-            </ul>
+            <div class="d-flex">
+              <ul class="header-line">
+                <li>{{ parse.symbol().toUpperCase() }}</li>
+                <li v-if="header.last">
+                  <small :class="priceConcurrency + '--text'">
+                    <v-icon v-if="priceConcurrency === 'red'" :class="priceConcurrency + '--text'" small>
+                      mdi-call-received
+                    </v-icon>
+                    <v-icon v-else-if="priceConcurrency === 'teal'" :class="priceConcurrency + '--text'" small>
+                      mdi-call-made
+                    </v-icon>
+                    <v-icon v-else small>
+                      mdi-keyboard-tab
+                    </v-icon>
+                    {{ $decimal.format(priceLast) }}
+                  </small>
+                </li>
+              </ul>
+              <v-component-future-market-menu />
+            </div>
+          </v-slide-item>
+          <v-slide-item>
+            
           </v-slide-item>
           <v-slide-item>
             <v-divider class="mx-3" vertical />
@@ -119,13 +125,18 @@
 </template>
 
 <script>
+  import FutureMarketMenu from '~/components/Menu/Future';
 
   export default {
+    components: {
+      'v-component-future-market-menu': FutureMarketMenu,
+    },
     data() {
       return {
         overlay: true,
         header: {},
-        status: false
+        status: false,
+        openMenu: false,
       }
     },
     head() {

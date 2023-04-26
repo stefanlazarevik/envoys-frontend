@@ -51,9 +51,6 @@
         <v-col lg="3" md="12" sm="12" style="padding-bottom: 7px">
           <v-component-future-form />
         </v-col>
-        <!-- <template width="100%" style="padding: 12px">
-          <v-component-future-form />
-        </template> -->
       </v-row>
 
       <v-row v-if="$route.query.type === 'stock'" class="ma-1" no-gutters>
