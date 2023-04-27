@@ -25,11 +25,10 @@
                   </small>
                 </li>
               </ul>
-              <v-component-future-market-menu />
+              <div class="pl-2">
+                <v-component-future-market-menu />
+              </div>
             </div>
-          </v-slide-item>
-          <v-slide-item>
-            
           </v-slide-item>
           <v-slide-item>
             <v-divider class="mx-3" vertical />

@@ -1,5 +1,5 @@
 <template>
-    <v-menu offset-y bottom center content-class="elevation-1">
+    <v-menu offset-y bottom center content-class="elevation-1" :close-on-content-click="false" :close-on-click="true">
         <template v-slot:activator="{ on, attrs }">
             <v-btn :color="$vuetify.theme.dark ? '' : 'blue lighten-4'" elevation="0" icon v-bind="attrs" v-on="on" size="x-small" style="width: 12px; height: 12px;">
                 <v-icon :color="$vuetify.theme.dark ? '' : 'grey darken-1'">

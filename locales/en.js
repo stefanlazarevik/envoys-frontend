@@ -362,7 +362,9 @@ export default {
   lang_362: 'P2P trade',
   lang_363: 'OTC trade',
   lang_364: 'Stock assets',
-  lang_365: 'Future Tradinig',
+  lang_365: 'Future Trading',
   lang_366: '',
   lang_367: '',
+  lang_368: 'Delivery',
+  lang_369: 'Perpetual',
 }
