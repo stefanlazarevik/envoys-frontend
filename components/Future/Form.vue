@@ -53,14 +53,14 @@
       </template>
       <v-text-field v-model="quantity" @focus="bind.quantity = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_53')">
         <template v-slot:append>
-          <span class="my-1">{{ trading ? parse.base().toUpperCase() : (assigning === 'sell' ? parse.base().toUpperCase() : parse.quote().toUpperCase()) }}</span>
+          <span class="my-1">{{ trading ? parse.base().toUpperCase() : (assigning === 'close' ? parse.base().toUpperCase() : parse.quote().toUpperCase()) }}</span>
         </template>
       </v-text-field>
-      <v-text-field v-show="trading" v-model="value" @focus="bind.value = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
+      <!-- <v-text-field v-show="trading" v-model="value" @focus="bind.value = true" class="mb-4" color="primary" height="40" dense hide-details outlined :label="$vuetify.lang.t('$vuetify.lang_56')">
         <template v-slot:append>
-          <span class="my-1">{{ trading ? parse.quote().toUpperCase() : (assigning === 'sell' ? parse.quote().toUpperCase() : parse.base().toUpperCase()) }}</span>
+          <span class="my-1">{{ trading ? parse.quote().toUpperCase() : (assigning === 'close' ? parse.quote().toUpperCase() : parse.base().toUpperCase()) }}</span>
         </template>
-      </v-text-field>
+      </v-text-field> -->
 
       <v-component-range-slider :eyelet="eyelet" :clear="clear" @input="setPercent" />
     </v-card-text>
@@ -68,22 +68,22 @@
 
     <v-divider />
     <!-- Start: leverage form -->
-    <v-component-leverage-card />
+    <v-component-leverage-card :value="leverage" @set-leverage="leverage=$event"/>
     <!-- End: leverage form -->
     <v-divider />
 
     <!-- Start: threshold board -->
-    <v-component-threshold-card />
+    <v-component-threshold-card :position="position" :threshold="threshold" @set-position="position=$event" @set-threshold="threshold=$event"/>
     <!-- End: threshold board -->
 
     <!-- Start: create new order element -->
     <v-card-actions>
       <div class="d-flex flex-fill ma-2" style="gap: 8px">
-        <v-btn @click="setOrder" color="teal lighten-2 white--text" large elevation="0" class="flex-grow-1">
-          {{ assigning === 'buy' ? $vuetify.lang.t('buy long') : $vuetify.lang.t('close long') }}
+        <v-btn @click="setOrder($constants.positions.Long)" color="teal lighten-2 white--text" large elevation="0" class="flex-grow-1">
+          {{ assigning === $constants.directions.Open ? $vuetify.lang.t('buy long') : $vuetify.lang.t('close long') }}
         </v-btn>
-        <v-btn @click="setOrder" color="red lighten-2 white--text" large elevation="0" class="flex-grow-1">
-          {{ assigning === 'buy' ? $vuetify.lang.t('sell short') : $vuetify.lang.t('close short') }}
+        <v-btn @click="setOrder($constants.positions.Short)" color="red lighten-2 white--text" large elevation="0" class="flex-grow-1">
+          {{ assigning === $constants.directions.Open ? $vuetify.lang.t('sell short') : $vuetify.lang.t('close short') }}
         </v-btn>
       </div>
     </v-card-actions>
@@ -156,26 +156,38 @@
         status: 0,
         overlay: true,
         clear: false,
-        trading: 1,
-        assigning: 'buy',
+        trading: 1, // market or limit contract
+        assigning: this.$constants.directions.Open, // open or close future
+        position: this.$constants.positions.None, // long or short position 
         bind: {
           quantity: false,
           value: false
         },
-        free: 0.00001
+        leverage: 1,
+        threshold: { // threshold of trading
+          profit: 0,
+          loss: 0,
+        },
+        free: 0.00001,
       }
     },
     watch: {
+      $data: {
+        handler: function (e) {
+          console.log('data changed', e)
+        },
+        deep: true,
+      },
       $route() {
         this.getAsset(true);
       },
       price(e) {
         if (e) {
           switch (this.assigning) {
-            case 'buy':
+            case this.$constants.directions.Open:
               this.quantity = this.$decimal.div(this.value, e);
               break;
-            case 'sell':
+            case this.$constants.directions.Close:
               this.value = this.$decimal.mul(this.quantity, e);
               break;
           }
@@ -205,7 +217,7 @@
         });
       },
       eyelet(e) {
-        this.assigning = e ? "sell" : "buy";
+        this.assigning = e ? this.$constants.directions.Close : this.$constants.directions.Open;
         this.getAsset(true);
       }
     },
@@ -378,7 +390,7 @@
        */
       setPercent(percent) {
         switch (this.assigning) {
-          case 'buy':
+          case 'open':
 
             if (this.trading) {
               this.value = this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100;
@@ -388,7 +400,7 @@
             }
 
             break;
-          case 'sell':
+          case 'close':
             this.value = this.$decimal.mul((this.$decimal.mul(this.balance, Number(percent) === 100 ? Number(percent)-this.free : Number(percent)) / 100), this.price);
             this.quantity = this.$decimal.div(this.value, this.price);
             break;
@@ -398,8 +410,17 @@
       /**
        * Создаём новый ордер.
        */
-      setOrder() {
+      setOrder(pos) {
         this.clear = false;
+
+        if (this.position !== this.$constants.positions.None && this.position !== pos) {
+          this.$snackbar.open({
+            content: `Only ${this.assigning} ${this.position} positions allowed`,
+            // color
+          })
+          return;
+        }
+        return
 
         this.$axios.$post(this.$api.spot.setOrder, {
           // Назначение [sell:1] - [buy:0].
@@ -434,9 +455,9 @@
        */
       symbol() {
         switch (this.assigning) {
-          case 'buy':
+          case 'open':
             return this.parse.quote();
-          case 'sell':
+          case 'close':
             return this.parse.base();
         }
       },
