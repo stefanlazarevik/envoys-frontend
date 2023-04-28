@@ -371,7 +371,7 @@
       setOrder() {
         this.clear = false;
 
-        this.$axios.$post(this.$api.spot.setOrder, {
+        this.$axios.$post(this.$api.provider.setOrder, {
           // Назначение [sell:1] - [buy:0].
           assigning: this.assigning,
           // Имя актива (symbol-base).
@@ -384,6 +384,7 @@
           quantity: this.quantity,
           // Рыночная цена монеты.
           price: this.price,
+          type: 'spot',
         }).then((response) => {
 
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.

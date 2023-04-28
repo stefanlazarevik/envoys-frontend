@@ -45,7 +45,7 @@
 
       <!-- Start: orders bid list element -->
       <template v-if="orders.bid().length">
-        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" height="410" item-height="29">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" :height="type === 'future' ? '155px' : '410px'" item-height="29">
           <template v-slot:default="{ item }">
             <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="buy" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
@@ -124,7 +124,7 @@
 
       <!-- Start: orders ask list element -->
       <template v-if="orders.ask().length">
-        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.ask()" height="410" item-height="29">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.ask()" :height="type === 'future' ? '155px' : '410px'" item-height="29">
           <template v-slot:default="{ item }">
             <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="sell" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
@@ -163,7 +163,7 @@
 
       <!-- Start: orders list element -->
       <template v-if="orders.assigning().length">
-        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders.assigning()" height="900" item-height="29">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" :class="hover ? '' : 'overflow-y-hidden'" bench="0" :items="orders.assigning()" :height="type === 'future' ? '155px' : '900'" item-height="29">
           <template v-slot:default="{ item }">
             <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" :assigning="item.assigning" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
