@@ -73,7 +73,7 @@
     <v-divider />
 
     <!-- Start: threshold board -->
-    <v-component-threshold-card :position="position" :threshold="threshold" @set-position="position=$event" @set-threshold="threshold=$event"/>
+    <v-component-threshold-card v-if="assigning === $constants.directions.Open" :position="position" :threshold="threshold" @set-position="position=$event" @set-threshold="threshold=$event"/>
     <!-- End: threshold board -->
 
     <!-- Start: create new order element -->
@@ -174,7 +174,7 @@
     watch: {
       $data: {
         handler: function (e) {
-          console.log('data changed', e)
+          // console.log('data changed', e)
         },
         deep: true,
       },
@@ -420,6 +420,21 @@
           })
           return;
         }
+        console.log('set order', {
+          assigning: this.assigning,
+          // Имя актива (symbol-base).
+          base_unit: this.parse.base(),
+          // Имя актива (symbol-quote).
+          quote_unit: this.parse.quote(),
+          // Тип [market:0] - [limit:1]
+          trading: this.trading ? 'limit' : 'market',
+          // Количество монет sell/buy.
+          quantity: this.quantity,
+          // Рыночная цена монеты.
+          price: this.price,
+          position: this.position,
+          
+        })
         return
 
         this.$axios.$post(this.$api.spot.setOrder, {

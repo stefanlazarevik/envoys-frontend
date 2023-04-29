@@ -16,7 +16,7 @@
         name: 'v-component-leverage-card',
         data() {
             return {
-                values: [25, 50, 75, 100],
+                values: [5, 10, 15, 20],
             }
         },
         props: ['value'],

@@ -217,6 +217,8 @@
       /** */
       
       getMarkets () {
+        this.overlay = true;
+
         function isFuture (pair) {
           const units = {
             'usd': true,
@@ -227,7 +229,7 @@
         }
         this.$axios.$post(this.$api.index.getMarkets, {})
           .then((response) => {
-            console.log('get markets result', response)
+            this.overlay = false;
             this.markets = response.fields ?? []
             this.markets = this.markets.filter((e) => isFuture(e))
           })
