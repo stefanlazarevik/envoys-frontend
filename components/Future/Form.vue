@@ -407,6 +407,12 @@
         }
       },
 
+      validate() {
+        const margin = 0;
+        const balance = 0;
+
+        
+      },
       /**
        * Создаём новый ордер.
        */
@@ -436,6 +442,8 @@
           
         })
         return
+
+        const type = 'future'
 
         this.$axios.$post(this.$api.spot.setOrder, {
           // Назначение [sell:1] - [buy:0].

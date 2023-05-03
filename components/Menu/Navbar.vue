@@ -2,7 +2,7 @@
     <v-container>
         <div class="hidden-md-and-down">
             <div class="d-flex px-2">
-                <div class="px-1" v-for="(item, index) in navs" :key="index">
+                <div class="px-1" v-for="(item, index) in menu" :key="index">
                     <v-component-submenu :item="item"></v-component-submenu>
                 </div>
             </div>
@@ -22,20 +22,20 @@
             'v-component-submenu': Submenu,
         },
         props: [
-            'navs',
+            'menu',
         ],
         data () {
             return {
                 // navItems: []
-                // navs: [],
+                // menu: [],
             }
         },
         created() {
-            // this.navItems = this.navs;
+            // this.navItems = this.menu;
         },
         methods: {
-            toogleDrawer () {
-                this.$emit('toogleDrawer')
+            toggleDrawer () {
+                this.$emit('toggleDrawer')
             }
         }
     }

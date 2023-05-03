@@ -16,7 +16,7 @@
       </v-toolbar-title>
       <v-divider class="mx-4" inset vertical />
       <v-component-menu-default />
-      <v-component-navbar-future @toogleDrawer="drawer=!drawer" :navs="navs"/>
+      <v-component-navbar-future @toggleDrawer="drawer=!drawer" :menu="menu"/>
       <v-spacer />
       <v-toolbar-items v-show="!$auth.loggedIn" class="hidden-sm-and-down">
         <v-btn class="text-capitalize" to="/signin" text>{{ $vuetify.lang.t('$vuetify.lang_29') }}</v-btn>
@@ -65,7 +65,7 @@
           v-model="group"
           active-class="deep-purple--text text--accent-4"
         >
-          <v-list-item v-for="(item, index) in navs" :key="index">
+          <v-list-item v-for="(item, index) in menu" :key="index">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
@@ -107,7 +107,7 @@
         admin: false,
         drawer: false,
         group: null,
-        navs: [
+        menu: [
             {label: 'USDT-M Futures', items: [
                 {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
                 {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
@@ -120,18 +120,18 @@
                 {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
                 {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
             ]},
-            {label: 'Strategic Trading', items: [
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-            ]},
-            {label: 'Futures Info', items: [
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-            ]},
-            {label: 'CopyTrading', items: [
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
-                {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
-            ]},
+            // {label: 'Strategic Trading', items: [
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            // ]},
+            // {label: 'Futures Info', items: [
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            // ]},
+            // {label: 'CopyTrading', items: [
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures'},
+            //     {icon: 'mdi-rhombus-split-outline', title: 'USDT-M Futures Demo'},
+            // ]},
         ],
       }
     },
