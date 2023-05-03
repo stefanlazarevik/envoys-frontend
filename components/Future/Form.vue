@@ -172,12 +172,6 @@
       }
     },
     watch: {
-      $data: {
-        handler: function (e) {
-          // console.log('data changed', e)
-        },
-        deep: true,
-      },
       $route() {
         this.getAsset(true);
       },
@@ -408,10 +402,9 @@
       },
 
       validate() {
-        const margin = 0;
-        const balance = 0;
-
+        const margin = this.price * this.quantity / this.leverage;
         
+        return margin <= this.balance && this.price > 0 && Number(this.quantity) > 0
       },
       /**
        * Создаём новый ордер.
@@ -422,54 +415,48 @@
         if (this.position !== this.$constants.positions.None && this.position !== pos) {
           this.$snackbar.open({
             content: `Only ${this.assigning} ${this.position} positions allowed`,
-            // color
+            color: 'red darken-2'
           })
           return;
         }
-        console.log('set order', {
-          assigning: this.assigning,
-          // Имя актива (symbol-base).
-          base_unit: this.parse.base(),
-          // Имя актива (symbol-quote).
-          quote_unit: this.parse.quote(),
-          // Тип [market:0] - [limit:1]
-          trading: this.trading ? 'limit' : 'market',
-          // Количество монет sell/buy.
-          quantity: this.quantity,
-          // Рыночная цена монеты.
-          price: this.price,
-          position: this.position,
-          
-        })
-        return
+        this.position = pos;
+        if (!this.validate()) {
+          this.$snackbar.open({
+            content: `Invalid data`,
+            color: 'red darken-2',
+          })
+          return
+        }
+        const data = {
+          "assigning": this.assigning,
+          "base_unit": this.parse.base(),
+          "quote_unit": this.parse.quote(),
+          "trading": this.trading ? 'limit' : 'market',
+          "quantity": Number(this.quantity),
+          "price": this.price,
+          "leverage": Number(this.leverage),
+          "position": this.position,
+          "take_profit": this.threshold.profit,
+          "stop_loss": this.threshold.loss,
+        }
 
-        const type = 'future'
-
-        this.$axios.$post(this.$api.spot.setOrder, {
-          // Назначение [sell:1] - [buy:0].
-          assigning: this.assigning,
-          // Имя актива (symbol-base).
-          base_unit: this.parse.base(),
-          // Имя актива (symbol-quote).
-          quote_unit: this.parse.quote(),
-          // Тип [market:0] - [limit:1]
-          trading: this.trading ? 'limit' : 'market',
-          // Количество монет sell/buy.
-          quantity: this.quantity,
-          // Рыночная цена монеты.
-          price: this.price,
-        }).then((response) => {
-
+        this.overlay = true;
+        this.$axios.$post(this.$api.future.setOrder, {...data}).then((response) => {
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
           this.getAsset(false);
 
           // Озвучиваем действие звуковым сопровождением.
           this.$single.play('create');
+          this.overlay = false;
 
         }).catch((error) => {
+          this.overlay = false;
           this.$snackbar.open({content: `${error.response.data.code}: ${error.response.data.message}`, color: 'red darken-2'});
         });
-      }
+        this.leverage = 1
+        this.quantity = 0
+        this.position = this.$constants.positions.None
+      },
     },
     computed: {
 

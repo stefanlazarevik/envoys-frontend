@@ -47,22 +47,8 @@ export default ({ app }, inject) => {
       getTransactions: '/v2/provider/get-transactions',
       getTicker: '/v2/provider/get-ticker'
     },
-    spot: {
-      getPrice: '/v2/spot/get-price',
-      getSymbol: '/v2/spot/get-symbol',
-      getMarkers: '/v2/spot/get-markers',
-      getTrades: '/v2/spot/get-trades',
-      getPairs: '/v2/spot/get-pairs',
-      getPair: '/v2/spot/get-pair',
-      getOrders: '/v2/spot/get-orders',
-      getAsset: '/v2/spot/get-asset',
-      getAssets: '/v2/spot/get-assets',
-      setAsset: '/v2/spot/set-asset',
-      setOrder: '/v2/spot/set-order',
-      cancelOrder: '/v2/spot/cancel-order',
-      setWithdraw: '/v2/spot/set-withdraw',
-      cancelWithdraw: '/v2/spot/cancel-withdraw',
-      getTransactions: '/v2/spot/get-transactions'
+    future: {
+      setOrder: '/v2/future/set-order',
     },
     stock: {
       setAgent: '/v2/stock/set-agent',
