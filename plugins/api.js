@@ -49,6 +49,7 @@ export default ({ app }, inject) => {
     },
     future: {
       setOrder: '/v2/future/set-order',
+      getOrders: '/v2/future/get-orders',
     },
     stock: {
       setAgent: '/v2/stock/set-agent',

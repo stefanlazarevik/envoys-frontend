@@ -451,7 +451,7 @@
           } else {
             this.overlay = true;
   
-            this.$axios.$post(this.$api.provider.getOrders, {
+            this.$axios.$post(this.$api.future.getOrders, {
               // Назначение [sell:1] - [buy:0] - [default:null].
               assigning: null,
               // Имя актива (symbol-base).
@@ -467,7 +467,7 @@
               // Показывать записи если они со статусом в ожидании.
               status: status
             }).then((response) => {
-  
+              console.log('future order history', response)
               // Записываем список ордеров в ожидании в массив.
               this.order.items = response.fields ?? [];
               this.count = response.count ?? 0;

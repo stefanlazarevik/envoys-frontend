@@ -44,7 +44,7 @@
                 <v-component-order-book />
               </v-col>
               <v-col>
-                <v-component-spot-history />
+                <v-component-future-history />
               </v-col>
             </v-row>
         </v-col>
@@ -113,7 +113,7 @@
       'v-component-stock-market': StockMarket,
       'v-component-stock-history': StockHistory,
       'v-component-order-book': OrderBook,
-      'v-component-future-hisotry': FutureHistory,
+      'v-component-future-history': FutureHistory,
       'v-component-future-form': FutureForm,
     },
     data() {
