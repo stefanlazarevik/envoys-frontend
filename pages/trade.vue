@@ -44,7 +44,7 @@
                 <v-component-order-book />
               </v-col>
               <v-col>
-                <v-component-future-history />
+                <v-component-future-portfolio />
               </v-col>
             </v-row>
         </v-col>
@@ -98,7 +98,7 @@
 
   import OrderBook from '~/components/Book';
 
-  import FutureHistory from '~/components/Future/History'
+  import FuturePortfolio from '~/components/Future/Portfolio'
   import FutureForm from '~/components/Future/Form'
 
   export default {
@@ -113,7 +113,7 @@
       'v-component-stock-market': StockMarket,
       'v-component-stock-history': StockHistory,
       'v-component-order-book': OrderBook,
-      'v-component-future-history': FutureHistory,
+      'v-component-future-portfolio': FuturePortfolio,
       'v-component-future-form': FutureForm,
     },
     data() {

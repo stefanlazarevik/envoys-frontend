@@ -431,7 +431,8 @@
           "assigning": this.assigning,
           "base_unit": this.parse.base(),
           "quote_unit": this.parse.quote(),
-          "trading": this.trading ? 'limit' : 'market',
+          // "trading": this.trading ? 'limit' : 'market',
+          "order_type": this.trading ? 'limit' : 'market',
           "quantity": Number(this.quantity),
           "price": this.price,
           "leverage": Number(this.leverage),
@@ -444,10 +445,11 @@
         this.$axios.$post(this.$api.future.setOrder, {...data}).then((response) => {
           // Обновляем данные об активе, в нашем случае нам нужно обновить текущий баланс актива.
           this.getAsset(false);
-
           // Озвучиваем действие звуковым сопровождением.
           this.$single.play('create');
           this.overlay = false;
+
+          this.$snackbar.open({content: `Order succeed`, color: 'green darken-2'});
 
         }).catch((error) => {
           this.overlay = false;
