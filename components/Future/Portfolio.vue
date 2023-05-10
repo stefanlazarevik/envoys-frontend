@@ -8,7 +8,7 @@
         <v-tab class="text-capitalize">{{ $vuetify.lang.t('Following Orders') }} ({{ order.following }})</v-tab>
         <v-tab class="text-capitalize">{{ $vuetify.lang.t('Open Orders') }} ({{ order.open }})</v-tab>
         <v-tab class="text-capitalize">{{ $vuetify.lang.t('Order History') }}</v-tab>
-        <v-tab class="text-capitalize">{{ $vuetify.lang.t('Order Details') }}</v-tab>
+        <!-- <v-tab class="text-capitalize">{{ $vuetify.lang.t('Order Details') }}</v-tab> -->
         <v-tab class="text-capitalize">{{ $vuetify.lang.t('Fund Record') }}</v-tab>
       </v-tabs>
     </v-app-bar>

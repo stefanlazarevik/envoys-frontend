@@ -41,7 +41,7 @@
                 <nuxt-child />
               </v-col>
               <v-col lg="4" cols="12" style="height: 498px">
-                <v-component-order-book />
+                <v-component-future-book />
               </v-col>
               <v-col>
                 <v-component-future-portfolio />
@@ -96,8 +96,7 @@
   import StockMarket from '~/components/Stock/Market';
   import StockHistory from "~/components/Stock/History";
 
-  import OrderBook from '~/components/Book';
-
+  import FutureBook from '~/components/Future/Book'
   import FuturePortfolio from '~/components/Future/Portfolio'
   import FutureForm from '~/components/Future/Form'
 
@@ -112,9 +111,9 @@
       'v-component-stock-form': StockForm,
       'v-component-stock-market': StockMarket,
       'v-component-stock-history': StockHistory,
-      'v-component-order-book': OrderBook,
       'v-component-future-portfolio': FuturePortfolio,
       'v-component-future-form': FutureForm,
+      'v-component-future-book': FutureBook,
     },
     data() {
       return {

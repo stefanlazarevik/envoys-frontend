@@ -228,10 +228,10 @@
 </template>
   
   <script>
-    import ShiftItem from "./Default/ShiftItem.vue";
+    import ShiftItem from "../Default/ShiftItem.vue";
   
     export default {
-      name: "v-component-order-book",
+      name: "v-component-future-book",
       components: {
         'v-component-shift-item': ShiftItem
       },
