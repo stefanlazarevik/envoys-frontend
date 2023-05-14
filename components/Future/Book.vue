@@ -45,7 +45,7 @@
 
       <!-- Start: orders bid list element -->
       <template v-if="orders.bid().length">
-        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" :height="type === 'future' ? '155px' : '410px'" item-height="29">
+        <v-virtual-scroll @mouseover="hover = true" @mouseleave="hover = false" class="overflow-y-hidden" bench="0" :items="orders.bid()" height="155" item-height="29">
           <template v-slot:default="{ item }">
             <v-component-shift-item :width="Number($decimal.div($decimal.mul(item.value, 100), item.quantity).toFixed(0))" assigning="buy" :key="item.id">
               <v-row style="cursor: pointer;" @click="addPriceToForm(item.price, order.base_decimal)" no-gutters>
@@ -284,8 +284,9 @@
          * @object {user_id: int},
          * @object {value: float}
          */
-        this.$publish.bind('order/create', (data) => {
-          let assigning = (this.eyelet ? 'sell' : 'buy');
+        this.$publish.bind('future/create', (data) => {
+          console.log('new order created', data)
+          let assigning = (this.eyelet ? 'long' : 'short');
           if (
   
             // Сверяем принадлежат ли новые события к данному активу,
@@ -323,7 +324,7 @@
          * @object {user_id: int},
          * @object {value: float}
          */
-        this.$publish.bind('order/status', (data) => {
+        this.$publish.bind('future/status', (data) => {
   
           let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
           let matching = this.order.items.some((o) => Number(o.id) === data.id);
@@ -370,7 +371,7 @@
          * @object {user_id: int},
          * @object {value: float},
          */
-        this.$publish.bind('order/cancel', (data) => {
+        this.$publish.bind('future/cancel', (data) => {
   
           // Удаляем ордер с массива по идентификатору.
           let index = this.order.items.map((o) => Number(o.id)).indexOf(data.id);
@@ -403,10 +404,11 @@
           this.overlay = true;
   
           this.getPair();
-  
-          this.$axios.$post(this.$api.provider.getOrders, {
+
+          this.$axios.$post(this.$api.future.getOrders, {
             // Назначение [sell:1] - [buy:0].
-            assigning: assigning,
+            assigning: 'close',
+            // position: assigning === 'buy' ? 'short' : 'long',
             // Имя актива (symbol-base).
             base_unit: this.parse.base(),
             // Имя актива (symbol-quote).
@@ -414,8 +416,10 @@
             // Показывать записи если они со статусом в ожидании.
             status: "pending",
             // Count item.
-            limit: 200
+            limit: 200,
+            owner: true,
           }).then((response) => {
+            console.log('get order result', response)
             this.order.volume = response.volume ?? 0;
             this.order.items = response.fields ?? [];
             this.overlay = false;
@@ -426,9 +430,10 @@
          * @param assigning
          */
         getVolume(assigning) {
-          this.$axios.$post(this.$api.provider.getOrders, {
+          this.$axios.$post(this.$api.future.getOrders, {
             // Назначение [sell:1] - [buy:0].
-            assigning: assigning,
+            assigning: 'close',
+            // position: assigning === 'buy' ? 'short' : 'long',
             // Имя актива (symbol-base).
             base_unit: this.parse.base(),
             // Имя актива (symbol-quote).
@@ -436,8 +441,10 @@
             // Показывать записи если они со статусом в ожидании.
             status: "pending",
             // Количество объектов для вывода.
-            limit: 1
+            limit: 1,
+            owner: true,
           }).then((response) => {
+            console.log('get order result', response)
             this.order.volume = response.volume ?? 0;
           });
         },
@@ -458,13 +465,13 @@
         orders() {
           return {
             assigning: () => {
-              return this.order.items.filter((item) => item.assigning === (this.eyelet ? 'sell' : 'buy')).sort((a, b) => this.order.range ? b.price - a.price : null);
+              return this.order.items.filter((item) => item.position === (this.eyelet ? 'long' : 'short')).sort((a, b) => this.order.range ? b.price - a.price : null);
             },
             bid: () => {
-              return this.order.items.filter((item) => item.assigning === 'buy').sort((a, b) => this.order.range ? b.price - a.price : null);
+              return this.order.items.filter((item) => item.position === 'short').sort((a, b) => this.order.range ? b.price - a.price : null);
             },
             ask: () => {
-              return this.order.items.filter((item) => item.assigning === 'sell').sort((a, b) => this.order.range ? b.price - a.price : null);
+              return this.order.items.filter((item) => item.position === 'long').sort((a, b) => this.order.range ? b.price - a.price : null);
             }
           }
         },

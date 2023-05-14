@@ -79,10 +79,10 @@
     <!-- Start: create new order element -->
     <v-card-actions>
       <div class="d-flex flex-fill ma-2" style="gap: 8px">
-        <v-btn @click="setOrder($constants.positions.Long)" color="teal lighten-2 white--text" large elevation="0" class="flex-grow-1">
+        <v-btn @click="setOrder($constants.positions.Long)" :color="(assigning === $constants.directions.Open ? 'teal lighten-2 white--text' : 'red lighten-2 white--text')" large elevation="0" class="flex-grow-1">
           {{ assigning === $constants.directions.Open ? $vuetify.lang.t('buy long') : $vuetify.lang.t('close long') }}
         </v-btn>
-        <v-btn @click="setOrder($constants.positions.Short)" color="red lighten-2 white--text" large elevation="0" class="flex-grow-1">
+        <v-btn @click="setOrder($constants.positions.Short)" :color="(assigning === $constants.directions.Open ? 'red lighten-2 white--text' : 'teal lighten-2 white--text')" large elevation="0" class="flex-grow-1">
           {{ assigning === $constants.directions.Open ? $vuetify.lang.t('sell short') : $vuetify.lang.t('close short') }}
         </v-btn>
       </div>

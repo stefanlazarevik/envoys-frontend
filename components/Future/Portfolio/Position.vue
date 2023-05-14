@@ -1,7 +1,7 @@
 <template>
     <v-card elevation="0">
         <v-row no-gutters style="width: 100%" justify="space-between">
-            <v-card flat class="d-flex" style="gap: 8px">
+            <v-card flat class="d-flex px-3" style="gap: 8px">
                 <v-checkbox label="Lite Version" class="mt-1"></v-checkbox>
                 <v-checkbox label="Show Current" class="mt-1"></v-checkbox>
                 <v-card-text style="width: 92px; padding-top: 6px !important" class="mt-1 pa-0">
@@ -16,7 +16,7 @@
         <v-divider />
         <v-row no-gutters>
             <v-col md="8" sm="12">
-                <v-card elevation="0" class="d-flex position-summary">
+                <v-card elevation="0" class="d-flex position-summary px-3">
                     <v-card-text  class="white--text text-lighten-2 py-4 px-1">
                         <span class="teal white--text">Long</span>
                     </v-card-text>
@@ -146,6 +146,12 @@
 }
 .position-summary .v-card__text.adjust-level {
     font-size: 14px;
+}
+.position-control .v-text-field--outlined {
+    border-radius: 2px;
+}
+.position-control .v-btn {
+    border-radius: 2px;
 }
 .position-control > div {
     flex: 1;
